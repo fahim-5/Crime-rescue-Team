@@ -1,0 +1,203 @@
+/* General Styling - Scoped for Signup Page */
+.auth-signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px 20px; /* Ensures margin from top and bottom */
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+}
+
+/* Signup Form Container */
+.auth-signup-box {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(166, 47, 47, 0.537);
+  padding: 35px;
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Form Heading */
+.auth-signup-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #9e192d;  
+  font-family: 'Times New Roman', Times, serif;
+  background: linear-gradient(145deg, #ffffff, #f5f3f3);
+  padding: 10px 15px;
+  border-radius: 6px;
+  /* display: inline-block; */
+  letter-spacing: 1px;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+.auth-signup-indication{
+  color: #b33d4f;
+  font-style: oblique;
+}
+
+/* Form Layout - Keeps it Flexible */
+.auth-signup-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Left and Right Columns */
+.auth-left,
+.auth-right {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labels */
+.auth-label {
+  font-size: 1rem;
+  color: #1d1818;
+  font-weight: 500;
+  display: block;
+  text-align: left;
+  margin-bottom: 6px;
+  margin-left: 7px;
+  font-family: 'Times New Roman', Times, serif;
+  margin-top: 4px;
+}
+
+/* Input Fields */
+.auth-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #333;
+  background: #f8f9fa;
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.auth-input:focus {
+  border-color: #e94560;
+  outline: none;
+  box-shadow: 0 0 8px rgba(233, 69, 96, 0.3);
+}
+
+/* Signup Button */
+.auth-signup-button {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(145deg, #6f2d2d, #c0392b);
+  color: #ffffff;
+  margin-top: 15px;
+  margin-left: 215px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.auth-signup-button:hover {
+  background: linear-gradient(135deg, #ff4757, #ff798f);
+  box-shadow: 0 5px 15px rgba(233, 69, 96, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Error & Success Messages */
+.auth-error-message {
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #ff4d4d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.5s ease-out;
+}
+
+.auth-success-message {
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #4caf50;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Slide-in animation */
+@keyframes slideIn {
+  0% {
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Footer & Login Link */
+.auth-signup-footer {
+  font-size: 0.95rem;
+  color: #555;
+  margin-top: 15px;
+}
+
+.auth-signup-link {
+  color: #e94560;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.auth-signup-link:hover {
+  color: #ff4757;
+  text-decoration: underline;
+}
+
+/* Police Info Section */
+.auth-police-info {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .auth-signup-form {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-signup-box {
+    padding: 25px;
+    max-width: 90%;
+  }
+
+  .auth-signup-title {
+    font-size: 1.6rem;
+  }
+
+  .auth-input,
+  .auth-signup-button {
+    font-size: 1rem;
+  }
+}
+
+/* Ensure a consistent margin for the form */
+.auth-signup-container {
+  margin: 60px auto; /* Ensures spacing from header/footer */
+  padding: 50px 20px;
+  min-height: calc(100vh - 120px); /* Keeps space even if form grows */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

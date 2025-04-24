@@ -1,0 +1,390 @@
+/* ================ LUXURY PROFILE POPUP ================ */
+.profile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    /* backdrop-filter: blur(12px); */
+    z-index: 2000;
+    opacity: 0;
+    animation: fadeInOverlay 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  
+  @keyframes fadeInOverlay {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .profile-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 
+      0 30px 60px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    width: 420px;
+    max-width: 90vw;
+    z-index: 2100;
+    overflow: hidden;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+    animation: 
+      fadeInPopup 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+      floatAnimation 6s ease-in-out infinite 0.5s;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  
+  @keyframes fadeInPopup {
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+  
+  @keyframes floatAnimation {
+    0%, 100% { transform: translate(-50%, -52%); }
+    50% { transform: translate(-50%, -48%); }
+  }
+  
+  /* ================ LUXURY HEADER ================ */
+  .profile-header {
+    display: flex;
+    align-items: center;
+    padding: 28px;
+    background: linear-gradient(135deg, #6a0020, #a52238);
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .profile-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotateGradient 20s linear infinite;
+  }
+  
+  @keyframes rotateGradient {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-right: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
+    transition: all 0.4s ease;
+  }
+  
+  .profile-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  .profile-info {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .profile-name {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+    font-family: 'Montserrat', 'Segoe UI', sans-serif;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .profile-role {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    font-family: 'Montserrat', 'Segoe UI', sans-serif;
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+  
+  /* ================ PREMIUM STATS ================ */
+  .profile-stats {
+    display: flex;
+    padding: 24px;
+    background: #f9f9f9;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+  }
+  
+  .profile-stats::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    width: 90%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.1), transparent);
+  }
+  
+  .stat-item {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    position: relative;
+  }
+  
+  .stat-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 40%;
+    width: 1px;
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  .stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 2px;
+  }
+  
+  .stat-label {
+    display: block;
+    font-size: 0.85rem;
+    color: #777;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  
+  /* ================ BOUTIQUE ACTIONS ================ */
+  .profile-actions {
+    padding: 24px;
+  }
+  
+  .action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 14px;
+    background: rgba(143, 141, 141, 0.8);
+    color: #000000;
+    text-align: center;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    /* backdrop-filter: blur(5px); */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-family: 'Times New Roman', Times, serif;
+  }
+  
+  .action-btn:hover {
+    background: rgba(133, 59, 59, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: #000000;
+  }
+  
+  .action-btn i {
+    margin-right: 10px;
+    font-size: 1.1rem;
+  }
+  
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #6a0020, #a52238);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(106, 0, 32, 0.3);
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .logout-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+  }
+  
+  .logout-btn:hover {
+    background: linear-gradient(135deg, #5a001b, #8d1c2f);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(106, 0, 32, 0.4);
+  }
+  
+  .logout-btn:hover::before {
+    left: 100%;
+  }
+  
+  .logout-btn i {
+    margin-right: 10px;
+    font-size: 1.1rem;
+  }
+  
+  /* ================ HAUTE COUTURE BUTTON ================ */
+  .profile-btn {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #6a0020, #a52238);
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 10px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border: none;
+    box-shadow: 
+      0 4px 15px rgba(106, 0, 32, 0.3),
+      0 0 0 1px rgba(255,255,255,0.1) inset;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .profile-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      to bottom right,
+      transparent 45%,
+      rgba(255,255,255,0.1) 50%,
+      transparent 55%
+    );
+    transform: rotate(30deg);
+    animation: shine 3s infinite;
+  }
+  
+  @keyframes shine {
+    0% { transform: translateX(-100%) rotate(30deg); }
+    100% { transform: translateX(100%) rotate(30deg); }
+  }
+  
+  .profile-btn:hover {
+    background: linear-gradient(135deg, #5a001b, #8d1c2f);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 6px 20px rgba(106, 0, 32, 0.4),
+      0 0 0 1px rgba(255,255,255,0.1) inset;
+  }
+  
+  .profile-btn:active {
+    transform: translateY(0);
+  }
+  
+  .profile-btn-text {
+    margin-right: 10px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .profile-btn-icon {
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .profile-btn:hover .profile-btn-icon {
+    transform: translateX(3px);
+  }
+  
+  /* ================ RESPONSIVE ELEGANCE ================ */
+  @media (max-width: 768px) {
+    .profile-popup {
+      width: 90vw;
+      border-radius: 20px;
+    }
+    
+    .profile-header {
+      padding: 22px;
+    }
+    
+    .profile-avatar {
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+    }
+    
+    .profile-name {
+      font-size: 1.4rem;
+    }
+    
+    .profile-stats,
+    .profile-actions {
+      padding: 20px;
+    }
+    
+    .stat-value {
+      font-size: 1.3rem;
+    }
+  }
+  
+  /* Micro-interaction for close button (add in your HTML) */
+  .profile-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 2;
+    border: none;
+    color: white;
+    font-size: 18px;
+  }
+  
+  .profile-close-btn:hover {
+    background: rgba(255,255,255,0.25);
+    transform: rotate(90deg);
+  }

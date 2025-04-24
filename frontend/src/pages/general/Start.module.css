@@ -1,0 +1,369 @@
+/* Container for the Start Page */
+.startContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+  position: relative;
+}
+
+/* The Box that Holds Content */
+.startBox {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(166, 47, 47, 0.537);
+  text-align: center;
+  max-width: 500px;
+  margin: auto;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Alert Box (Centered Message) */
+.alertBox {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 0, 0, 0.9);
+  color: white;
+  padding: 15px 25px;
+  font-size: 1.2em;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  z-index: 999;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Heading */
+.startHeading {
+  font-size: 2.5em;
+  color: #9e192d;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+  font-family: "Times New Roman", Times, serif;
+}
+
+/* Description */
+.startText {
+  font-size: 1.2em;
+  color: #2d0c0c;
+  margin-bottom: 30px;
+  font-weight: 700;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+}
+
+/* Subheading */
+.startSubheading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.7em;
+  color: #b40b0b;
+  font-weight: normal;
+  margin-top: 10px;
+  margin-left: 100px;
+  letter-spacing: 1px;
+  font-family: "Times New Roman", Times, serif;
+  font-style: italic;
+}
+
+/* Role Options */
+/* Role Options Container */
+.roleOptions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #ffffff, #c1bebe);
+  padding: 20px 25px;
+  border-radius: 15px;
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.041);
+  margin: 0 auto 30px;
+  width: 280px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+/* Hover effect */
+.roleOptions:hover {
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+/* Adding subtle transition for the individual labels */
+.roleLabel {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  transition: color 0.3s ease-in-out;
+}
+
+.roleLabel input[type="radio"]:checked + span {
+  color: #790606;
+}
+
+/* On hover, change the label text color */
+.roleLabel:hover {
+  color: #880808;
+}
+
+.roleLabel input[type="radio"] {
+  margin-right: 10px;
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+.roleLabel input[type="radio"]:checked {
+  background-color: #790b0b;
+}
+
+/* Each Role Label */
+.roleLabel {
+  font-size: 1.2em;
+  margin: 10px 0;
+  cursor: pointer;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+/* Custom Radio Button Styling */
+.roleLabel input {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #c0392b;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* Custom Checked State */
+.roleLabel input:checked {
+  background-color: #c0392b;
+  border: 5px solid white;
+  box-shadow: 0px 0px 5px rgba(192, 57, 43, 0.6);
+}
+
+/* Next Button */
+.nextButton {
+  background: linear-gradient(145deg, #6f2d2d, #c0392b);
+  color: white;
+  padding: 15px 30px;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.nextButton:hover {
+  background: linear-gradient(145deg, #c0392b, #e74c3c);
+  transform: scale(1.05);
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.nextButton:active {
+  transform: scale(1.03);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Popup Overlay */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Popup Box */
+.popupBox {
+  background: linear-gradient(145deg, #ffffff, #f8e6e6);
+  padding: 35px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.35);
+  width: 400px;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Close Button (Top Right) */
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(145deg, #c0392b, #e74c3c);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.closeButton:hover {
+  background: linear-gradient(145deg, #e74c3c, #c0392b);
+  transform: scale(1.12);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Popup Title */
+.popupTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #b22222;
+  /* text-transform: uppercase; */
+  letter-spacing: 1.2px;
+  text-align: center;
+  border-bottom: 3px solid #b22222;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+/* Label Style */
+.popupleavel {
+  font-size: 1rem;
+  color: #2e2626;
+  font-weight: 500;
+  display: block;
+  text-align: left;
+  margin-bottom: 6px;
+  margin-left: 7px;
+}
+
+/* Popup Input */
+.popupInput {
+  width: 92%;
+  margin-left: 7px;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-top: 5px;
+  color: #333;
+  background: #f8f9fa;
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.popupInput:focus {
+  border-color: #b22222;
+  box-shadow: 0px 3px 10px rgba(178, 34, 34, 0.3);
+}
+
+/* General Button Style */
+.popupButton {
+  padding: 14px 22px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.verfications{
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  color: #7d2626;
+}
+
+/* Confirm Button */
+.popupConfirm {
+  background: linear-gradient(145deg, #5a1e1e, #b22222);
+  padding: 14px 22px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.popupConfirm:hover {
+  background: linear-gradient(145deg, #9e192d, #e74c3c);
+  transform: scale(1.08);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Cancel Button */
+.popupCancel {
+  background: linear-gradient(145deg, #b22222, #ff4d4d);
+  padding: 14px 22px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.popupCancel:hover {
+  background: linear-gradient(145deg, #d62828, #ff6b6b);
+  transform: scale(1.08);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Button Alignment */
+.popupButtons {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 20px;
+  padding: 14px 22px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}

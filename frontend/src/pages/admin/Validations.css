@@ -1,0 +1,319 @@
+/* =============== Base Container Styles =============== */
+.validation-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+  font-family: 'Times New Roman', Times, serif;
+  padding: 2rem 1.5rem;
+  margin-top: 25px;
+}
+
+/* =============== Main Content Area =============== */
+.validation-content {
+  flex: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* =============== Header Styles =============== */
+.validation-container h1 {
+  color: #861d29;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* =============== Table Container =============== */
+.requests-table {
+  width: 100%;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+/* =============== Table Styles =============== */
+.requests-table table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.requests-table th, 
+.requests-table td {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: middle;
+}
+
+.requests-table th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #4a5568;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  position: sticky;
+  top: 0;
+}
+
+.requests-table tr:last-child td {
+  border-bottom: none;
+}
+
+.requests-table tr:hover {
+  background-color: #f8fafc;
+}
+
+/* =============== Button Styles =============== */
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 6rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button i {
+  margin-right: 0.5rem;
+}
+
+/* View Button */
+.view-btn {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.view-btn:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Approve Button */
+.approve-btn {
+  background-color: #077220f6;
+  color: white;
+}
+
+.approve-btn:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Reject Button */
+.reject-btn {
+  background-color: #720505;
+  color: white;
+}
+
+.reject-btn:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* =============== Modal Styles =============== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* backdrop-filter: blur(4px); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: linear-gradient(145deg, #d8cbcb, #eee5e4);
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  top:3%;
+  transform: translateY(20px);
+  animation: slideUp 0.3s ease forwards;
+}
+
+@keyframes slideUp {
+  to { transform: translateY(0); }
+}
+
+.modal-content h2 {
+  color: #911f05;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* =============== Detail Grid in Modal =============== */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-group {
+  background: linear-gradient(145deg, #ffffff, #ffeeee);
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(199, 189, 189);
+}
+
+.detail-group h3 {
+  color: #24272c;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.detail-group p {
+  margin: 0.75rem 0;
+  color: #0f1011;
+  font-size: 0.9375rem;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.detail-group strong {
+  color: #2d3748;
+  font-weight: 500;
+  display: inline-block;
+  min-width: 100px;
+}
+
+/* =============== Close Button =============== */
+.close-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  background: wheat;
+  border: none;
+  cursor: pointer;
+  color: #a10b0b;
+  transition: color 0.2s ease;
+  padding: 0.5rem;
+  line-height: 1;
+}
+
+.close-modal:hover {
+  color: #f50808;
+}
+
+/* =============== Modal Actions =============== */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-actions button {
+  min-width: 8rem;
+  padding: 0.75rem 1.5rem;
+}
+
+/* =============== Loading & Error States =============== */
+.loading, .error {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.125rem;
+  color: #4a5568;
+  background: white;
+  border-radius: 0.5rem;
+  margin: 2rem auto;
+  max-width: 600px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.error {
+  color: #ef4444;
+  border-left: 4px solid #ef4444;
+  margin-top: 10%;
+  margin-bottom: 30%;
+}
+
+/* =============== Responsive Adjustments =============== */
+@media (max-width: 768px) {
+  .validation-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .requests-table th, 
+  .requests-table td {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .button-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  button {
+    min-width: 100%;
+  }
+  
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============== Animation Enhancements =============== */
+button, .close-modal {
+  transition: 
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+}
+
+/* =============== Accessibility Improvements =============== */
+button:focus {
+  outline: 2px solid #cd8686;
+  outline-offset: 2px;
+}
+
+.close-modal:focus {
+  outline: 2px solid #890718;
+  outline-offset: 2px;
+  color: #f63b3b;
+}

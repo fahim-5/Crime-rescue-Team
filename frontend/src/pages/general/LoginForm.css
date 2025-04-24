@@ -1,0 +1,212 @@
+/* Professional Login Form Styling */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Perfectly Proportionate Form Container */
+.auth-box {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(166, 47, 47, 0.15);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(233, 69, 96, 0.1);
+  /* Perfect height that fits content naturally */
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(166, 47, 47, 0.2);
+}
+
+/* Form Heading */
+.auth-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #9e192d;
+  letter-spacing: 0.5px;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+
+
+/* Form Group */
+.auth-form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+/* Input Labels */
+.auth-label {
+  display: block;
+  font-size: 0.95rem;
+  color: #2e2626;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+/* Input Fields */
+.auth-input {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.auth-input:focus {
+  border-color: #e94560;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
+  background: #fff;
+}
+
+/* Submit Button */
+.auth-button {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #e94560, #ff6b81);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.auth-button:hover {
+  background: linear-gradient(135deg, #d93a55, #ff5c77);
+  box-shadow: 0 8px 20px rgba(233, 69, 96, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Footer Link */
+.auth-footer {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 18px;
+}
+
+.auth-link {
+  color: #e94560;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin-left: 0.3rem;
+}
+
+.auth-link:hover {
+  color: #d93a55;
+  text-decoration: underline;
+}
+
+/* Role Selection Section */
+.auth-role-section {
+  margin: 15px 0;
+}
+
+.auth-role-title {
+  font-size: 0.95rem;
+  color: #2e2626;
+  margin-bottom: 0.8rem;
+  text-align: left;
+  padding-left: 0.5rem;
+}
+
+.auth-role-options {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  padding-left: 0.5rem;
+  margin-left: 55px;
+}
+
+/* Custom Radio Buttons */
+.auth-role-options label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #2e2626;
+  transition: color 0.2s ease;
+}
+
+.auth-role-options input[type="radio"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #b4263b;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  background-color: transparent;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.auth-role-options input[type="radio"]:checked {
+  background-color: #b4263b;
+  border-color: #b4263b;
+}
+
+.auth-role-options input[type="radio"]:checked::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 480px) {
+  .auth-container {
+    padding: 1.5rem;
+  }
+  
+  .auth-box {
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+    /* min-height: auto; */
+  }
+  
+  .auth-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .auth-role-options {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .auth-button {
+    margin-top: 1.2rem;
+  }
+}

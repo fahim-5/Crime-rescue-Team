@@ -1,0 +1,203 @@
+/* AdminDashboard.css - Component-scoped styles */
+
+.main-content {
+    padding: 2rem;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    margin-top: 25px;
+    width: 100%;
+  }
+  
+  /* Header Styles */
+  .main-content header {
+    margin-bottom: 2.5rem;
+  }
+  
+  .main-content header h1 {
+    font-size: 2.2rem;
+    color: #a72c40;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 0.8rem;
+  }
+  
+  .main-content header h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background: #a72c40;
+    border-radius: 2px;
+  }
+  
+  /* Overview Cards */
+  .main-content .overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  
+  .main-content .summary-box {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+    border-top: 4px solid #a72c40;
+  }
+  
+  .main-content .summary-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  }
+  
+  .main-content .summary-box h3 {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .main-content .summary-box p {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2d2d2d;
+    margin: 0;
+  }
+  
+  .main-content .summary-box:nth-child(2) {
+    border-top-color: #2c6e8a;
+  }
+  
+  .main-content .summary-box:nth-child(3) {
+    border-top-color: #4c956a;
+  }
+  
+  /* Section Styles */
+  .main-content section {
+    background: white;
+    border-radius: 10px;
+    padding: 1.8rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  }
+  
+  .main-content section h2 {
+    color: #2d2d2d;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 2px solid #e9ecef;
+  }
+  
+  /* Table Styles */
+  .main-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .main-content thead {
+    background-color: #a72c40;
+    color: white;
+  }
+  
+  .main-content th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 500;
+  }
+  
+  .main-content td {
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .main-content tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .main-content tr:hover td {
+    background-color: rgba(167, 44, 64, 0.05);
+  }
+  
+  /* Button Styles */
+  .main-content .btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    border: none;
+  }
+  
+  .main-content .approve-btn {
+    background-color: #a72c40;
+    color: white;
+  }
+  
+  .main-content .approve-btn:hover {
+    background-color: #8e2436;
+  }
+  
+  /* Status Indicators */
+  .main-content td:nth-child(4) {
+    font-weight: 500;
+  }
+  
+  .main-content td:nth-child(4):contains("Pending") {
+    color: #f8961e;
+  }
+  
+  .main-content td:nth-child(4):contains("Validated") {
+    color: #4c956a;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .main-content {
+      padding: 1.5rem;
+    }
+    
+    .main-content .overview {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .main-content header h1 {
+      font-size: 1.8rem;
+    }
+    
+    .main-content .overview {
+      grid-template-columns: 1fr;
+    }
+    
+    .main-content table {
+      display: block;
+      overflow-x: auto;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .main-content {
+      padding: 1rem;
+    }
+    
+    .main-content .summary-box p {
+      font-size: 1.8rem;
+    }
+    
+    .main-content section {
+      padding: 1.3rem;
+    }
+    
+    .main-content th,
+    .main-content td {
+      padding: 0.8rem;
+    }
+  }

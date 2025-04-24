@@ -1,0 +1,330 @@
+.container {
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  margin: 2rem 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #2b2d42;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.title::before {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 32px;
+  background: linear-gradient(180deg, #f72585 0%, #b5179e 100%);
+  border-radius: 4px;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.caseCount {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.countNumber {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2b2d42;
+  line-height: 1;
+}
+
+.countLabel {
+  font-size: 0.75rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.caseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.caseCard {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  position: relative;
+}
+
+.caseCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.caseCard.high::before {
+  background: linear-gradient(180deg, #f8961e 0%, #f3722c 100%);
+}
+
+.caseCard.medium::before {
+  background: linear-gradient(180deg, #90be6d 0%, #43aa8b 100%);
+}
+
+.caseCard.low::before {
+  background: linear-gradient(180deg, #577590 0%, #4d908e 100%);
+}
+
+.caseCard.urgent::before {
+  background: linear-gradient(180deg, #f94144 0%, #f3722c 100%);
+}
+
+.caseCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.caseTitle {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2b2d42;
+}
+
+.caseId {
+  display: block;
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+.priorityBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.caseCard.high .priorityBadge {
+  background: rgba(248, 150, 30, 0.1);
+  color: #f8961e;
+}
+
+.caseCard.medium .priorityBadge {
+  background: rgba(67, 170, 139, 0.1);
+  color: #43aa8b;
+}
+
+.caseCard.low .priorityBadge {
+  background: rgba(87, 117, 144, 0.1);
+  color: #577590;
+}
+
+.caseCard.urgent .priorityBadge {
+  background: rgba(249, 65, 68, 0.1);
+  color: #f94144;
+}
+
+.caseDetails {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.detailRow {
+  display: flex;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.detailLabel {
+  font-weight: 500;
+  color: #495057;
+  min-width: 100px;
+}
+
+.detailValue {
+  color: #212529;
+  font-weight: 400;
+}
+
+.progressContainer {
+  margin: 1.5rem 0;
+}
+
+.progressLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.progressBar {
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.caseCard.high .progressFill {
+  background: linear-gradient(90deg, #f8961e 0%, #f3722c 100%);
+}
+
+.caseCard.medium .progressFill {
+  background: linear-gradient(90deg, #90be6d 0%, #43aa8b 100%);
+}
+
+.caseCard.low .progressFill {
+  background: linear-gradient(90deg, #577590 0%, #4d908e 100%);
+}
+
+.caseCard.urgent .progressFill {
+  background: linear-gradient(90deg, #f94144 0%, #f3722c 100%);
+}
+
+.statusContainer {
+  background: #f8f9fa;
+  padding: 0.75rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statusLabel {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.statusValue {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2b2d42;
+}
+
+.cardFooter {
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  gap: 0.75rem;
+}
+
+.actionButton {
+  flex: 1;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.viewButton {
+  background: linear-gradient(135deg, #7209b7 0%, #560bad 100%);
+  color: white;
+}
+
+.viewButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(114, 9, 183, 0.3);
+}
+
+.resolveButton {
+  background: white;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.resolveButton:hover {
+  background: #f1f3f5;
+  transform: translateY(-2px);
+}
+
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+}
+
+.emptyState i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #adb5bd;
+}
+
+.emptyState h3 {
+  font-size: 1.25rem;
+  margin: 0.5rem 0;
+  color: #495057;
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  
+  .caseCount {
+    width: 100%;
+  }
+  
+  .caseGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .cardFooter {
+    flex-direction: column;
+  }
+}

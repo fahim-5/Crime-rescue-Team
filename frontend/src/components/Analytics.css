@@ -1,0 +1,372 @@
+/* Analytics.css - No alert styles remaining */
+
+.analytics-container {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  margin-top: 25px;
+}
+
+/* Header Styles */
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.analytics-header h1 {
+  color: #a72c40;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.analytics-header p {
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+.time-range-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.time-btn {
+  padding: 0.5rem 1rem;
+  background: #e9ecef;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.time-btn.active {
+  background: #a72c40;
+  color: white;
+}
+
+.time-btn:hover:not(.active) {
+  background: #dee2e6;
+}
+
+/* Tabs Navigation */
+.analytics-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+.analytics-tab {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px 6px 0 0;
+  font-weight: 500;
+  cursor: pointer;
+  color: #6c757d;
+  transition: all 0.2s;
+}
+
+.analytics-tab.active {
+  background: #f8f9fa;
+  color: #a72c40;
+  border-bottom: 3px solid #a72c40;
+}
+
+.analytics-tab:hover:not(.active) {
+  background: #f1f3f5;
+  color: #495057;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.metric-card h3 {
+  color: #6c757d;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2d2d2d;
+  margin: 0.5rem 0;
+}
+
+.metric-trend {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.metric-trend.up {
+  color: #4c956a;
+}
+
+.metric-trend.down {
+  color: #d64045;
+}
+
+.metric-trend.stable {
+  color: #6c757d;
+}
+
+/* Chart Containers */
+.chart-container {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.chart-container.full-width {
+  width: 100%;
+}
+
+.chart-title {
+  color: #2d2d2d;
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.chart-placeholder {
+  height: 300px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #6c757d;
+}
+
+.chart-placeholder.pie {
+  height: 400px;
+}
+
+.chart-placeholder.map {
+  height: 450px;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.legend-report::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 0.5rem;
+  border-radius: 2px;
+  background-color: #a72c40;
+}
+
+.legend-validation::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 0.5rem;
+  border-radius: 2px;
+  background-color: #2c6e8a;
+}
+
+/* Data Grid */
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.data-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.data-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.data-card h3 {
+  color: #2d2d2d;
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+/* Crime List */
+.crime-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.crime-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.crime-list li:last-child {
+  border-bottom: none;
+}
+
+.crime-name {
+  font-weight: 500;
+}
+
+.crime-count {
+  font-weight: 600;
+}
+
+.crime-trend {
+  width: 20px;
+  text-align: center;
+}
+
+.crime-trend.up {
+  color: #4c956a;
+}
+
+.crime-trend.down {
+  color: #d64045;
+}
+
+.crime-trend.stable {
+  color: #6c757d;
+}
+
+/* Validation Table */
+.validation-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.validation-table th {
+  text-align: left;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.validation-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.validation-count {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  background: #e9ecef;
+  color: #495057;
+}
+
+/* Location Legend */
+.location-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* Effectiveness Metrics */
+.effectiveness-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  text-align: center;
+}
+
+.effectiveness-metric {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.effectiveness-metric .metric-value {
+  font-size: 2rem;
+  color: #a72c40;
+  margin-bottom: 0.5rem;
+}
+
+.effectiveness-metric .metric-label {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .analytics-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .data-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .analytics-container {
+    padding: 1rem;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .effectiveness-metrics {
+    grid-template-columns: 1fr;
+  }
+}

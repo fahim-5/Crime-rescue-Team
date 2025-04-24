@@ -1,0 +1,206 @@
+.container {
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    margin: 2rem 0;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  
+  .title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #2b2d42;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .title::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 32px;
+    background: linear-gradient(180deg, #4cc9f0 0%, #4361ee 100%);
+    border-radius: 4px;
+  }
+  
+  .stats {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .statItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+  
+  .caseGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .caseCard {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+  }
+  
+  .caseCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cardHeader {
+    padding: 1.5rem;
+    background: linear-gradient(90deg, #f8f9fa 0%, white 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .caseTitle {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2b2d42;
+  }
+  
+  .statusBadge {
+    background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  
+  .caseDetails {
+    padding: 1.5rem;
+  }
+  
+  .detailRow {
+    display: flex;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .detailLabel {
+    font-weight: 500;
+    color: #495057;
+    min-width: 110px;
+  }
+  
+  .detailValue {
+    color: #212529;
+    font-weight: 400;
+  }
+  
+  .cardFooter {
+    padding: 1rem 1.5rem;
+    background: #f8f9fa;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  .actionButton {
+    flex: 1;
+    padding: 0.6rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .viewButton {
+    background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+    color: white;
+  }
+  
+  .viewButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+  }
+  
+  .reopenButton {
+    background: white;
+    color: #495057;
+    border: 1px solid #dee2e6;
+  }
+  
+  .reopenButton:hover {
+    background: #f1f3f5;
+    transform: translateY(-2px);
+  }
+  
+  .emptyState {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+  }
+  
+  .emptyState i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #adb5bd;
+  }
+  
+  .emptyState h3 {
+    font-size: 1.25rem;
+    margin: 0.5rem 0;
+    color: #495057;
+  }
+  
+  .emptyState p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .stats {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .caseGrid {
+      grid-template-columns: 1fr;
+    }
+    
+    .cardFooter {
+      flex-direction: column;
+    }
+  }

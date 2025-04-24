@@ -1,0 +1,82 @@
+/* Alert Message - Smooth and Animated */
+.alert {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+    max-width: 600px;
+    padding: 15px 20px;
+    font-size: 1.1em;
+    font-weight: 500;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease-in-out;
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeIn 0.5s forwards;
+    position: relative;
+}
+
+/* Success Alert (Green) */
+.alert-success {
+    background-color: #d4edda;
+    border-left: 6px solid #28a745;
+    color: #155724;
+}
+
+/* Error Alert (Red) */
+.alert-error {
+    background-color: #f8d7da;
+    border-left: 6px solid #dc3545;
+    color: #721c24;
+}
+
+/* Warning Alert (Yellow) */
+.alert-warning {
+    background-color: #fff3cd;
+    border-left: 6px solid #ffc107;
+    color: #856404;
+}
+
+/* Info Alert (Blue) */
+.alert-info {
+    background-color: #d1ecf1;
+    border-left: 6px solid #17a2b8;
+    color: #0c5460;
+}
+
+/* Smooth Close Button */
+.alert .close-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    color: inherit;
+    transition: opacity 0.3s ease;
+}
+
+.alert .close-btn:hover {
+    opacity: 0.7;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade Out Animation */
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* Hide Alert Smoothly */
+.alert.hide {
+    animation: fadeOut 0.5s forwards;
+}
