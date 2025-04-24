@@ -1,5 +1,6 @@
 const { pool } = require("../config/db");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 
 class UserModel {
   static async create(userData) {
@@ -748,6 +749,389 @@ class UserModel {
       throw error;
     } finally {
       if (connection) await connection.release();
+    }
+  }
+
+  static async generateResetToken(email) {
+    try {
+      // Check if the email exists
+      const query = "SELECT id, username, email FROM users WHERE email = ?";
+      const [rows] = await pool.execute(query, [email]);
+
+      if (rows.length === 0) {
+        return {
+          success: false,
+          message: "No user found with this email",
+        };
+      }
+
+      // Generate a random token
+      const resetToken = crypto.randomBytes(32).toString("hex");
+
+      // Set the expiry time to 60 minutes from now
+      const resetTokenExpires = new Date(Date.now() + 60 * 60 * 1000);
+
+      // Update user with reset token - first check if reset_token_expires column exists
+      let columnExists = true;
+
+      try {
+        // Check if the column exists
+        const [columns] = await pool.execute(
+          "SHOW COLUMNS FROM users LIKE 'reset_token_expires'"
+        );
+        columnExists = columns.length > 0;
+      } catch (error) {
+        console.error("Error checking for column existence:", error);
+        columnExists = false;
+      }
+
+      // Update user record with token
+      if (columnExists) {
+        await pool.execute(
+          "UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE email = ?",
+          [resetToken, resetTokenExpires, email]
+        );
+      } else {
+        await pool.execute("UPDATE users SET reset_token = ? WHERE email = ?", [
+          resetToken,
+          email,
+        ]);
+      }
+
+      return {
+        success: true,
+        message: "Reset token generated successfully",
+        resetToken,
+        username: rows[0].username,
+        email: rows[0].email,
+      };
+    } catch (error) {
+      console.error("Generate Reset Token Error:", error);
+      return {
+        success: false,
+        message: "Error generating reset token",
+      };
+    }
+  }
+
+  static async verifyResetToken(token) {
+    try {
+      if (!token) {
+        console.error("Token is empty or undefined");
+        const error = new Error("Reset token is required");
+        error.status = 400;
+        throw error;
+      }
+
+      console.log("Verifying token:", token);
+      console.log("Token length:", token.length);
+
+      // Debug: Show all tokens in the database
+      console.log("Checking database for tokens...");
+      const [allTokens] = await pool.execute(
+        "SELECT id, username, reset_token FROM users WHERE reset_token IS NOT NULL"
+      );
+
+      console.log("Found tokens in database:", allTokens.length);
+      allTokens.forEach((row) => {
+        console.log(
+          `User ID: ${row.id}, Username: ${
+            row.username
+          }, Token: ${row.reset_token?.substring(0, 10)}...`
+        );
+      });
+
+      // First try to include expiry check if column exists
+      try {
+        console.log("Attempting query with expiry check...");
+        const query =
+          "SELECT id, username FROM users WHERE reset_token = ? AND reset_token_expires > NOW()";
+        const [rows] = await pool.execute(query, [token]);
+
+        console.log("Query with expiry check results:", rows.length);
+
+        if (rows.length > 0) {
+          console.log("Token verified successfully with expiry check");
+          return {
+            success: true,
+            userId: rows[0].id,
+            username: rows[0].username,
+          };
+        }
+      } catch (dbError) {
+        // If column doesn't exist, fall back to simpler check
+        console.error("Error with expiry check query:", dbError.message);
+        if (dbError.code === "ER_BAD_FIELD_ERROR") {
+          console.log(
+            "reset_token_expires column doesn't exist, falling back to simple token check"
+          );
+        } else {
+          throw dbError; // Re-throw if it's some other error
+        }
+      }
+
+      // Fallback query without expiry check
+      console.log("Attempting fallback query without expiry check...");
+      const simpleQuery =
+        "SELECT id, username FROM users WHERE reset_token = ?";
+      const [rows] = await pool.execute(simpleQuery, [token]);
+
+      console.log("Fallback query results:", rows.length);
+
+      if (rows.length === 0) {
+        console.error("No user found with this token");
+        const error = new Error("Invalid or expired reset token");
+        error.status = 400;
+        throw error;
+      }
+
+      console.log("Token verified successfully with fallback query");
+      return {
+        success: true,
+        userId: rows[0].id,
+        username: rows[0].username,
+      };
+    } catch (error) {
+      console.error("Verify Reset Token Error:", error);
+      throw error;
+    }
+  }
+
+  static async resetPassword(token, newPassword) {
+    try {
+      // Find user with the provided token
+      const query =
+        "SELECT id, username, email FROM users WHERE reset_token = ?";
+      const [rows] = await pool.execute(query, [token]);
+
+      if (rows.length === 0) {
+        return {
+          success: false,
+          message: "Invalid or expired reset token",
+        };
+      }
+
+      const userId = rows[0].id;
+      const username = rows[0].username;
+      const email = rows[0].email;
+
+      // Hash the new password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      // Update password and clear reset token (with graceful fallback)
+      try {
+        // Try to update with reset_token_expires column if it exists
+        await pool.execute(
+          "UPDATE users SET password = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?",
+          [hashedPassword, userId]
+        );
+      } catch (dbError) {
+        // Fall back to just reset_token if the column doesn't exist
+        if (dbError.code === "ER_BAD_FIELD_ERROR") {
+          console.log(
+            "Falling back to just clearing reset_token without expiry"
+          );
+          await pool.execute(
+            "UPDATE users SET password = ?, reset_token = NULL WHERE id = ?",
+            [hashedPassword, userId]
+          );
+        } else {
+          throw dbError;
+        }
+      }
+
+      return {
+        success: true,
+        message: "Password reset successful",
+        username,
+        email,
+      };
+    } catch (error) {
+      console.error("Reset Password Error:", error);
+      return {
+        success: false,
+        message: "Failed to reset password",
+      };
+    }
+  }
+
+  static async generateResetCode(email) {
+    try {
+      // Check if the email exists
+      const query =
+        "SELECT id, username, full_name, email FROM users WHERE email = ?";
+      const [rows] = await pool.execute(query, [email]);
+
+      if (rows.length === 0) {
+        return {
+          success: false,
+          message: "No user found with this email",
+        };
+      }
+
+      // Generate a 6-digit code
+      const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+      // Set the expiry time to 15 minutes from now
+      const resetCodeExpires = new Date(Date.now() + 15 * 60 * 1000);
+
+      // Ensure the reset_code and reset_code_expires columns exist
+      try {
+        // Check if the columns exist
+        const [codeColumn] = await pool.execute(
+          "SHOW COLUMNS FROM users LIKE 'reset_code'"
+        );
+
+        if (codeColumn.length === 0) {
+          // Add the reset_code column if it doesn't exist
+          await pool.execute(
+            "ALTER TABLE users ADD COLUMN reset_code VARCHAR(10) NULL"
+          );
+        }
+
+        const [expiryColumn] = await pool.execute(
+          "SHOW COLUMNS FROM users LIKE 'reset_code_expires'"
+        );
+
+        if (expiryColumn.length === 0) {
+          // Add the reset_code_expires column if it doesn't exist
+          await pool.execute(
+            "ALTER TABLE users ADD COLUMN reset_code_expires DATETIME NULL"
+          );
+        }
+      } catch (error) {
+        console.error("Error checking or adding columns:", error);
+      }
+
+      // Update user record with the reset code
+      await pool.execute(
+        "UPDATE users SET reset_code = ?, reset_code_expires = ? WHERE email = ?",
+        [resetCode, resetCodeExpires, email]
+      );
+
+      return {
+        success: true,
+        message: "Reset code generated successfully",
+        resetCode,
+        username: rows[0].username,
+        fullName: rows[0].full_name,
+        email: rows[0].email,
+      };
+    } catch (error) {
+      console.error("Generate Reset Code Error:", error);
+      return {
+        success: false,
+        message: "Error generating reset code",
+      };
+    }
+  }
+
+  static async verifyResetCode(email, code) {
+    try {
+      if (!email || !code) {
+        console.error("Email or code is missing");
+        return {
+          success: false,
+          message: "Email and verification code are required",
+        };
+      }
+
+      console.log(`Verifying code ${code} for email ${email}`);
+
+      // Check if the code exists and is valid
+      try {
+        // Try with expiry first
+        const [rows] = await pool.execute(
+          "SELECT id, username FROM users WHERE email = ? AND reset_code = ? AND reset_code_expires > NOW()",
+          [email, code]
+        );
+
+        if (rows.length > 0) {
+          console.log("Code verified successfully with expiry check");
+          return {
+            success: true,
+            userId: rows[0].id,
+            username: rows[0].username,
+            email,
+          };
+        }
+      } catch (dbError) {
+        // If column doesn't exist or some other DB issue
+        console.error("Error with expiry check query:", dbError.message);
+        if (dbError.code === "ER_BAD_FIELD_ERROR") {
+          console.log(
+            "reset_code_expires column doesn't exist, using simple check"
+          );
+        } else {
+          throw dbError;
+        }
+      }
+
+      // Fallback to just code check without expiry
+      const [rows] = await pool.execute(
+        "SELECT id, username FROM users WHERE email = ? AND reset_code = ?",
+        [email, code]
+      );
+
+      if (rows.length === 0) {
+        console.error("Invalid or expired verification code");
+        return {
+          success: false,
+          message: "Invalid or expired verification code",
+        };
+      }
+
+      return {
+        success: true,
+        userId: rows[0].id,
+        username: rows[0].username,
+        email,
+      };
+    } catch (error) {
+      console.error("Verify Reset Code Error:", error);
+      return {
+        success: false,
+        message: "Error verifying reset code",
+      };
+    }
+  }
+
+  static async resetPasswordWithCode(email, code, newPassword) {
+    try {
+      // Verify the code first
+      const verification = await this.verifyResetCode(email, code);
+
+      if (!verification.success) {
+        return verification; // Return the error from verification
+      }
+
+      // If verification is successful, update the password
+      const userId = verification.userId;
+      const username = verification.username;
+
+      // Hash the new password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      // Update password and clear reset code
+      await pool.execute(
+        "UPDATE users SET password = ?, reset_code = NULL, reset_code_expires = NULL WHERE id = ?",
+        [hashedPassword, userId]
+      );
+
+      return {
+        success: true,
+        message: "Password reset successful",
+        username,
+        email,
+      };
+    } catch (error) {
+      console.error("Reset Password With Code Error:", error);
+      return {
+        success: false,
+        message: "Failed to reset password",
+      };
     }
   }
 }

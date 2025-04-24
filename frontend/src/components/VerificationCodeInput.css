@@ -1,0 +1,66 @@
+.verification-code-input-container {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+.verification-digit-input {
+    width: 50px;
+    height: 56px;
+    font-size: 24px;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+    color: #333;
+    transition: all 0.2s ease;
+    cursor: text;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.verification-digit-input:focus {
+    border-color: #4361ee;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    background-color: #fff;
+}
+
+.verification-digit-input::placeholder {
+    color: #bbb;
+}
+
+/* Autofill styles */
+.verification-digit-input:-webkit-autofill,
+.verification-digit-input:-webkit-autofill:hover,
+.verification-digit-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 30px #fff inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+    .verification-code-input-container {
+        gap: 8px;
+    }
+
+    .verification-digit-input {
+        width: 40px;
+        height: 48px;
+        font-size: 20px;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 340px) {
+    .verification-code-input-container {
+        gap: 6px;
+    }
+
+    .verification-digit-input {
+        width: 36px;
+        height: 44px;
+        font-size: 18px;
+    }
+}

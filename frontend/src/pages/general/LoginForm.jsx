@@ -1,23 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../../context/useAuth"; // Assuming the context exists
-import "./LoginForm.css"; // Ensure isolated styling
+import { useAuth } from "../../context/useAuth";
+import "./LoginForm.css";
 
 const LoginForm = () => {
-  const { login } = useAuth(); // Extract login function from context to set user in state
+  const { login } = useAuth();
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
     role: "",
   });
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const savedCredentials = localStorage.getItem("savedCredentials");
+    if (savedCredentials) {
+      try {
+        const parsedCredentials = JSON.parse(savedCredentials);
+        setCredentials({
+          email: parsedCredentials.email || "",
+          password: parsedCredentials.password || "",
+          role: parsedCredentials.role || "",
+        });
+        setRememberMe(true);
+      } catch (e) {
+        console.error("Error parsing saved credentials:", e);
+        localStorage.removeItem("savedCredentials");
+      }
+    }
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCredentials({ ...credentials, [name]: value });
+  };
+
+  const handleCheckboxChange = (e) => {
+    setRememberMe(e.target.checked);
   };
 
   const handleLoginSubmit = async (e) => {
@@ -31,11 +54,6 @@ const LoginForm = () => {
     }
 
     try {
-      console.log("Attempting login with:", {
-        email: credentials.email.toLowerCase().trim(),
-        role: credentials.role,
-      });
-
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
         {
@@ -51,12 +69,23 @@ const LoginForm = () => {
 
       if (response.data.success) {
         const { token, user } = response.data;
-        console.log("Login response data:", response.data);
-        console.log("User data received:", user);
-        login({ token, ...user }); // Update auth context
+
+        if (rememberMe) {
+          localStorage.setItem(
+            "savedCredentials",
+            JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+              role: credentials.role,
+            })
+          );
+        } else {
+          localStorage.removeItem("savedCredentials");
+        }
+
+        login({ token, ...user });
         setSuccess("Login successful! Redirecting...");
 
-        // Role-based redirection
         setTimeout(() => {
           switch (user.role) {
             case "admin":
@@ -71,30 +100,19 @@ const LoginForm = () => {
         }, 1500);
       }
     } catch (err) {
-      console.error("Login error:", err);
-
       let errorMessage = "Login failed. Please check your credentials.";
-
       if (err.response) {
-        console.log("Error response data:", err.response.data);
-        console.log("Error status:", err.response.status);
-
         const errorData = err.response.data;
-
-        // Handle specific error codes
         if (errorData.errorCode) {
           switch (errorData.errorCode) {
             case "user_not_found":
-              errorMessage =
-                "No account found with this email address. Please check your email or register for a new account.";
+              errorMessage = "No account found with this email address.";
               break;
             case "invalid_password":
               errorMessage = "Incorrect password. Please try again.";
               break;
             case "role_mismatch":
-              errorMessage = `You've selected the wrong account type. You registered as a ${errorData.correctRole}. Please select the correct account type.`;
-
-              // Auto-select the correct role if available
+              errorMessage = `You've selected the wrong account type. You registered as a ${errorData.correctRole}.`;
               if (errorData.correctRole) {
                 setCredentials({
                   ...credentials,
@@ -104,47 +122,22 @@ const LoginForm = () => {
               break;
             case "account_not_approved":
               if (errorData.status === "pending") {
-                errorMessage =
-                  "Your account is pending approval. Please wait for an administrator to approve your account.";
+                errorMessage = "Your account is pending approval.";
               } else if (errorData.status === "rejected") {
-                errorMessage =
-                  "Your account has been rejected. Please contact support.";
-              } else {
-                errorMessage =
-                  "Your account is not active. Please contact support.";
+                errorMessage = "Your account has been rejected.";
               }
               break;
             default:
               errorMessage = errorData.message || errorMessage;
           }
         } else {
-          // Fall back to basic status code handling
           if (err.response.status === 401) {
-            errorMessage = "Invalid email or password. Please try again.";
+            errorMessage = "Invalid email or password.";
           } else if (err.response.status === 403) {
-            if (err.response.data.status === "pending") {
-              errorMessage =
-                "Your account is pending approval. Please wait for an administrator to approve your account.";
-            } else if (err.response.data.status === "rejected") {
-              errorMessage =
-                "Your account has been rejected. Please contact support.";
-            } else if (
-              err.response.data.message &&
-              err.response.data.message.includes("Access denied")
-            ) {
-              errorMessage =
-                "You've selected the wrong role for your account. Please select the correct role.";
-            } else {
-              errorMessage =
-                err.response.data.message ||
-                "Access denied. Please check your account status.";
-            }
-          } else {
-            errorMessage = err.response.data.message || errorMessage;
+            errorMessage = "Access denied. Please check your account status.";
           }
         }
       }
-
       setError(errorMessage);
     }
   };
@@ -167,7 +160,7 @@ const LoginForm = () => {
               id="auth-email"
               name="email"
               className="auth-input"
-              placeholder="Enter your email or username"
+              placeholder="Enter your email"
               value={credentials.email}
               onChange={handleInputChange}
               required
@@ -194,9 +187,7 @@ const LoginForm = () => {
           <div className="input-group auth-role-section">
             <label className="auth-label">Select Account Type</label>
             <div className="auth-role-options">
-              <label
-                className={credentials.role === "public" ? "selected-role" : ""}
-              >
+              <label className={credentials.role === "public" ? "selected-role" : ""}>
                 <input
                   type="radio"
                   name="role"
@@ -206,9 +197,7 @@ const LoginForm = () => {
                 />
                 <span>👤 Civilian</span>
               </label>
-              <label
-                className={credentials.role === "police" ? "selected-role" : ""}
-              >
+              <label className={credentials.role === "police" ? "selected-role" : ""}>
                 <input
                   type="radio"
                   name="role"
@@ -218,9 +207,7 @@ const LoginForm = () => {
                 />
                 <span>👮 Police</span>
               </label>
-              <label
-                className={credentials.role === "admin" ? "selected-role" : ""}
-              >
+              <label className={credentials.role === "admin" ? "selected-role" : ""}>
                 <input
                   type="radio"
                   name="role"
@@ -230,6 +217,25 @@ const LoginForm = () => {
                 />
                 <span>⚙️ Admin</span>
               </label>
+            </div>
+          </div>
+
+          <div className="auth-options-container">
+            <div className="remember-me-container">
+              <label className="remember-me-label">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={handleCheckboxChange}
+                  className="remember-me-checkbox"
+                />
+                <span className="remember-me-text">Remember me</span>
+              </label>
+            </div>
+            <div className="forgot-password-container">
+              <a href="/forgot-password" className="forgot-password-link">
+                Forgot password?
+              </a>
             </div>
           </div>
 

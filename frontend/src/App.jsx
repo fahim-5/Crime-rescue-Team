@@ -1,10 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import { useAuth } from "./context/useAuth";
 import Home from "./pages/public/Home";
 import NavbarPublic from "./components/Navbar";
 import Footer from "./components/Footer";
-import SignupForm from "./pages/general/PublicSignup";
 import LoginForm from "./pages/general/LoginForm";
 import CrimeReportForm from "./pages/public/CrimeReportForm";
 import Notifications from "./pages/public/Notifications";
@@ -30,6 +28,8 @@ import PendingCases from "./pages/police/PendingCases";
 import UserReports from "./components/UserReports";
 import Navbar from "./components/Navbar";
 import Instructions from "./components/Instructions";
+import ForgotPassword from "./pages/general/ForgotPassword";
+import ResetPasswordWithCode from "./pages/general/ResetPasswordWithCode";
 
 function App() {
   return (
@@ -48,6 +48,14 @@ function App() {
 
           {/* login routes  */}
           <Route path="/" element={<LoginForm />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+
+          {/* Reset password routes */}
+          <Route
+            path="/reset-password-with-code"
+            element={<ResetPasswordWithCode />}
+          />
 
           {/* public routes  */}
           <Route path="/home" element={<Home />} />
@@ -114,16 +122,5 @@ function App() {
     </AuthProvider>
   );
 }
-
-// const RoleBasedNavbar = () => {
-//   const { user } = useAuth();
-//   return user?.role === "police" ? (
-//     <NavbarPolice />
-//   ) : user?.role === "admin" ? (
-//     <NavbarAdmin />
-//   ) : (
-//     <NavbarPublic />
-//   );
-// };
 
 export default App;

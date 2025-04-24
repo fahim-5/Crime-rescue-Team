@@ -4,6 +4,7 @@ const { body } = require("express-validator");
 const authController = require("../controllers/authController");
 const validateRequest = require("../middlewares/validateRequest");
 const authMiddleware = require("../middlewares/authMiddleware");
+const UserModel = require("../models/userModel");
 
 router.post(
   "/signup",
@@ -191,5 +192,104 @@ router.delete(
   authMiddleware.authenticateToken,
   authController.deleteAccount
 );
+
+// Forgot Password route
+router.post(
+  "/forgot-password",
+  [
+    body("email")
+      .isEmail()
+      .withMessage("Valid email is required")
+      .normalizeEmail(),
+  ],
+  validateRequest,
+  authController.forgotPassword
+);
+
+// Verify reset code route
+router.post(
+  "/verify-reset-code",
+  [
+    body("email")
+      .isEmail()
+      .withMessage("Valid email is required")
+      .normalizeEmail(),
+    body("code")
+      .notEmpty()
+      .withMessage("Verification code is required")
+      .isLength({ min: 6, max: 6 })
+      .withMessage("Verification code must be 6 digits")
+      .isNumeric()
+      .withMessage("Verification code must contain only numbers"),
+  ],
+  validateRequest,
+  authController.verifyResetCode
+);
+
+// Reset password with code route
+router.post(
+  "/reset-password-with-code",
+  [
+    body("email")
+      .isEmail()
+      .withMessage("Valid email is required")
+      .normalizeEmail(),
+    body("code")
+      .notEmpty()
+      .withMessage("Verification code is required")
+      .isLength({ min: 6, max: 6 })
+      .withMessage("Verification code must be 6 digits")
+      .isNumeric()
+      .withMessage("Verification code must contain only numbers"),
+    body("newPassword")
+      .isLength({ min: 8 })
+      .withMessage("Password must be at least 8 characters"),
+    body("confirmPassword").custom((value, { req }) => {
+      if (value !== req.body.newPassword) {
+        throw new Error("Passwords do not match");
+      }
+      return true;
+    }),
+  ],
+  validateRequest,
+  authController.resetPasswordWithCode
+);
+
+// For development only - Test reset code generation
+if (process.env.NODE_ENV === "development") {
+  router.get("/dev/generate-reset-code/:email", async (req, res) => {
+    try {
+      const { email } = req.params;
+      if (!email) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email is required" });
+      }
+
+      const result = await UserModel.generateResetCode(email);
+
+      if (result.success) {
+        return res.status(200).json({
+          success: true,
+          message: "Test reset code generated",
+          email: result.email,
+          username: result.username,
+          resetCode: result.resetCode,
+        });
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: result.message || "Failed to generate test code",
+        });
+      }
+    } catch (error) {
+      console.error("Test code generation error:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Server error generating test code",
+      });
+    }
+  });
+}
 
 module.exports = router;

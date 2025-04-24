@@ -1,6 +1,8 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
+const emailService = require("../services/emailService");
+const crypto = require("crypto");
 
 const registerUser = async (req, res) => {
   try {
@@ -660,6 +662,245 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    console.log(`Generating reset code for email: ${email}`);
+    const result = await UserModel.generateResetCode(email);
+
+    if (result.success) {
+      // Send reset code via email
+      try {
+        await emailService.sendPasswordResetCode(
+          result.email,
+          result.fullName || result.username,
+          result.resetCode
+        );
+
+        console.log("Reset code email sent successfully");
+        return res.status(200).json({
+          success: true,
+          message: "Password reset code has been sent to your email",
+          email: result.email,
+        });
+      } catch (emailError) {
+        console.error("Error sending reset code email:", emailError);
+
+        // If email sending fails but we're in development, return the reset code
+        // This allows testing even when email service is not configured
+        if (process.env.NODE_ENV === "development") {
+          return res.status(200).json({
+            success: true,
+            message:
+              "DEV MODE: Email sending failed, but reset code was generated",
+            email: result.email,
+            dev_reset_code: result.resetCode,
+          });
+        }
+
+        return res.status(500).json({
+          success: false,
+          message: "Failed to send reset code. Please try again later.",
+        });
+      }
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: result.message || "No account found with that email address",
+      });
+    }
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while processing your request",
+    });
+  }
+};
+
+const verifyResetCode = async (req, res) => {
+  try {
+    const { email, code } = req.body;
+
+    if (!email || !code) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and verification code are required",
+      });
+    }
+
+    const result = await UserModel.verifyResetCode(email, code);
+
+    return res.status(result.success ? 200 : 400).json(result);
+  } catch (error) {
+    console.error("Verify Reset Code Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error verifying reset code",
+      error: error.message,
+    });
+  }
+};
+
+const resetPasswordWithCode = async (req, res) => {
+  try {
+    const { email, code, newPassword, confirmPassword } = req.body;
+
+    // Validate inputs
+    if (!email || !code || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Passwords do not match",
+      });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long",
+      });
+    }
+
+    // Reset the password
+    const result = await UserModel.resetPasswordWithCode(
+      email,
+      code,
+      newPassword
+    );
+
+    if (result.success) {
+      // Optionally send a confirmation email
+      try {
+        await emailService.sendPasswordChangeConfirmationEmail(
+          email,
+          result.username
+        );
+      } catch (emailError) {
+        console.error("Error sending confirmation email:", emailError);
+        // Continue anyway since password was reset successfully
+      }
+    }
+
+    return res.status(result.success ? 200 : 400).json(result);
+  } catch (error) {
+    console.error("Reset Password With Code Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error resetting password",
+      error: error.message,
+    });
+  }
+};
+
+const requestPasswordReset = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Find user by email
+    const user = await UserModel.findOne({ where: { email } });
+    if (!user) {
+      // For security reasons, still return success even if user not found
+      return res.status(200).json({
+        success: true,
+        message:
+          "If a user with that email exists, a password reset link has been sent",
+      });
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    // Hash token for storage
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    // Update user with reset token
+    await user.update({
+      resetToken: hashedToken,
+      resetTokenExpiry,
+    });
+
+    // Generate reset link
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    // Send reset email
+    await emailService.sendPasswordResetEmail(
+      user.email,
+      user.username || user.full_name,
+      resetToken,
+      resetLink
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset email has been sent",
+    });
+  } catch (error) {
+    console.error("Password reset request error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while processing your request",
+      error: error.message,
+    });
+  }
+};
+
+const generateTestResetToken = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    console.log(`Generating test reset token for email: ${email}`);
+    const result = await UserModel.generateResetToken(email);
+
+    if (result.success) {
+      return res.status(200).json({
+        success: true,
+        message: "Test reset token generated successfully",
+        token: result.token,
+        username: result.username,
+        email: result.email,
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: result.message || "Failed to generate test reset token",
+      });
+    }
+  } catch (error) {
+    console.error("Generate Test Reset Token Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while generating test reset token",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   registerAdmin,
@@ -669,4 +910,9 @@ module.exports = {
   updateProfile,
   getUserProfile,
   deleteAccount,
+  forgotPassword,
+  verifyResetCode,
+  resetPasswordWithCode,
+  requestPasswordReset,
+  generateTestResetToken,
 };
