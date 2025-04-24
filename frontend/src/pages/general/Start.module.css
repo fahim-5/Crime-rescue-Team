@@ -45,6 +45,7 @@
     opacity: 0;
     transform: translate(-50%, -60%);
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, -50%);
@@ -67,7 +68,7 @@
   color: #2d0c0c;
   margin-bottom: 30px;
   font-weight: 700;
-  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
 }
 
 /* Subheading */
@@ -118,7 +119,7 @@
   transition: color 0.3s ease-in-out;
 }
 
-.roleLabel input[type="radio"]:checked + span {
+.roleLabel input[type="radio"]:checked+span {
   color: #790606;
 }
 
@@ -303,7 +304,7 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.verfications{
+.verfications {
   padding-bottom: 10px;
   margin-bottom: 10px;
   color: #7d2626;
