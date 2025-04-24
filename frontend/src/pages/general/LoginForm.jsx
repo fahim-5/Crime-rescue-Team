@@ -31,6 +31,11 @@ const LoginForm = () => {
     }
 
     try {
+      console.log("Attempting login with:", {
+        email: credentials.email.toLowerCase().trim(),
+        role: credentials.role,
+      });
+
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
         {
@@ -66,9 +71,80 @@ const LoginForm = () => {
         }, 1500);
       }
     } catch (err) {
-      const errorMessage =
-        err.response?.data?.message ||
-        "Login failed. Please check your credentials.";
+      console.error("Login error:", err);
+
+      let errorMessage = "Login failed. Please check your credentials.";
+
+      if (err.response) {
+        console.log("Error response data:", err.response.data);
+        console.log("Error status:", err.response.status);
+
+        const errorData = err.response.data;
+
+        // Handle specific error codes
+        if (errorData.errorCode) {
+          switch (errorData.errorCode) {
+            case "user_not_found":
+              errorMessage =
+                "No account found with this email address. Please check your email or register for a new account.";
+              break;
+            case "invalid_password":
+              errorMessage = "Incorrect password. Please try again.";
+              break;
+            case "role_mismatch":
+              errorMessage = `You've selected the wrong account type. You registered as a ${errorData.correctRole}. Please select the correct account type.`;
+
+              // Auto-select the correct role if available
+              if (errorData.correctRole) {
+                setCredentials({
+                  ...credentials,
+                  role: errorData.correctRole,
+                });
+              }
+              break;
+            case "account_not_approved":
+              if (errorData.status === "pending") {
+                errorMessage =
+                  "Your account is pending approval. Please wait for an administrator to approve your account.";
+              } else if (errorData.status === "rejected") {
+                errorMessage =
+                  "Your account has been rejected. Please contact support.";
+              } else {
+                errorMessage =
+                  "Your account is not active. Please contact support.";
+              }
+              break;
+            default:
+              errorMessage = errorData.message || errorMessage;
+          }
+        } else {
+          // Fall back to basic status code handling
+          if (err.response.status === 401) {
+            errorMessage = "Invalid email or password. Please try again.";
+          } else if (err.response.status === 403) {
+            if (err.response.data.status === "pending") {
+              errorMessage =
+                "Your account is pending approval. Please wait for an administrator to approve your account.";
+            } else if (err.response.data.status === "rejected") {
+              errorMessage =
+                "Your account has been rejected. Please contact support.";
+            } else if (
+              err.response.data.message &&
+              err.response.data.message.includes("Access denied")
+            ) {
+              errorMessage =
+                "You've selected the wrong role for your account. Please select the correct role.";
+            } else {
+              errorMessage =
+                err.response.data.message ||
+                "Access denied. Please check your account status.";
+            }
+          } else {
+            errorMessage = err.response.data.message || errorMessage;
+          }
+        }
+      }
+
       setError(errorMessage);
     }
   };
@@ -116,34 +192,43 @@ const LoginForm = () => {
           </div>
 
           <div className="input-group auth-role-section">
-            <label className="auth-label">Select Role</label>
+            <label className="auth-label">Select Account Type</label>
             <div className="auth-role-options">
-              <label>
+              <label
+                className={credentials.role === "public" ? "selected-role" : ""}
+              >
                 <input
                   type="radio"
                   name="role"
                   value="public"
+                  checked={credentials.role === "public"}
                   onChange={handleInputChange}
                 />
-                Public
+                <span>👤 Civilian</span>
               </label>
-              <label>
+              <label
+                className={credentials.role === "police" ? "selected-role" : ""}
+              >
                 <input
                   type="radio"
                   name="role"
                   value="police"
+                  checked={credentials.role === "police"}
                   onChange={handleInputChange}
                 />
-                Police
+                <span>👮 Police</span>
               </label>
-              <label>
+              <label
+                className={credentials.role === "admin" ? "selected-role" : ""}
+              >
                 <input
                   type="radio"
                   name="role"
                   value="admin"
+                  checked={credentials.role === "admin"}
                   onChange={handleInputChange}
                 />
-                Admin
+                <span>⚙️ Admin</span>
               </label>
             </div>
           </div>

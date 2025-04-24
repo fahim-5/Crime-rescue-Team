@@ -145,18 +145,51 @@ class UserModel {
   static async findByEmail(email) {
     const connection = await pool.getConnection();
     try {
+      // Log for debugging
+      console.log(`Looking up user by email: ${email.toLowerCase().trim()}`);
+
+      // Use LOWER function in SQL for case-insensitive comparison
       const [users] = await connection.query(
-        "SELECT * FROM users WHERE email = ?",
-        [email.toLowerCase().trim()]
+        "SELECT * FROM users WHERE LOWER(email) = LOWER(?)",
+        [email.trim()]
       );
+
+      if (users[0]) {
+        console.log(`User found: id=${users[0].id}, role=${users[0].role}`);
+      } else {
+        console.log("No user found with this email");
+      }
+
       return users[0] || null;
+    } catch (error) {
+      console.error("Error finding user by email:", error);
+      throw error;
     } finally {
       await connection.release();
     }
   }
 
   static async comparePassword(candidatePassword, hashedPassword) {
-    return await bcrypt.compare(candidatePassword, hashedPassword);
+    try {
+      if (!hashedPassword) {
+        console.error("No hashed password provided for comparison");
+        return false;
+      }
+
+      if (!candidatePassword) {
+        console.error("No candidate password provided for comparison");
+        return false;
+      }
+
+      const isMatch = await bcrypt.compare(candidatePassword, hashedPassword);
+      console.log(
+        `Password comparison result: ${isMatch ? "match" : "no match"}`
+      );
+      return isMatch;
+    } catch (error) {
+      console.error("Error comparing passwords:", error);
+      return false;
+    }
   }
 
   static async createAdmin(userData) {

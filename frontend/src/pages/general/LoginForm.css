@@ -42,8 +42,6 @@
   margin-bottom: 30px;
 }
 
-
-
 /* Form Group */
 .auth-form-group {
   margin-bottom: 1.5rem;
@@ -124,7 +122,7 @@
 
 /* Role Selection Section */
 .auth-role-section {
-  margin: 15px 0;
+  margin: 15px 0 25px;
 }
 
 .auth-role-title {
@@ -137,51 +135,103 @@
 
 .auth-role-options {
   display: flex;
-  justify-content: flex-start;
-  gap: 1.5rem;
-  padding-left: 0.5rem;
-  margin-left: 55px;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
 }
 
 /* Custom Radio Buttons */
 .auth-role-options label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
   cursor: pointer;
   font-size: 0.95rem;
   color: #2e2626;
-  transition: color 0.2s ease;
+  transition: all 0.25s ease;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  flex: 1;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.auth-role-options label:hover {
+  border-color: #e94560;
+  background-color: rgba(233, 69, 96, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(233, 69, 96, 0.15);
+}
+
+.auth-role-options label.selected-role {
+  border-color: #e94560;
+  background-color: rgba(233, 69, 96, 0.1);
+  color: #e94560;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(233, 69, 96, 0.2);
+  transform: translateY(-2px);
 }
 
 .auth-role-options input[type="radio"] {
-  appearance: none;
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.auth-role-options span {
+  position: relative;
+  padding-left: 25px;
+  display: flex;
+  align-items: center;
+}
+
+.auth-role-options span::before {
+  content: '';
+  position: absolute;
+  left: 0;
   width: 18px;
   height: 18px;
   border: 2px solid #b4263b;
   border-radius: 50%;
-  outline: none;
-  cursor: pointer;
-  background-color: transparent;
   transition: all 0.2s ease;
-  position: relative;
 }
 
-.auth-role-options input[type="radio"]:checked {
+.auth-role-options input[type="radio"]:checked+span::before {
   background-color: #b4263b;
   border-color: #b4263b;
 }
 
-.auth-role-options input[type="radio"]:checked::after {
+.auth-role-options input[type="radio"]:checked+span::after {
   content: "";
   width: 8px;
   height: 8px;
   background-color: white;
   border-radius: 50%;
   position: absolute;
+  left: 5px;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateY(-50%);
+}
+
+/* Add error styling for emphasis */
+.auth-error-message {
+  color: #e94560;
+  background-color: rgba(233, 69, 96, 0.1);
+  padding: 12px;
+  border-radius: 8px;
+  margin: 15px 0;
+  font-weight: 500;
+}
+
+.auth-success-message {
+  color: #28a745;
+  background-color: rgba(40, 167, 69, 0.1);
+  padding: 12px;
+  border-radius: 8px;
+  margin: 15px 0;
+  font-weight: 500;
 }
 
 /* Responsive Design */
@@ -189,23 +239,39 @@
   .auth-container {
     padding: 1.5rem;
   }
-  
+
   .auth-box {
     padding: 2rem 1.5rem;
     border-radius: 12px;
-    /* min-height: auto; */
   }
-  
+
   .auth-title {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
   }
-  
+
   .auth-role-options {
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.6rem;
   }
-  
+
+  .auth-role-options label {
+    padding: 10px;
+    justify-content: flex-start;
+  }
+
+  .auth-role-options span {
+    padding-left: 30px;
+  }
+
+  .auth-role-options span::before {
+    left: 5px;
+  }
+
+  .auth-role-options input[type="radio"]:checked+span::after {
+    left: 10px;
+  }
+
   .auth-button {
     margin-top: 1.2rem;
   }

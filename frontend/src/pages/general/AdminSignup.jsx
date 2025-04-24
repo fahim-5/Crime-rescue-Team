@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Signup.css";
+import EmailVerification from "../../components/EmailVerification";
 
 const AdminSignup = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ const AdminSignup = () => {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showVerification, setShowVerification] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -87,7 +89,8 @@ const AdminSignup = () => {
 
       if (response.data.success) {
         setSuccess(response.data.message);
-        setTimeout(() => navigate("/"), 2000);
+        // Show verification popup instead of redirecting immediately
+        setShowVerification(true);
       }
     } catch (err) {
       console.error("Registration error:", err.response?.data);
@@ -97,6 +100,18 @@ const AdminSignup = () => {
           "Registration failed. Please try again."
       );
     }
+  };
+
+  const handleVerificationSuccess = () => {
+    // Redirect after successful verification
+    setTimeout(() => navigate("/"), 1000);
+  };
+
+  const handleVerificationCancel = () => {
+    // Hide verification popup but keep success message
+    setShowVerification(false);
+    // Redirect after a short delay
+    setTimeout(() => navigate("/"), 2000);
   };
 
   return (
@@ -222,6 +237,15 @@ const AdminSignup = () => {
           </span>
         </p>
       </section>
+
+      {/* Email Verification Popup */}
+      {showVerification && (
+        <EmailVerification
+          email={formData.email}
+          onVerified={handleVerificationSuccess}
+          onCancel={handleVerificationCancel}
+        />
+      )}
     </main>
   );
 };

@@ -13,12 +13,16 @@ const Validations = () => {
     const fetchRequests = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/police/requests"
+          "http://localhost:5000/api/police/requests"
         );
-        setRequests(response.data);
+        if (response.data && response.data.length > 0) {
+          setRequests(response.data);
+        } else {
+          setError("No pending requests found");
+        }
       } catch (err) {
-        setError("Failed to fetch requests");
-        console.error(err);
+        setError(err.response?.data?.message || "Failed to fetch requests");
+        console.error("Fetch error:", err);
       } finally {
         setLoading(false);
       }
@@ -28,27 +32,31 @@ const Validations = () => {
 
   const handleApprove = async (policeId) => {
     try {
-      await axios.put(`http://localhost:5000/police/requests/approve/${policeId}`);
+      await axios.put(
+        `http://localhost:5000/api/police/requests/approve/${policeId}`
+      );
       setSuccess("Request approved successfully");
-      setRequests(requests.filter(request => request.police_id !== policeId));
+      setRequests(requests.filter((request) => request.police_id !== policeId));
       setSelectedRequest(null);
       setTimeout(() => setSuccess(""), 3000);
     } catch (err) {
-      setError("Failed to approve request");
-      console.error(err);
+      setError(err.response?.data?.message || "Failed to approve request");
+      console.error("Approve error:", err);
     }
   };
 
   const handleReject = async (policeId) => {
     try {
-      await axios.delete(`http://localhost:5000/police/requests/reject/${policeId}`);
+      await axios.delete(
+        `http://localhost:5000/api/police/requests/reject/${policeId}`
+      );
       setSuccess("Request rejected successfully");
-      setRequests(requests.filter(request => request.police_id !== policeId));
+      setRequests(requests.filter((request) => request.police_id !== policeId));
       setSelectedRequest(null);
       setTimeout(() => setSuccess(""), 3000);
     } catch (err) {
-      setError("Failed to reject request");
-      console.error(err);
+      setError(err.response?.data?.message || "Failed to reject request");
+      console.error("Reject error:", err);
     }
   };
 
@@ -63,40 +71,45 @@ const Validations = () => {
     <div className="validation-container">
       <h1>Police Registration Requests</h1>
       {success && <div className="success-message">{success}</div>}
+      {error && <div className="error-message">{error}</div>}
 
-      <div className="requests-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Police ID</th>
-              <th>Station</th>
-              <th>Rank</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requests.map((request) => (
-              <tr key={request.id}>
-                <td>{request.full_name}</td>
-                <td>{request.police_id}</td>
-                <td>{request.station}</td>
-                <td>{request.rank}</td>
-                <td>{request.status}</td>
-                <td className="actions">
-                  <button
-                    className="view-btn"
-                    onClick={() => viewDetails(request)}
-                  >
-                    View
-                  </button>
-                </td>
+      {requests.length === 0 ? (
+        <div className="no-requests">No pending requests found</div>
+      ) : (
+        <div className="requests-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Police ID</th>
+                <th>Station</th>
+                <th>Rank</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {requests.map((request) => (
+                <tr key={request.police_id}>
+                  <td>{request.full_name}</td>
+                  <td>{request.police_id}</td>
+                  <td>{request.station}</td>
+                  <td>{request.rank}</td>
+                  <td>{request.status}</td>
+                  <td className="actions">
+                    <button
+                      className="view-btn"
+                      onClick={() => viewDetails(request)}
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {selectedRequest && (
         <div className="modal-overlay">
@@ -151,8 +164,8 @@ const Validations = () => {
               </div>
             </div>
             <div className="modal-actions">
-              <button 
-                className="approve-btn" 
+              <button
+                className="approve-btn"
                 onClick={() => handleApprove(selectedRequest.police_id)}
               >
                 Approve

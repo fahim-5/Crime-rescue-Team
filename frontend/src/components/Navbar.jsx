@@ -172,6 +172,7 @@ const Navbar = () => {
         </button>
       );
     } else {
+      // When not on signin/signup pages, show both buttons
       if (location.pathname !== "/" && location.pathname !== "/start") {
         return (
           <div className="auth-buttons-container">
@@ -184,12 +185,14 @@ const Navbar = () => {
           </div>
         );
       } else if (location.pathname === "/") {
+        // On signin page, show only signup
         return (
           <Link to="/start" className="auth-btn sign-up-btn">
             Sign Up
           </Link>
         );
       } else if (location.pathname === "/start") {
+        // On signup page, show only signin
         return (
           <Link to="/" className="auth-btn">
             Sign In

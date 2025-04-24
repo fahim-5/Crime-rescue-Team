@@ -4,7 +4,8 @@
   justify-content: space-between;
   align-items: center;
   background-color: #1a1a2e;
-  padding: 8px 20px; /* Reduced padding */
+  padding: 8px 20px;
+  /* Reduced padding */
   color: white;
   position: fixed;
   top: 0;
@@ -19,26 +20,28 @@
 
 /* Logo Styling */
 .logo {
-  font-size: 30px; /* Reduced font size */
+  font-size: 30px;
+  /* Reduced font size */
   font-weight: bold;
   color: #a72c40;
   text-decoration: none;
   transition: color 0.3s ease, transform 0.3s ease;
-  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
 
 .logo:hover {
   color: #ffffff;
   transform: scale(1.05);
-  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
 /* Navigation Links */
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 12px; /* Reduced gap */
+  gap: 12px;
+  /* Reduced gap */
   padding: 0;
   margin: 0;
 }
@@ -51,9 +54,11 @@
   text-decoration: none;
   color: rgb(226, 214, 214);
   font-weight: 300;
-  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 1rem; /* Reduced font size */
-  padding: 6px 10px; /* Adjusted padding */
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 1rem;
+  /* Reduced font size */
+  padding: 6px 10px;
+  /* Adjusted padding */
   border-radius: 5px;
   transition: color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
@@ -86,7 +91,8 @@
     display: none;
     flex-direction: column;
     position: absolute;
-    top: 45px; /* Adjusted top to match navbar height */
+    top: 45px;
+    /* Adjusted top to match navbar height */
     left: 0;
     width: 100%;
     background-color: #1a1a2e;
@@ -111,7 +117,8 @@
 
   .bar {
     display: block;
-    width: 22px; /* Reduced width */
+    width: 22px;
+    /* Reduced width */
     height: 3px;
     margin: 4px auto;
     background-color: white;
@@ -132,7 +139,8 @@
 }
 
 /* Prevent Horizontal Scrolling */
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -140,10 +148,11 @@ body, html {
 
 /* Adjust Body Padding for Navbar */
 body {
-  padding-top: 55px; /* Adjusted from 70px to 55px */
+  padding-top: 55px;
+  /* Adjusted from 70px to 55px */
 }
 
-*{
+* {
   text-decoration: none;
 }
 
@@ -155,28 +164,25 @@ body {
 .auth-btn {
   padding: 8px 16px;
   border-radius: 4px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.auth-btn {
-  color: #ffffff;
-  background: #a72c40;
   font-weight: 600;
+  transition: all 0.3s ease;
+  color: white;
+  background-color: #e94560;
+  border: none;
+  text-decoration: none;
 }
-
 
 .auth-btn:hover {
-  background: #a72c40;
+  background-color: #ff4757;
+  transform: scale(1.05);
 }
 
 .sign-up-btn {
-  background: #a72c40;
+  background-color: #e94560;
   color: white;
-  border: 1px solid #970f1d;
+  border: none;
 }
 
 .sign-up-btn:hover {
-  background: #a72c40;
+  background-color: #ff4757;
 }
-

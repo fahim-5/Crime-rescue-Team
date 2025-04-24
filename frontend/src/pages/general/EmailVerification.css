@@ -1,0 +1,233 @@
+/* Email Verification Popup Styling */
+.verification-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    background-image: radial-gradient(rgba(158, 25, 45, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.verification-popup {
+    background: linear-gradient(145deg, #ffffff, #f5f5f5);
+    border-radius: 16px;
+    padding: 30px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 15px 35px rgba(158, 25, 45, 0.3), 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+    animation: slideUp 0.4s ease;
+    border-top: 5px solid #9e192d;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.verification-popup-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.verification-popup-close:hover {
+    color: #9e192d;
+    transform: scale(1.1);
+}
+
+.verification-title {
+    font-size: 1.8rem;
+    color: #9e192d;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.verification-subtitle {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.verification-email {
+    font-weight: 600;
+    color: #9e192d;
+}
+
+.verification-code-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 10px;
+}
+
+.verification-code-input {
+    width: 50px;
+    height: 60px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-size: 1.8rem;
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    background: white;
+    font-family: 'Courier New', monospace;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.verification-code-input:focus {
+    border-color: #9e192d;
+    box-shadow: 0 0 0 3px rgba(158, 25, 45, 0.2), 0 0 8px rgba(158, 25, 45, 0.3);
+    outline: none;
+}
+
+.verification-code-input:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.verification-submit {
+    background: linear-gradient(145deg, #9e192d, #c0392b);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(158, 25, 45, 0.3);
+}
+
+.verification-submit:hover {
+    background: linear-gradient(145deg, #a72c40, #d63031);
+    transform: translateY(-3px);
+    box-shadow: 0 7px 15px rgba(158, 25, 45, 0.4);
+}
+
+.verification-submit:active {
+    transform: translateY(1px);
+}
+
+.verification-resend {
+    margin-top: 15px;
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.verification-resend:hover {
+    color: #9e192d;
+}
+
+.verification-timer {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 10px;
+}
+
+.verification-animation {
+    margin: 10px auto 20px;
+    width: 80px;
+    height: 80px;
+}
+
+.verification-error {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    background: rgba(231, 76, 60, 0.1);
+    padding: 8px;
+    border-radius: 6px;
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20%,
+    60% {
+        transform: translateX(-5px);
+    }
+
+    40%,
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+.verification-success {
+    color: #27ae60;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    background: rgba(39, 174, 96, 0.1);
+    padding: 8px;
+    border-radius: 6px;
+}
+
+/* Add pulse animation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite ease-in-out;
+}

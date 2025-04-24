@@ -252,11 +252,19 @@ const loginUser = async (req, res) => {
   try {
     const { email, password, role } = req.body;
 
+    // Log login attempt for debugging
+    console.log(`Login attempt: email=${email}, role=${role}`);
+
     // Validate required fields
     if (!email || !password || !role) {
       return res.status(400).json({
         success: false,
         message: "Email, password and role are required",
+        errorDetails: {
+          email: !email ? "Email is required" : null,
+          password: !password ? "Password is required" : null,
+          role: !role ? "Role selection is required" : null,
+        },
       });
     }
 
@@ -265,39 +273,58 @@ const loginUser = async (req, res) => {
 
     // User not found
     if (!user) {
+      console.log(`Login failed: User with email ${email} not found`);
       return res.status(401).json({
         success: false,
         message: "Invalid credentials",
+        errorCode: "user_not_found",
       });
     }
+
+    console.log(
+      `User found: id=${user.id}, role=${user.role}, status=${user.status}`
+    );
 
     // Check account status - must be approved
     if (user.status !== "approved") {
       const statusMessages = {
-        pending: "Your account is pending approval",
-        rejected: "Your account has been rejected",
+        pending:
+          "Your account is pending approval. Please wait for an administrator to approve your account.",
+        rejected:
+          "Your account has been rejected. Please contact support for more information.",
+        suspended: "Your account has been suspended. Please contact support.",
       };
+
+      console.log(`Login failed: Account status is ${user.status}`);
       return res.status(403).json({
         success: false,
         message: statusMessages[user.status] || "Account not approved",
         status: user.status,
+        errorCode: "account_not_approved",
       });
     }
 
     // Verify role matches exactly
     if (user.role !== role.toLowerCase()) {
+      console.log(
+        `Login failed: Role mismatch - user has role ${user.role}, but attempted to login with role ${role}`
+      );
       return res.status(403).json({
         success: false,
-        message: `Access denied for ${role} role`,
+        message: `Access denied for ${role} role. You registered as a ${user.role}.`,
+        errorCode: "role_mismatch",
+        correctRole: user.role,
       });
     }
 
     // Verify password
     const isMatch = await UserModel.comparePassword(password, user.password);
     if (!isMatch) {
+      console.log("Login failed: Password does not match");
       return res.status(401).json({
         success: false,
         message: "Invalid credentials",
+        errorCode: "invalid_password",
       });
     }
 
@@ -327,6 +354,8 @@ const loginUser = async (req, res) => {
       }),
     };
 
+    console.log(`Login successful for user ${user.id} with role ${user.role}`);
+
     res.status(200).json({
       success: true,
       message: "Login successful",
@@ -338,6 +367,7 @@ const loginUser = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Login failed. Please try again.",
+      errorCode: "server_error",
       ...(process.env.NODE_ENV === "development" && { error: error.message }),
     });
   }

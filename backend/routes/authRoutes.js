@@ -120,7 +120,13 @@ router.post(
       .withMessage("Password must be at least 8 characters"),
     body("confirmPassword")
       .notEmpty()
-      .withMessage("Confirm Password is required"),
+      .withMessage("Confirm Password is required")
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Passwords do not match");
+        }
+        return true;
+      }),
     body("address")
       .trim()
       .notEmpty()
