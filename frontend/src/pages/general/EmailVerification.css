@@ -8,8 +8,8 @@
     background-color: rgba(0, 0, 0, 0.75);
     background-image: radial-gradient(rgba(158, 25, 45, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    /* backdrop-filter: blur(4px); */
+    /* -webkit-backdrop-filter: blur(4px); */
     display: flex;
     justify-content: center;
     align-items: center;
