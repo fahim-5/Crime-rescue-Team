@@ -440,6 +440,36 @@ const updateReport = async (req, res) => {
   }
 };
 
+/**
+ * Get reports submitted by the authenticated user
+ */
+const getUserReports = async (req, res) => {
+  try {
+    // Ensure the user is authenticated
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required to view your reports",
+      });
+    }
+
+    const userId = req.user.id;
+    const reports = await ReportModel.getByUserId(userId);
+
+    res.status(200).json({
+      success: true,
+      data: reports,
+    });
+  } catch (error) {
+    console.error("Error fetching user reports:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user reports",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createReport,
   getAllReports,
@@ -450,4 +480,5 @@ module.exports = {
   respondToAlert,
   deleteReport,
   updateReport,
+  getUserReports,
 };

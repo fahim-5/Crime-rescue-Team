@@ -10,7 +10,12 @@ const authenticateToken = async (req, res, next) => {
     const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
-      return res.status(401).json({ message: "No token provided" });
+      // Allow the request to continue without authentication
+      // Just don't set req.user, leaving it undefined
+      console.log(
+        "No authentication token provided - continuing as anonymous user"
+      );
+      return next();
     }
 
     // Verify token

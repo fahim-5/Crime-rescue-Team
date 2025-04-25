@@ -495,6 +495,99 @@ class ReportModel {
       connection.release();
     }
   }
+
+  /**
+   * Get all reports submitted by a specific user
+   * @param {number} userId - The ID of the user
+   * @returns {Promise<Array>} Array of report objects
+   */
+  static async getByUserId(userId) {
+    const connection = await pool.getConnection();
+    try {
+      // Get the reports with validation counts
+      const [rows] = await connection.query(
+        `SELECT cr.*, 
+         COUNT(v.id) AS total_validations,
+         SUM(CASE WHEN v.is_valid = true THEN 1 ELSE 0 END) AS valid_count,
+         SUM(CASE WHEN v.is_valid = false THEN 1 ELSE 0 END) AS invalid_count
+         FROM crime_reports cr
+         LEFT JOIN validations v ON cr.id = v.report_id
+         WHERE cr.reporter_id = ?
+         GROUP BY cr.id
+         ORDER BY cr.created_at DESC`,
+        [userId]
+      );
+
+      // If no reports are found, return an empty array
+      if (rows.length === 0) {
+        return [];
+      }
+
+      // Get the report IDs to fetch validations and alerts
+      const reportIds = rows.map((report) => report.id);
+
+      // Get all validations for the reports in a single query
+      const [validations] = await connection.query(
+        `SELECT v.*, v.report_id, u.username, u.full_name
+         FROM validations v
+         JOIN users u ON v.user_id = u.id
+         WHERE v.report_id IN (?)
+         ORDER BY v.created_at DESC`,
+        [reportIds]
+      );
+
+      // Get all police alerts for the reports in a single query
+      const [alerts] = await connection.query(
+        `SELECT pa.*, pa.report_id, p.full_name as police_name, p.badge_number, p.station
+         FROM police_alerts pa
+         LEFT JOIN police p ON pa.police_id = p.id
+         WHERE pa.report_id IN (?)
+         ORDER BY pa.created_at DESC`,
+        [reportIds]
+      );
+
+      // Group validations and alerts by report_id
+      const validationsByReportId = validations.reduce((acc, validation) => {
+        if (!acc[validation.report_id]) {
+          acc[validation.report_id] = [];
+        }
+        acc[validation.report_id].push(validation);
+        return acc;
+      }, {});
+
+      const alertsByReportId = alerts.reduce((acc, alert) => {
+        if (!acc[alert.report_id]) {
+          acc[alert.report_id] = [];
+        }
+        acc[alert.report_id].push(alert);
+        return acc;
+      }, {});
+
+      // Process and return the reports with validations, alerts, and media URLs
+      return rows.map((report) => {
+        const photos = report.photos ? JSON.parse(report.photos) : [];
+        const videos = report.videos ? JSON.parse(report.videos) : [];
+
+        return {
+          ...report,
+          photos: photos.map((photo) => ({
+            path: photo,
+            url: fileUtils.getFileUrl(photo),
+          })),
+          videos: videos.map((video) => ({
+            path: video,
+            url: fileUtils.getFileUrl(video),
+          })),
+          validations: validationsByReportId[report.id] || [],
+          alerts: alertsByReportId[report.id] || [],
+        };
+      });
+    } catch (error) {
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
 }
 
 module.exports = ReportModel;

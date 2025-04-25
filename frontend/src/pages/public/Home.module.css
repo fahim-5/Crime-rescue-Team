@@ -89,6 +89,14 @@
     margin: 3rem 0;
 }
 
+.actionButtons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
 .primaryButton {
     background: linear-gradient(135deg, #9e192d 0%, #c0392b 100%);
     color: white;
@@ -108,6 +116,28 @@
 .primaryButton:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(158, 25, 45, 0.4);
+}
+
+.viewReportsButton {
+    background: transparent;
+    color: #4a5568;
+    padding: 1.1rem 2.8rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border: 2px solid #e2e8f0;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.viewReportsButton:hover {
+    background-color: #f7fafc;
+    border-color: #cbd5e0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .secondaryText {
@@ -195,26 +225,33 @@
     .hero {
         padding: 3rem 1.5rem;
     }
-    
+
     .contentWrapper {
         padding: 0 1.5rem;
     }
-    
+
     .title {
         font-size: 2.5rem;
     }
-    
+
     .subtitle {
         font-size: 1.2rem;
     }
-    
+
     .features {
         grid-template-columns: 1fr;
     }
-    
-    .primaryButton {
+
+    .primaryButton,
+    .viewReportsButton {
         padding: 1rem 2rem;
         font-size: 1.1rem;
+        width: 100%;
+    }
+
+    .actionButtons {
+        flex-direction: column;
+        width: 100%;
     }
 }
 
@@ -222,19 +259,19 @@
     .hero {
         padding: 2rem 1rem;
     }
-    
+
     .contentWrapper {
         padding: 0 1rem;
     }
-    
+
     .title {
         font-size: 2rem;
     }
-    
+
     .subtitle {
         font-size: 1rem;
     }
-    
+
     .featureCard {
         padding: 1.5rem;
     }

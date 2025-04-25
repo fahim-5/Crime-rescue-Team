@@ -86,6 +86,11 @@ const LoginForm = () => {
         login({ token, ...user });
         setSuccess("Login successful! Redirecting...");
 
+        // Add console logs to debug user data
+        console.log("Login successful with user ID:", user.id);
+        console.log("User role:", user.role);
+        console.log("Token received:", token.substring(0, 20) + "...");
+
         setTimeout(() => {
           switch (user.role) {
             case "admin":
@@ -187,7 +192,9 @@ const LoginForm = () => {
           <div className="input-group auth-role-section">
             <label className="auth-label">Select Account Type</label>
             <div className="auth-role-options">
-              <label className={credentials.role === "public" ? "selected-role" : ""}>
+              <label
+                className={credentials.role === "public" ? "selected-role" : ""}
+              >
                 <input
                   type="radio"
                   name="role"
@@ -197,7 +204,9 @@ const LoginForm = () => {
                 />
                 <span>👤 Civilian</span>
               </label>
-              <label className={credentials.role === "police" ? "selected-role" : ""}>
+              <label
+                className={credentials.role === "police" ? "selected-role" : ""}
+              >
                 <input
                   type="radio"
                   name="role"
@@ -207,7 +216,9 @@ const LoginForm = () => {
                 />
                 <span>👮 Police</span>
               </label>
-              <label className={credentials.role === "admin" ? "selected-role" : ""}>
+              <label
+                className={credentials.role === "admin" ? "selected-role" : ""}
+              >
                 <input
                   type="radio"
                   name="role"

@@ -4,9 +4,10 @@ const reportController = require("../controllers/reportController");
 const upload = require("../middlewares/upload");
 const authMiddleware = require("../middlewares/authMiddleware");
 
-// Create a new crime report - no authentication required for public reporting
+// Create a new crime report - with optional authentication to associate with user
 router.post(
   "/",
+  authMiddleware.authenticateToken,
   upload.fields([
     { name: "photos", maxCount: 5 },
     { name: "videos", maxCount: 3 },
@@ -19,6 +20,13 @@ router.get("/", reportController.getAllReports);
 
 // Get nearby reports based on location (must be before :id route)
 router.get("/nearby", reportController.getNearbyReports);
+
+// Get reports by authenticated user (must be before :id route)
+router.get(
+  "/user",
+  authMiddleware.authenticateToken,
+  reportController.getUserReports
+);
 
 // Get pending police alerts (police only)
 router.get(

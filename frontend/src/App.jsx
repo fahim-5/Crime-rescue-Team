@@ -7,6 +7,8 @@ import LoginForm from "./pages/general/LoginForm";
 import CrimeReportForm from "./pages/public/CrimeReportForm";
 import Notifications from "./pages/public/Notifications";
 import CrimeAlerts from "./pages/public/CrimeAlerts";
+import MyReports from "./pages/public/MyReports";
+import ReportDetail from "./pages/public/ReportDetail";
 import About from "./components/About";
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -63,7 +65,22 @@ function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/alert" element={<CrimeAlerts />} />
           <Route path="/about" element={<About />} />
-          <Route path="/reports" element={<UserReports />} />
+          <Route
+            path="/reports"
+            element={
+              <PrivateRoute allowedRole="public">
+                <MyReports />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/report/:id"
+            element={
+              <PrivateRoute allowedRole="public">
+                <ReportDetail />
+              </PrivateRoute>
+            }
+          />
           <Route path="/public/settings" element={<Settings />} />
 
           {/* police routes  */}

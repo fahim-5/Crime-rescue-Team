@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth } from "../../context/useAuth";
 import "./CrimeReportForm.css";
 import {
   FaMapMarkerAlt,
@@ -15,6 +16,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Link } from "react-router-dom";
 
 const CrimeReportForm = () => {
+  const { user, token } = useAuth();
   const [photos, setPhotos] = useState([]);
   const [videos, setVideos] = useState([]);
   const [location, setLocation] = useState("");
@@ -127,12 +129,46 @@ const CrimeReportForm = () => {
       photos.forEach((photo) => formData.append("photos", photo));
       videos.forEach((video) => formData.append("videos", video));
 
+      console.log(
+        "Submitting report with user:",
+        user ? `ID: ${user.id}` : "No user"
+      );
+      console.log(
+        "Submitting report with token:",
+        token ? token.substring(0, 15) + "..." : "No token"
+      );
+
+      // For debugging - show all form data
+      for (let [key, value] of formData.entries()) {
+        if (key !== "photos" && key !== "videos") {
+          console.log(`Form data - ${key}:`, value);
+        } else {
+          console.log(`Form data - ${key}: [${value.name || "file"}]`);
+        }
+      }
+
       const response = await fetch("http://localhost:5000/api/reports", {
         method: "POST",
         body: formData,
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       });
 
-      const result = await response.json();
+      // Get response as text first to log it
+      const responseText = await response.text();
+      console.log("Raw API response:", responseText);
+
+      // Then parse it as JSON
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (e) {
+        console.error("Failed to parse response as JSON:", e);
+        throw new Error("Invalid server response format");
+      }
+
+      console.log("Report submission response:", result);
 
       if (!response.ok) {
         throw new Error(result.message || "Failed to submit report");
@@ -143,6 +179,14 @@ const CrimeReportForm = () => {
         "Report submitted successfully! Law enforcement has been notified.",
         "success"
       );
+
+      // After successful submission, alert the user to check their reports
+      setTimeout(() => {
+        showAlert(
+          "You can view your submitted report in 'My Reports' section.",
+          "success"
+        );
+      }, 5000);
     } catch (error) {
       console.error("Submission error:", error);
       showAlert(
