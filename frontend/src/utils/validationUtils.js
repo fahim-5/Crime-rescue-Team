@@ -18,8 +18,14 @@ export const validateEmail = (email) => {
  * @returns {boolean} True if valid, false otherwise
  */
 export const validatePhone = (phone) => {
-  // Bangladesh mobile number format: 01xxxxxxxxx
-  const regex = /^01[3-9]\d{8}$/;
+  // Skip validation if phone is empty
+  if (!phone || phone.trim() === "") {
+    return true;
+  }
+
+  // More flexible Bangladesh mobile number format
+  // Allow +880 prefix and different lengths
+  const regex = /^(\+8801|01)[0-9]{8,9}$/;
   return regex.test(phone);
 };
 
@@ -29,9 +35,13 @@ export const validatePhone = (phone) => {
  * @returns {boolean} True if valid, false otherwise
  */
 export const validateAddress = (address) => {
-  // Format: District-Thana (e.g., Dhaka-Mirpur)
-  const regex = /^[a-zA-Z\s]+-[a-zA-Z\s]+$/;
-  return regex.test(address);
+  // Skip validation if address is empty
+  if (!address || address.trim() === "") {
+    return true;
+  }
+
+  // More flexible address format - allow any text with or without hyphen
+  return true;
 };
 
 /**
@@ -66,11 +76,13 @@ export const getProfileUpdateErrors = (userData) => {
     return "Please enter a valid email address";
   }
 
-  if (!validatePhone(userData.phone)) {
+  // Only validate phone if it's not empty
+  if (userData.phone && !validatePhone(userData.phone)) {
     return "Please enter a valid Bangladesh mobile number (e.g., 01712345678)";
   }
 
-  if (!validateAddress(userData.address)) {
+  // Only validate address if it's not empty
+  if (userData.address && !validateAddress(userData.address)) {
     return "Address must be in format: District-Thana (e.g., Dhaka-Mirpur)";
   }
 

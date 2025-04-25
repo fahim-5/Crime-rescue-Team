@@ -603,7 +603,7 @@ class UserModel {
     try {
       await connection.beginTransaction();
 
-      const { full_name, email, mobile_no, address } = userData;
+      const { full_name, email, mobile_no, address, national_id } = userData;
 
       // Check if user exists
       const [existingUsers] = await connection.query(
@@ -633,56 +633,102 @@ class UserModel {
         }
       }
 
+      // Use existing values if not provided
+      const updatedFullName = full_name ? full_name.trim() : user.full_name;
+      const updatedEmail = email ? email.trim().toLowerCase() : user.email;
+      const updatedMobileNo =
+        mobile_no !== undefined ? mobile_no.trim() : user.mobile_no;
+      const updatedAddress =
+        address !== undefined ? address.trim() : user.address;
+      const updatedNationalId = national_id
+        ? national_id.trim()
+        : user.national_id;
+
+      // Create the base SQL for update - always include all fields
+      let usersSql = `UPDATE users SET 
+        full_name = ?, 
+        email = ?, 
+        mobile_no = ?, 
+        address = ?, 
+        national_id = ?,
+        updated_at = NOW()
+        WHERE id = ?`;
+
+      // Create parameters array with all fields
+      const params = [
+        updatedFullName,
+        updatedEmail,
+        updatedMobileNo,
+        updatedAddress,
+        updatedNationalId,
+        userId,
+      ];
+
       // Update users table
-      await connection.query(
-        `UPDATE users SET full_name = ?, email = ?, mobile_no = ?, address = ?, updated_at = NOW() 
-         WHERE id = ?`,
-        [
-          full_name.trim(),
-          email.trim().toLowerCase(),
-          mobile_no.trim(),
-          address.trim(),
-          userId,
-        ]
-      );
+      await connection.query(usersSql, params);
 
       // Update role-specific table based on user role
       if (user.role === "public") {
-        await connection.query(
-          `UPDATE public SET full_name = ?, email = ?, mobile_no = ?, address = ?, updated_at = NOW() 
-           WHERE username = ?`,
-          [
-            full_name.trim(),
-            email.trim().toLowerCase(),
-            mobile_no.trim(),
-            address.trim(),
-            user.username,
-          ]
-        );
+        let publicSql = `UPDATE public SET 
+          full_name = ?, 
+          email = ?, 
+          mobile_no = ?, 
+          address = ?, 
+          national_id = ?,
+          updated_at = NOW()
+          WHERE username = ?`;
+
+        // Create parameters array for public table
+        const publicParams = [
+          updatedFullName,
+          updatedEmail,
+          updatedMobileNo,
+          updatedAddress,
+          updatedNationalId,
+          user.username,
+        ];
+
+        await connection.query(publicSql, publicParams);
       } else if (user.role === "police") {
-        await connection.query(
-          `UPDATE police SET full_name = ?, email = ?, mobile_no = ?, address = ?, updated_at = NOW() 
-           WHERE username = ?`,
-          [
-            full_name.trim(),
-            email.trim().toLowerCase(),
-            mobile_no.trim(),
-            address.trim(),
-            user.username,
-          ]
-        );
+        let policeSql = `UPDATE police SET 
+          full_name = ?, 
+          email = ?, 
+          mobile_no = ?, 
+          address = ?, 
+          national_id = ?,
+          updated_at = NOW()
+          WHERE username = ?`;
+
+        const policeParams = [
+          updatedFullName,
+          updatedEmail,
+          updatedMobileNo,
+          updatedAddress,
+          updatedNationalId,
+          user.username,
+        ];
+
+        await connection.query(policeSql, policeParams);
       } else if (user.role === "admin") {
-        await connection.query(
-          `UPDATE admin SET full_name = ?, email = ?, mobile_no = ?, address = ?, updated_at = NOW() 
-           WHERE username = ?`,
-          [
-            full_name.trim(),
-            email.trim().toLowerCase(),
-            mobile_no.trim(),
-            address.trim(),
-            user.username,
-          ]
-        );
+        let adminSql = `UPDATE admin SET 
+          full_name = ?, 
+          email = ?, 
+          mobile_no = ?, 
+          address = ?, 
+          national_id = ?,
+          updated_at = NOW()
+          WHERE username = ?`;
+
+        const adminParams = [
+          updatedFullName,
+          updatedEmail,
+          updatedMobileNo,
+          updatedAddress,
+          updatedNationalId,
+          user.username,
+        ];
+
+        await connection.query(adminSql, adminParams);
       }
 
       await connection.commit();
@@ -690,11 +736,12 @@ class UserModel {
       // Return updated user data
       return {
         id: userId,
-        full_name: full_name.trim(),
+        full_name: updatedFullName,
         username: user.username,
-        email: email.trim().toLowerCase(),
-        mobile_no: mobile_no.trim(),
-        address: address.trim(),
+        email: updatedEmail,
+        mobile_no: updatedMobileNo,
+        address: updatedAddress,
+        national_id: updatedNationalId,
         role: user.role,
       };
     } catch (error) {

@@ -565,38 +565,36 @@ const changePassword = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id; // Get user ID from authenticated request
-    const { full_name, email, mobile_no, address } = req.body;
+    const { full_name, email, mobile_no, address, nid } = req.body;
 
-    // Validate input
-    if (!full_name || !email || !mobile_no || !address) {
+    // Only validate that required fields are present
+    if (!full_name || !email) {
       return res.status(400).json({
         success: false,
-        message: "All fields are required",
+        message: "Name and email are required",
         missingFields: {
           full_name: !full_name,
           email: !email,
-          mobile_no: !mobile_no,
-          address: !address,
         },
       });
     }
 
-    // Validate address format
-    if (!/^[a-zA-Z\s]+-[a-zA-Z\s]+$/.test(address)) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Address must be in format: District-Thana (e.g., Dhaka-Mirpur)",
-      });
-    }
-
-    // Update user profile
-    const result = await UserModel.updateProfile(userId, {
+    // Create update object with values that are present
+    const updateData = {
       full_name,
       email,
-      mobile_no,
-      address,
-    });
+      mobile_no: mobile_no || "", // Use empty string if not provided
+      address: address || "", // Use empty string if not provided
+    };
+
+    if (nid) {
+      updateData.national_id = nid;
+    }
+
+    console.log("Profile update data:", updateData);
+
+    // Update user profile
+    const result = await UserModel.updateProfile(userId, updateData);
 
     return res.status(200).json({
       success: true,

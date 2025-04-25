@@ -12,20 +12,48 @@ export const AuthProvider = ({ children }) => {
   // Load user from localStorage on app start
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+
     if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      setUser(userData);
-      setToken(userData.token); // Extract token from user data
+      try {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+      } catch (error) {
+        console.error("Error parsing user data from localStorage:", error);
+        localStorage.removeItem("user");
+      }
     }
+
+    if (storedToken) {
+      setToken(storedToken);
+    }
+
     setLoading(false); // Once checked, remove loading state
   }, []);
 
   // Login function
-  const login = (userData) => {
+  const login = (userData, authToken) => {
     console.log("Storing user in context:", userData); // Debugging
     setUser(userData);
-    setToken(userData.token); // Store token in state
-    localStorage.setItem("user", JSON.stringify(userData)); // Store user data
+
+    // If authToken is provided directly, use it
+    // Otherwise check if token is in userData
+    if (authToken) {
+      setToken(authToken);
+      localStorage.setItem("token", authToken);
+    } else if (userData && userData.token) {
+      setToken(userData.token);
+      localStorage.setItem("token", userData.token);
+
+      // Remove token from user object before storing to avoid duplication
+      const { token: _, ...userWithoutToken } = userData;
+      setUser(userWithoutToken);
+      localStorage.setItem("user", JSON.stringify(userWithoutToken));
+      return;
+    }
+
+    // Store user data
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   // Logout function
@@ -33,6 +61,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setToken(null);
     localStorage.removeItem("user"); // Remove user from storage
+    localStorage.removeItem("token"); // Remove token from storage
   };
 
   return (

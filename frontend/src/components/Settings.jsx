@@ -53,6 +53,7 @@ const Settings = () => {
   const [profileSuccess, setProfileSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   // Determine if the user is an admin when component mounts
   useEffect(() => {
@@ -101,7 +102,7 @@ const Settings = () => {
         );
 
         // Return a dummy token to allow the page to load
-        return "dummy-fallback-token";
+        return null;
       }
 
       // Simple format check but don't block access
@@ -115,7 +116,7 @@ const Settings = () => {
         );
 
         // Still return the token to allow basic functionality
-        return token;
+        return null;
       }
 
       // Try to check token expiry but don't block if it fails
@@ -129,9 +130,9 @@ const Settings = () => {
         if (payload.exp && payload.exp < currentTime) {
           console.log("Token expired - proceeding with limited functionality");
           setProfileError(
-            "Your session has expired. Some features may be limited."
+            "Your session has expired. Please log in again for full access."
           );
-          return token;
+          return null;
         }
 
         // Valid token - normal operation
@@ -142,14 +143,14 @@ const Settings = () => {
         setProfileError(
           "Session validation issues. Some features may be limited."
         );
-        return token;
+        return null;
       }
     } catch (error) {
       console.error("General token validation error:", error);
       setProfileError(
         "An error occurred with authentication. Limited functionality available."
       );
-      return "fallback-error-token";
+      return null;
     }
   };
 
@@ -186,6 +187,14 @@ const Settings = () => {
       setIsLoading(true);
       // Always attempt to get a token (will now always return something)
       const token = checkAuthToken();
+
+      if (!token) {
+        // If token is invalid or missing, use fallback data immediately
+        console.log("No valid token available, using fallback data");
+        setFallbackProfileData();
+        setIsLoading(false);
+        return;
+      }
 
       // Attempt to load profile from server, but with error handling
       try {
@@ -268,8 +277,12 @@ const Settings = () => {
       } catch (error) {
         console.error("Failed to fetch profile:", error);
 
-        // Don't overwrite previous error messages from token validation
-        if (!profileError) {
+        // If the error is a 401 unauthorized, the token is invalid or expired
+        if (error.response && error.response.status === 401) {
+          setProfileError("Your session has expired. Please log in again.");
+          // Clear invalid token
+          localStorage.removeItem("token");
+        } else if (!profileError) {
           if (error.response) {
             // Server responded with an error
             setProfileError(
@@ -375,15 +388,25 @@ const Settings = () => {
         return;
       }
 
+      // Prepare update data - include all fields that can be updated
+      const updateData = {
+        full_name: tempUserData.fullName,
+        email: tempUserData.email,
+        mobile_no: tempUserData.phone || "",
+        address: tempUserData.address || "",
+      };
+
+      // Include NID if it exists
+      if (tempUserData.nid) {
+        updateData.national_id = tempUserData.nid;
+      }
+
+      console.log("Sending profile update data:", updateData);
+
       try {
         const response = await axios.put(
           "http://localhost:5000/api/auth/profile",
-          {
-            full_name: tempUserData.fullName,
-            email: tempUserData.email,
-            mobile_no: tempUserData.phone,
-            address: tempUserData.address,
-          },
+          updateData,
           {
             headers: {
               "Content-Type": "application/json",
@@ -402,6 +425,7 @@ const Settings = () => {
             email: tempUserData.email,
             phone: tempUserData.phone,
             address: tempUserData.address,
+            nid: tempUserData.nid,
           });
 
           // Update local storage user data
@@ -413,6 +437,9 @@ const Settings = () => {
                 ...storedUser,
                 full_name: tempUserData.fullName,
                 email: tempUserData.email,
+                mobile_no: tempUserData.phone || "",
+                address: tempUserData.address || "",
+                national_id: tempUserData.nid || "",
               };
               localStorage.setItem("user", JSON.stringify(updatedUser));
             }
@@ -430,12 +457,17 @@ const Settings = () => {
               ...user,
               email: tempUserData.email,
               full_name: tempUserData.fullName,
+              mobile_no: tempUserData.phone || "",
+              address: tempUserData.address || "",
+              national_id: tempUserData.nid || "",
             };
             login(updatedUser);
           }
 
           setProfileSuccess("Profile updated successfully");
           setEditMode(false);
+          setShowProfileModal(false);
+          setShowSuccessAlert(true); // Show success alert
         } else {
           setProfileError(response.data.message || "Failed to update profile");
         }
@@ -706,6 +738,35 @@ const Settings = () => {
   return (
     <div className={styles.fullScreenContainer}>
       <div className={styles.contentWrapper}>
+        {/* Success Alert - show after profile update */}
+        {showSuccessAlert && (
+          <div className={styles.successAlert}>
+            <div className={styles.successAlertContent}>
+              <div className={styles.successAlertIcon}>✓</div>
+              <div className={styles.successAlertMessage}>
+                Profile has been updated successfully!
+              </div>
+              <div className={styles.successAlertButtons}>
+                <button
+                  className={`${styles.button} ${styles.primaryButton}`}
+                  onClick={() => {
+                    setShowSuccessAlert(false);
+                    setShowProfileModal(true);
+                  }}
+                >
+                  View Profile
+                </button>
+                <button
+                  className={`${styles.button} ${styles.secondaryButton}`}
+                  onClick={() => setShowSuccessAlert(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <header className={styles.header}>
           <h1 className={styles.title}>Account Settings</h1>
           <p className={styles.subtitle}>
@@ -736,7 +797,10 @@ const Settings = () => {
 
                 <button
                   className={`${styles.button} ${styles.primaryButton}`}
-                  onClick={() => setShowProfileModal(true)}
+                  onClick={() => {
+                    setShowSuccessAlert(false);
+                    setShowProfileModal(true);
+                  }}
                 >
                   <FiEdit2 /> Edit Profile
                 </button>
@@ -770,8 +834,6 @@ const Settings = () => {
                     Change
                   </button>
                 </div>
-
-                
               </div>
             </section>
 
@@ -847,6 +909,18 @@ const Settings = () => {
                     </div>
 
                     <div className={styles.formGroup}>
+                      <label className={styles.label}>National ID</label>
+                      <input
+                        type="text"
+                        name="nid"
+                        value={tempUserData.nid}
+                        onChange={handleInputChange}
+                        className={styles.input}
+                        disabled={isLoading}
+                      />
+                    </div>
+
+                    <div className={styles.formGroup}>
                       <label className={styles.label}>Phone Number</label>
                       <input
                         type="tel"
@@ -866,7 +940,7 @@ const Settings = () => {
                         onChange={handleInputChange}
                         className={`${styles.input} ${styles.textarea}`}
                         disabled={isLoading}
-                        placeholder="Format: District-Thana (e.g., Dhaka-Mirpur)"
+                        placeholder="Enter your full address"
                       />
                     </div>
                   </>

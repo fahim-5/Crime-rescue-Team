@@ -83,7 +83,12 @@ const LoginForm = () => {
           localStorage.removeItem("savedCredentials");
         }
 
-        login({ token, ...user });
+        // Store token separately from user data
+        localStorage.setItem("token", token);
+
+        // Call login with user data and token separately
+        login(user, token);
+
         setSuccess("Login successful! Redirecting...");
 
         // Add console logs to debug user data
@@ -105,6 +110,8 @@ const LoginForm = () => {
         }, 1500);
       }
     } catch (err) {
+      console.error("Login error:", err);
+
       let errorMessage = "Login failed. Please check your credentials.";
       if (err.response) {
         const errorData = err.response.data;
