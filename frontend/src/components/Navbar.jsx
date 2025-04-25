@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
+import NotificationBadge from "./NotificationBadge";
 import "./Navbar.css";
 import "./profile_popup.css";
 
@@ -74,6 +75,10 @@ const Navbar = () => {
           <li>
             <Link to="/admin/validations">Validations</Link>
           </li>
+          <li className="notification-link-container">
+            <Link to="/notifications">Notifications</Link>
+            <NotificationBadge />
+          </li>
           <li>
             <Link to="/admin/analytics">Analytics</Link>
           </li>
@@ -93,6 +98,10 @@ const Navbar = () => {
           </li>
           <li>
             <Link to="/police/pending">Pending Cases</Link>
+          </li>
+          <li className="notification-link-container">
+            <Link to="/notifications">Notifications</Link>
+            <NotificationBadge />
           </li>
           <li>
             <Link to="/police/resolved">Resolved Cases</Link>
@@ -127,8 +136,9 @@ const Navbar = () => {
               <li>
                 <Link to="/report">Report</Link>
               </li>
-              <li>
+              <li className="notification-link-container">
                 <Link to="/notifications">Notifications</Link>
+                <NotificationBadge />
               </li>
               <li>
                 <Link to="/alert">Alert</Link>

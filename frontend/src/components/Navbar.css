@@ -50,6 +50,11 @@
   display: inline;
 }
 
+/* Notification link container styling */
+.notification-link-container {
+  position: relative;
+}
+
 .nav-links a {
   text-decoration: none;
   color: rgb(226, 214, 214);

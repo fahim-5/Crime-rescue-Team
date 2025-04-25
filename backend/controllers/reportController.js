@@ -1,6 +1,7 @@
 const ReportModel = require("../models/reportModel");
 const path = require("path");
 const fileUtils = require("../utils/fileUtils");
+const NotificationService = require("../services/notificationService");
 
 const createReport = async (req, res) => {
   try {
@@ -68,6 +69,39 @@ const createReport = async (req, res) => {
         console.error("Error alerting police:", alertError);
         // We still want to return success even if alerting fails
       }
+    }
+
+    // Send notification to the user who created the report
+    if (reportId && req.user) {
+      try {
+        await NotificationService.sendReportNotification({
+          userId: req.user.id,
+          reportId: reportId,
+          action: "created",
+          details: `Your report about ${req.body.crimeType} has been submitted successfully.`,
+        });
+        console.log("Report notification sent successfully");
+      } catch (notificationError) {
+        console.error("Error sending report notification:", notificationError);
+        // We still want to return success even if notification fails
+      }
+    }
+
+    // Send notifications to all other users about the new report
+    try {
+      await NotificationService.notifyAllUsersAboutNewReport({
+        reportId: reportId,
+        location: req.body.location,
+        crimeType: req.body.crimeType,
+        reporterId: req.user ? req.user.id : null, // Exclude the reporter from notifications
+      });
+      console.log("Community notifications sent successfully");
+    } catch (notificationError) {
+      console.error(
+        "Error sending community notifications:",
+        notificationError
+      );
+      // We still want to return success even if notification fails
     }
 
     res.status(201).json({
@@ -168,6 +202,50 @@ const validateCrimeReport = async (req, res) => {
     const validations = await ReportModel.getValidationsCount(reportId);
     const ALERT_THRESHOLD = 3; // Configure as needed
 
+    // Get the report to check who created it
+    const report = await ReportModel.getById(reportId);
+
+    // If report has a reporter_id, send them a notification about the validation
+    if (report && report.reporter_id) {
+      try {
+        // Check if we've reached the validation threshold
+        if (validations.valid >= ALERT_THRESHOLD) {
+          // Send validated notification
+          await NotificationService.sendReportNotification({
+            userId: report.reporter_id,
+            reportId: reportId,
+            action: "validated",
+            details: "Multiple community members have confirmed your report.",
+          });
+
+          // Notify all other users about the validated report
+          await NotificationService.notifyAllUsersAboutNewReport({
+            reportId: reportId,
+            location: report.location,
+            crimeType: report.crime_type,
+            reporterId: report.reporter_id,
+            message: `A crime report in ${report.location} has been confirmed by multiple community members. Stay vigilant!`,
+          });
+        } else {
+          // Send updated notification
+          await NotificationService.sendReportNotification({
+            userId: report.reporter_id,
+            reportId: reportId,
+            action: "updated",
+            details: `A community member has ${
+              isValid ? "confirmed" : "questioned"
+            } your report.`,
+          });
+        }
+      } catch (notificationError) {
+        console.error(
+          "Error sending validation notification:",
+          notificationError
+        );
+        // Continue with response even if notification fails
+      }
+    }
+
     if (validations.valid >= ALERT_THRESHOLD) {
       // Alert police
       await ReportModel.alertPolice(reportId);
@@ -254,34 +332,118 @@ const getPendingPoliceAlerts = async (req, res) => {
 
 const respondToAlert = async (req, res) => {
   try {
-    // Only allow police to respond to alerts
-    if (req.user.role !== "police") {
-      return res.status(403).json({
-        success: false,
-        message: "Unauthorized access. Police only.",
-      });
-    }
-
-    const { alertId } = req.params;
+    const alertId = req.params.alertId;
     const { status, response_details } = req.body;
 
     if (!status) {
       return res.status(400).json({
         success: false,
-        message: "Response status is required",
+        message: "Status is required",
       });
     }
 
-    const result = await ReportModel.updateAlert(alertId, {
-      police_id: req.user.id,
+    // Get the user ID from authentication
+    const policeId = req.user.id;
+
+    // Update the alert with the response
+    await ReportModel.updateAlert(alertId, {
       status,
+      police_id: policeId,
       response_details,
     });
 
+    // Get the report ID linked to this alert to notify the reporter
+    const connection = await require("../config/db").pool.getConnection();
+    try {
+      const [alerts] = await connection.query(
+        "SELECT report_id FROM police_alerts WHERE id = ?",
+        [alertId]
+      );
+
+      if (alerts.length > 0) {
+        const reportId = alerts[0].report_id;
+
+        // Get the report details including the reporter ID
+        const report = await ReportModel.getById(reportId);
+
+        if (report && report.reporter_id) {
+          try {
+            // Send notification based on the status
+            if (status === "investigating") {
+              await NotificationService.sendReportNotification({
+                userId: report.reporter_id,
+                reportId: reportId,
+                action: "investigating",
+                details:
+                  response_details ||
+                  "Police are now investigating your report.",
+              });
+
+              // For serious crimes, notify the community about police response
+              if (
+                report.crime_type === "homicide" ||
+                report.crime_type === "assault" ||
+                report.crime_type === "robbery" ||
+                report.armed === "yes"
+              ) {
+                await NotificationService.notifyAllUsersAboutNewReport({
+                  reportId: reportId,
+                  location: report.location,
+                  crimeType: report.crime_type,
+                  reporterId: report.reporter_id,
+                  message: `Police are responding to a ${report.crime_type} incident in ${report.location}. Stay clear of the area.`,
+                });
+              }
+            } else if (status === "resolved") {
+              await NotificationService.sendReportNotification({
+                userId: report.reporter_id,
+                reportId: reportId,
+                action: "resolved",
+                details:
+                  response_details || "Your case has been resolved by police.",
+              });
+
+              // Notify community about case resolution for serious crimes
+              if (
+                report.crime_type === "homicide" ||
+                report.crime_type === "assault" ||
+                report.crime_type === "robbery" ||
+                report.armed === "yes"
+              ) {
+                await NotificationService.notifyAllUsersAboutNewReport({
+                  reportId: reportId,
+                  location: report.location,
+                  crimeType: report.crime_type,
+                  reporterId: report.reporter_id,
+                  message: `Police have resolved a ${report.crime_type} case in ${report.location}. The area is now safe.`,
+                });
+              }
+            } else if (status === "requires_info") {
+              await NotificationService.sendReportNotification({
+                userId: report.reporter_id,
+                reportId: reportId,
+                action: "requires_info",
+                details:
+                  response_details ||
+                  "Police need more information about your report.",
+              });
+            }
+          } catch (notificationError) {
+            console.error(
+              "Error sending police response notification:",
+              notificationError
+            );
+            // Continue with response even if notification fails
+          }
+        }
+      }
+    } finally {
+      connection.release();
+    }
+
     res.status(200).json({
       success: true,
-      message: "Alert response recorded",
-      data: result,
+      message: "Alert response recorded successfully",
     });
   } catch (error) {
     console.error("Error responding to alert:", error);

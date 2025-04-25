@@ -18,32 +18,48 @@ const authenticateToken = async (req, res, next) => {
       return next();
     }
 
-    // Verify token
-    const decoded = jwt.verify(token, config.jwt.secret);
+    try {
+      // Verify token
+      const decoded = jwt.verify(token, config.jwt.secret);
 
-    // Get user from database
-    const user = await UserModel.findById(decoded.userId);
-    if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      // Get user from database
+      const user = await UserModel.findById(decoded.userId);
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      // Add user info to request
+      req.user = {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      };
+
+      next();
+    } catch (tokenError) {
+      if (tokenError.name === "JsonWebTokenError") {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid token",
+        });
+      }
+      if (tokenError.name === "TokenExpiredError") {
+        return res.status(401).json({
+          success: false,
+          message: "Token expired",
+        });
+      }
+      throw tokenError; // Re-throw for the outer catch block
     }
-
-    // Add user info to request
-    req.user = {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    };
-
-    next();
   } catch (error) {
-    if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({ message: "Invalid token" });
-    }
-    if (error.name === "TokenExpiredError") {
-      return res.status(401).json({ message: "Token expired" });
-    }
     console.error("Auth Error:", error);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({
+      success: false,
+      message: "Server error during authentication",
+    });
   }
 };
 
