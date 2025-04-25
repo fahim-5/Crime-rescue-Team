@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
+const config = require("../config/config");
 
 const authenticateToken = async (req, res, next) => {
   try {
@@ -13,7 +14,7 @@ const authenticateToken = async (req, res, next) => {
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, config.jwt.secret);
 
     // Get user from database
     const user = await UserModel.findById(decoded.userId);
@@ -72,7 +73,7 @@ const loginMiddleware = async (req, res, next) => {
     // Generate JWT Token with a secure expiration time
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET,
+      config.jwt.secret,
       { expiresIn: "2h" }
     );
 

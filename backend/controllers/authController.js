@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
 const emailService = require("../services/emailService");
 const crypto = require("crypto");
+const config = require("../config/config");
 
 const registerUser = async (req, res) => {
   try {
@@ -81,7 +82,7 @@ const registerUser = async (req, res) => {
     // Generate token
     const token = jwt.sign(
       { userId: newUser.id, email: newUser.email, role: newUser.role },
-      process.env.JWT_SECRET,
+      config.jwt.secret,
       { expiresIn: "8h" }
     );
 
@@ -204,7 +205,7 @@ const registerAdmin = async (req, res) => {
     // Generate token
     const token = jwt.sign(
       { userId: newUser.id, email: newUser.email, role: newUser.role },
-      process.env.JWT_SECRET,
+      config.jwt.secret,
       { expiresIn: "8h" }
     );
 
@@ -338,7 +339,7 @@ const loginUser = async (req, res) => {
         role: user.role,
         status: user.status,
       },
-      process.env.JWT_SECRET,
+      config.jwt.secret,
       { expiresIn: "8h" }
     );
 
@@ -478,7 +479,7 @@ const registerPolice = async (req, res) => {
         email: newOfficer.email,
         role: newOfficer.role,
       },
-      process.env.JWT_SECRET,
+      config.jwt.secret,
       { expiresIn: "8h" }
     );
 
