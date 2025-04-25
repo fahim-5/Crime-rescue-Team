@@ -56,49 +56,59 @@ const sendVerificationEmail = async (toEmail, code) => {
       process.env.EMAIL_USER || "noreply@crime-rescue-bd.com"
     }>`,
     to: toEmail,
-    subject: "🚨 Your Admin Access Code for Crime Rescue BD!",
+    subject: "🔐 Your Secure Admin Access Code - Crime Rescue BD",
     html: `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e1e1e1; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-        <div style="background-color: #9e192d; padding: 25px; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 600;">Welcome Back, Admin!</h1>
-          <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 15px;">Your secure access to Crime Rescue BD is just one step away</p>
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eaeaea; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+        <div style="background: linear-gradient(135deg, #9e192d 0%, #6e0f1d 100%); padding: 30px; text-align: center;">
+          <img src="https://via.placeholder.com/80x80?text=CRBD" alt="Crime Rescue BD Logo" style="height: 80px; width: 80px; border-radius: 50%; border: 3px solid white; margin-bottom: 15px;">
+          <h1 style="color: white; margin: 0; font-size: 26px; font-weight: 600;">Admin Portal Access</h1>
+          <p style="color: rgba(255,255,255,0.85); margin: 10px 0 0; font-size: 16px;">Secure verification required</p>
         </div>
         
-        <div style="padding: 30px;">
-          <h2 style="color: #333; margin-top: 0; font-size: 20px;">🔑 Your Exclusive Verification Code</h2>
-          <p style="color: #555; line-height: 1.6; font-size: 15px;">
-            We're excited to have you back in the Crime Rescue BD command center! To ensure maximum security for our community, please use this special access code:
-          </p>
-          
-          <div style="background-color: #f9f9f9; border: 2px dashed #9e192d; padding: 20px; margin: 25px 0; text-align: center; border-radius: 6px;">
-            <p style="margin: 0; font-size: 32px; font-weight: bold; letter-spacing: 3px; color: #9e192d; font-family: 'Courier New', monospace;">${code}</p>
-            <p style="margin: 10px 0 0; font-size: 13px; color: #777;">⏳ Expires in 15 minutes</p>
-          </div>
-          
-          <div style="background-color: #fff8f8; border-left: 4px solid #9e192d; padding: 15px; margin: 25px 0; border-radius: 0 4px 4px 0;">
-            <p style="color: #d32f2f; margin: 0; font-size: 14px; font-weight: 600; display: flex; align-items: center;">
-              <span style="margin-right: 8px;">🔒</span> Security Alert
-            </p>
-            <p style="color: #555; line-height: 1.5; font-size: 14px; margin: 8px 0 0;">
-              For your protection, never share this code. Our team will <strong>never</strong> ask for it via phone, SMS, or other channels. 
-              This code is your personal key to keeping our community safe!
+        <div style="padding: 30px; background-color: #ffffff;">
+          <div style="text-align: center; margin-bottom: 25px;">
+            <h2 style="color: #333; margin: 0 0 10px; font-size: 22px;">Your Security Code</h2>
+            <p style="color: #666; margin: 0; font-size: 15px; line-height: 1.5;">
+              Use this one-time code to access the Crime Rescue BD admin dashboard
             </p>
           </div>
           
-          <div style="margin-top: 30px; text-align: center;">
-            <a href="#" style="background-color: #9e192d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: 500; display: inline-block; margin-bottom: 20px;">
-              Return to Crime Rescue BD
+          <div style="background: #f8f8f8; border-radius: 8px; padding: 25px; text-align: center; margin: 20px 0; border: 1px solid #eee;">
+            <div style="display: inline-block; background: #9e192d; color: white; padding: 15px 30px; border-radius: 6px; font-size: 28px; font-weight: bold; letter-spacing: 2px; font-family: monospace;">
+              ${code}
+            </div>
+            <p style="color: #888; font-size: 13px; margin: 15px 0 0;">
+              Valid for 15 minutes • Do not share with anyone
+            </p>
+          </div>
+          
+          <div style="background-color: #f9f9f9; border-left: 4px solid #9e192d; padding: 15px; margin: 25px 0; border-radius: 0 4px 4px 0;">
+            <p style="color: #333; margin: 0 0 8px; font-weight: 600; font-size: 15px;">
+              <span style="color: #9e192d;">⚠️ Security Notice:</span>
+            </p>
+            <p style="color: #555; margin: 0; font-size: 14px; line-height: 1.5;">
+              For your security, this code will expire shortly. Crime Rescue BD will never ask you for this code via phone or email.
+            </p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="#" style="display: inline-block; background: #9e192d; color: white; text-decoration: none; padding: 12px 25px; border-radius: 5px; font-weight: 500; font-size: 15px; transition: all 0.3s;">
+              Access Admin Dashboard
             </a>
           </div>
-          
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #888;">
-            <p style="margin: 5px 0;">Thank you for helping us maintain a secure platform for crime prevention.</p>
-            <p style="margin: 5px 0;">© ${new Date().getFullYear()} Crime Rescue BD. Protecting our community together.</p>
-          </div>
+        </div>
+        
+        <div style="background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #eaeaea;">
+          <p style="margin: 5px 0;">
+            This email was sent to you as part of your Crime Rescue BD admin account verification.
+          </p>
+          <p style="margin: 5px 0;">
+            © ${new Date().getFullYear()} Crime Rescue BD. All rights reserved.
+          </p>
         </div>
       </div>
     `,
-    text: `Crime Rescue BD - Admin Verification\n\n🔐 Your Secure Access Code 🔐\n\nHello Admin!\n\nWe're excited to have you back in the Crime Rescue BD command center! Here's your exclusive verification code:\n\n${code}\n\n⚠️ IMPORTANT:\n- Code expires in 15 minutes\n- Never share this code with anyone\n- Our team will NEVER ask for this code\n\nReturn to Crime Rescue BD to continue your important work!\n\n© ${new Date().getFullYear()} Crime Rescue BD - Protecting our community together.`,
+    text: `Crime Rescue BD - Admin Verification\n\n🔐 Your Security Code 🔐\n\nHello Admin,\n\nTo access the Crime Rescue BD admin dashboard, please use the following verification code:\n\n${code}\n\nThis code is valid for 15 minutes. Do not share it with anyone.\n\nFor security reasons, Crime Rescue BD will never ask you for this code via phone or email.\n\n© ${new Date().getFullYear()} Crime Rescue BD - All rights reserved.`,
   };
 
   try {

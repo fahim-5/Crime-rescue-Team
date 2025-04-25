@@ -145,6 +145,89 @@ const emailService = {
       throw error;
     }
   },
+
+  /**
+   * Send admin verification email
+   * @param {string} toEmail - Admin's email
+   * @param {string} code - Verification code
+   */
+  sendVerificationEmail: async (toEmail, code) => {
+    try {
+      console.log("=== Admin Verification Email ===");
+      console.log("To:", toEmail);
+      console.log("Code:", code);
+      console.log("================================");
+
+      const transporter = emailService.createTransporter();
+
+      const mailOptions = {
+        from: config.email.from,
+        to: toEmail,
+        subject: "🔐 Your Secure Admin Access Code - Crime Rescue BD",
+        html: `
+          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eaeaea; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="background: linear-gradient(135deg, #9e192d 0%, #6e0f1d 100%); padding: 30px; text-align: center;">
+              <img src="https://via.placeholder.com/80x80?text=CRBD" alt="Crime Rescue BD Logo" style="height: 80px; width: 80px; border-radius: 50%; border: 3px solid white; margin-bottom: 15px;">
+              <h1 style="color: white; margin: 0; font-size: 26px; font-weight: 600;">Admin Portal Access</h1>
+              <p style="color: rgba(255,255,255,0.85); margin: 10px 0 0; font-size: 16px;">Secure verification required</p>
+            </div>
+            
+            <div style="padding: 30px; background-color: #ffffff;">
+              <div style="text-align: center; margin-bottom: 25px;">
+                <h2 style="color: #333; margin: 0 0 10px; font-size: 22px;">Your Security Code</h2>
+                <p style="color: #666; margin: 0; font-size: 15px; line-height: 1.5;">
+                  Use this one-time code to access the Crime Rescue BD admin dashboard
+                </p>
+              </div>
+              
+              <div style="background: #f8f8f8; border-radius: 8px; padding: 25px; text-align: center; margin: 20px 0; border: 1px solid #eee;">
+                <div style="display: inline-block; background: #9e192d; color: white; padding: 15px 30px; border-radius: 6px; font-size: 28px; font-weight: bold; letter-spacing: 2px; font-family: monospace;">
+                  ${code}
+                </div>
+                <p style="color: #888; font-size: 13px; margin: 15px 0 0;">
+                  Valid for 15 minutes • Do not share with anyone
+                </p>
+              </div>
+              
+              <div style="background-color: #f9f9f9; border-left: 4px solid #9e192d; padding: 15px; margin: 25px 0; border-radius: 0 4px 4px 0;">
+                <p style="color: #333; margin: 0 0 8px; font-weight: 600; font-size: 15px;">
+                  <span style="color: #9e192d;">⚠️ Security Notice:</span>
+                </p>
+                <p style="color: #555; margin: 0; font-size: 14px; line-height: 1.5;">
+                  For your security, this code will expire shortly. Crime Rescue BD will never ask you for this code via phone or email.
+                </p>
+              </div>
+              
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="${
+                  config.frontendUrl
+                }" style="display: inline-block; background: #9e192d; color: white; text-decoration: none; padding: 12px 25px; border-radius: 5px; font-weight: 500; font-size: 15px; transition: all 0.3s;">
+                  Access Admin Dashboard
+                </a>
+              </div>
+            </div>
+            
+            <div style="background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #eaeaea;">
+              <p style="margin: 5px 0;">
+                This email was sent to you as part of your Crime Rescue BD admin account verification.
+              </p>
+              <p style="margin: 5px 0;">
+                © ${new Date().getFullYear()} Crime Rescue BD. All rights reserved.
+              </p>
+            </div>
+          </div>
+        `,
+        text: `Crime Rescue BD - Admin Verification\n\n🔐 Your Security Code 🔐\n\nHello Admin,\n\nTo access the Crime Rescue BD admin dashboard, please use the following verification code:\n\n${code}\n\nThis code is valid for 15 minutes. Do not share it with anyone.\n\nFor security reasons, Crime Rescue BD will never ask you for this code via phone or email.\n\n© ${new Date().getFullYear()} Crime Rescue BD - All rights reserved.`,
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`🔥 Verification email sent to ${toEmail}`);
+      return info;
+    } catch (error) {
+      console.error("❌ Error sending admin verification email:", error);
+      throw error;
+    }
+  },
 };
 
 module.exports = emailService;
