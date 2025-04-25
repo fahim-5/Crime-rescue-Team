@@ -135,6 +135,23 @@ const Notifications = () => {
   // Mark all notifications as read
   const markAllAsRead = async () => {
     try {
+      // Check if there are any unread notifications
+      const hasUnreadNotifications = notifications.some(
+        (notification) => !notification.read
+      );
+
+      if (!hasUnreadNotifications) {
+        // Show alert message if there are no unread notifications
+        setError("No unread notifications to mark as read");
+
+        // Clear the error message after 3 seconds
+        setTimeout(() => {
+          setError(null);
+        }, 3000);
+
+        return;
+      }
+
       // Correct endpoint for marking all notifications as read
       const response = await axios.put(
         `${API_URL}/api/notifications/all/read`,
@@ -161,6 +178,11 @@ const Notifications = () => {
         err.response?.data?.message ||
           "Failed to mark all notifications as read"
       );
+
+      // Clear the error message after 3 seconds
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
     }
   };
 
@@ -262,25 +284,6 @@ const Notifications = () => {
     );
   }
 
-  // Render error state
-  if (error) {
-    return (
-      <main className={styles.container}>
-        <div className={styles.errorState}>
-          <FiAlertTriangle className={styles.errorIcon} />
-          <h3>Error Loading Notifications</h3>
-          <p>{error}</p>
-          <button
-            className={`${styles.actionButton} ${styles.primary}`}
-            onClick={() => window.location.reload()}
-          >
-            Try Again
-          </button>
-        </div>
-      </main>
-    );
-  }
-
   return (
     <main className={styles.container}>
       <header className={styles.header}>
@@ -299,6 +302,13 @@ const Notifications = () => {
           </div>
         )}
       </header>
+
+      {error && (
+        <div className={styles.alertNotification}>
+          <FiAlertTriangle />
+          {error}
+        </div>
+      )}
 
       {notifications.length > 0 ? (
         <div className={styles.list}>

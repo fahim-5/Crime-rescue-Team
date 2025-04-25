@@ -306,6 +306,40 @@
     max-width: 400px;
 }
 
+/* Alert notification */
+.alertNotification {
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    color: #b91c1c;
+    font-size: 0.95rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-in-out;
+    position: relative;
+}
+
+.alertNotification svg {
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .unreadBadge {
     background-color: #ef4444;
     color: white;
