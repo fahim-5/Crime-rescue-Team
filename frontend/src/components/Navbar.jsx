@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import NotificationBadge from "./NotificationBadge";
+import CrimeAlertBadge from "./CrimeAlertBadge";
 import "./Navbar.css";
 import "./profile_popup.css";
 
@@ -79,6 +80,10 @@ const Navbar = () => {
             <Link to="/notifications">Notifications</Link>
             <NotificationBadge />
           </li>
+          <li className="alert-link-container">
+            <Link to="/crime-alerts">Crime Alerts</Link>
+            <CrimeAlertBadge />
+          </li>
           <li>
             <Link to="/admin/analytics">Analytics</Link>
           </li>
@@ -103,8 +108,9 @@ const Navbar = () => {
             <Link to="/notifications">Notifications</Link>
             <NotificationBadge />
           </li>
-          <li>
-            <Link to="/police/resolved">Resolved Cases</Link>
+          <li className="alert-link-container">
+            <Link to="/crime-alerts">Crime Alerts</Link>
+            <CrimeAlertBadge />
           </li>
           <li>
             <Link to="/police/analytics">Analytics</Link>
@@ -140,8 +146,9 @@ const Navbar = () => {
                 <Link to="/notifications">Notifications</Link>
                 <NotificationBadge />
               </li>
-              <li>
-                <Link to="/alert">Alert</Link>
+              <li className="alert-link-container">
+                <Link to="/crime-alerts">Crime Alerts</Link>
+                <CrimeAlertBadge />
               </li>
               <li>
                 <Link to="/public/settings">Account</Link>

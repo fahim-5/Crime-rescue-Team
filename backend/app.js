@@ -11,6 +11,7 @@ const verificationRoutes = require("./routes/verificationRoutes");
 const policeRoutes = require("./routes/policeRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const crimeAlertRoutes = require("./routes/crimeAlertRoutes");
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const upload = require("./middlewares/upload");
 
@@ -43,6 +44,7 @@ app.use("/api/police/requests", requestRoutes);
 app.use("/api/police", policeRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/crime-alerts", crimeAlertRoutes);
 
 // Error handling middleware should be last
 app.use(errorMiddleware);

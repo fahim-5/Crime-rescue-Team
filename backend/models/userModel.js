@@ -1258,6 +1258,25 @@ class UserModel {
       };
     }
   }
+
+  static async getUsersByLocation(location) {
+    const connection = await pool.getConnection();
+    try {
+      const [users] = await connection.query(
+        `SELECT id, username, full_name, email, role, address
+         FROM users 
+         WHERE address LIKE ? AND status = 'approved'`,
+        [`%${location}%`]
+      );
+
+      return users;
+    } catch (error) {
+      console.error("Error finding users by location:", error);
+      throw error;
+    } finally {
+      await connection.release();
+    }
+  }
 }
 
 module.exports = UserModel;

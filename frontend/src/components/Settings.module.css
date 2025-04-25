@@ -177,11 +177,13 @@
 .primaryButton {
   background: linear-gradient(135deg, #9e192d 0%, #c0392b 100%);
   color: white;
+  margin-top: 10px;
 }
 
 .primaryButton:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(158, 25, 45, 0.2);
+
 }
 
 .secondaryButton {

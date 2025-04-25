@@ -11,6 +11,7 @@ import MyReports from "./pages/public/MyReports";
 import ReportDetail from "./pages/public/ReportDetail";
 import About from "./components/About";
 import PrivateRoute from "./components/PrivateRoute";
+import TestAlert from "./components/TestAlert";
 
 import Validations from "./pages/admin/Validations";
 import Start from "./pages/general/Start";
@@ -64,6 +65,8 @@ function App() {
           <Route path="/report" element={<CrimeReportForm />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/alert" element={<CrimeAlerts />} />
+          <Route path="/crime-alerts" element={<CrimeAlerts />} />
+          <Route path="/test-alert" element={<TestAlert />} />
           <Route path="/about" element={<About />} />
           <Route
             path="/reports"

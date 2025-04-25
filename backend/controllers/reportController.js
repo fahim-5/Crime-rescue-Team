@@ -2,6 +2,7 @@ const ReportModel = require("../models/reportModel");
 const path = require("path");
 const fileUtils = require("../utils/fileUtils");
 const NotificationService = require("../services/notificationService");
+const CrimeAlertModel = require("../models/crimeAlertModel");
 
 const createReport = async (req, res) => {
   try {
@@ -69,6 +70,38 @@ const createReport = async (req, res) => {
         console.error("Error alerting police:", alertError);
         // We still want to return success even if alerting fails
       }
+    }
+
+    // Create a crime alert for the community
+    try {
+      const alertType =
+        req.body.crimeType.charAt(0).toUpperCase() +
+        req.body.crimeType.slice(1);
+
+      // Create details object based on crime report data
+      const details = {
+        peopleInvolved: numCriminals,
+        victimDescription: `${req.body.victimGender} victim`,
+        weapons:
+          req.body.armed === "yes" ? "Armed suspect(s)" : "No weapons reported",
+        dangerLevel: req.body.armed === "yes" ? "High" : "Medium",
+        policeResponse: "Report under review",
+      };
+
+      // Create the crime alert
+      await CrimeAlertModel.createAlert({
+        report_id: reportId,
+        type: alertType,
+        location: req.body.location,
+        description: `${alertType} reported in ${req.body.location} area`,
+        status: "active",
+        details: details,
+      });
+
+      console.log("Crime alert created successfully");
+    } catch (alertError) {
+      console.error("Error creating crime alert:", alertError);
+      // Continue even if alert creation fails
     }
 
     // Send notification to the user who created the report
