@@ -39,16 +39,8 @@ const Settings = () => {
 
   const [editMode, setEditMode] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [tempUserData, setTempUserData] = useState({ ...userData });
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordSuccess, setPasswordSuccess] = useState("");
   const [profileError, setProfileError] = useState("");
   const [profileSuccess, setProfileSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -645,96 +637,6 @@ const Settings = () => {
     }
   };
 
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    setPasswordData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handlePasswordSubmit = async (e) => {
-    e.preventDefault();
-    setPasswordError("");
-    setPasswordSuccess("");
-    setIsLoading(true);
-
-    try {
-      if (passwordData.newPassword !== passwordData.confirmPassword) {
-        setPasswordError("New passwords do not match");
-        setIsLoading(false);
-        return;
-      }
-
-      if (!validatePassword(passwordData.newPassword)) {
-        setPasswordError("New password must be at least 8 characters long");
-        setIsLoading(false);
-        return;
-      }
-
-      const token = checkAuthToken();
-
-      try {
-        const response = await axios.post(
-          "http://localhost:5000/api/auth/change-password",
-          {
-            currentPassword: passwordData.currentPassword,
-            newPassword: passwordData.newPassword,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            withCredentials: true,
-            timeout: 8000, // 8 second timeout
-          }
-        );
-
-        if (response.data.success) {
-          setPasswordSuccess("Password changed successfully");
-          setPasswordData({
-            currentPassword: "",
-            newPassword: "",
-            confirmPassword: "",
-          });
-
-          // Close modal after a short delay to show success message
-          setTimeout(() => {
-            setShowPasswordModal(false);
-          }, 2000);
-        } else {
-          setPasswordError(
-            response.data.message || "Failed to change password"
-          );
-        }
-      } catch (error) {
-        console.error("Password change error:", error);
-        if (error.response) {
-          setPasswordError(
-            "Server error: " +
-              (error.response.data.message || "Failed to change password")
-          );
-        } else if (error.request) {
-          setPasswordError(
-            "Network error: Cannot connect to server. Try again later."
-          );
-        } else {
-          setPasswordError(
-            "An unexpected error occurred. Please try again later."
-          );
-        }
-      }
-    } catch (error) {
-      console.error("General password change error:", error);
-      setPasswordError(
-        "An error occurred while changing password. Please try again."
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className={styles.fullScreenContainer}>
       <div className={styles.contentWrapper}>
@@ -816,24 +718,27 @@ const Settings = () => {
                 <h2 className={styles.sectionTitle}>Account Security</h2>
               </div>
 
-              <div className={styles.securityGrid}>
-                <div className={styles.securityItem}>
-                  <div className={styles.securityIcon}>
-                    <FiLock />
-                  </div>
-                  <div>
-                    <h3>Password</h3>
-                    <p className={styles.securityStatus}>
-                      Last changed 3 months ago
+              <div className={styles.settingsGroup}>
+                <div className={styles.settingItem}>
+                  <div className={styles.settingInfo}>
+                    <h3 className={styles.settingTitle}>Password</h3>
+                    <p className={styles.settingStatus}>
+                      Keep your account secure with a strong password
                     </p>
                   </div>
                   <button
-                    className={`${styles.button} ${styles.primaryButton} ${styles.smallButton}`}
-                    onClick={() => setShowPasswordModal(true)}
+                    className={`${styles.button} ${styles.primaryButton}`}
+                    onClick={() =>
+                      navigate("/forgot-password?mode=change", {
+                        state: { mode: "change" },
+                      })
+                    }
                   >
-                    Change
+                    <FiLock /> Change Password
                   </button>
                 </div>
+
+                <div className={styles.settingDivider}></div>
               </div>
             </section>
 
@@ -1029,109 +934,6 @@ const Settings = () => {
                     </button>
                   </>
                 )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Password Change Modal */}
-        {showPasswordModal && (
-          <div className={styles.modalOverlay}>
-            <div className={styles.modalContent}>
-              <div className={styles.modalHeader}>
-                <h2 className={styles.modalTitle}>Change Password</h2>
-                <button
-                  className={styles.closeButton}
-                  onClick={() => {
-                    setShowPasswordModal(false);
-                    setPasswordError("");
-                    setPasswordSuccess("");
-                    setPasswordData({
-                      currentPassword: "",
-                      newPassword: "",
-                      confirmPassword: "",
-                    });
-                  }}
-                >
-                  <FiX />
-                </button>
-              </div>
-
-              <div className={styles.modalBody}>
-                {passwordError && (
-                  <p className={styles.errorMessage}>{passwordError}</p>
-                )}
-                {passwordSuccess && (
-                  <p className={styles.successMessage}>{passwordSuccess}</p>
-                )}
-
-                <form onSubmit={handlePasswordSubmit}>
-                  <div className={styles.formGroup}>
-                    <label className={styles.label}>Current Password</label>
-                    <input
-                      type="password"
-                      name="currentPassword"
-                      value={passwordData.currentPassword}
-                      onChange={handlePasswordChange}
-                      className={styles.input}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label className={styles.label}>New Password</label>
-                    <input
-                      type="password"
-                      name="newPassword"
-                      value={passwordData.newPassword}
-                      onChange={handlePasswordChange}
-                      className={styles.input}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label className={styles.label}>Confirm New Password</label>
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      value={passwordData.confirmPassword}
-                      onChange={handlePasswordChange}
-                      className={styles.input}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-
-                  <div className={styles.modalActions}>
-                    <button
-                      type="button"
-                      className={`${styles.button} ${styles.secondaryButton}`}
-                      onClick={() => {
-                        setShowPasswordModal(false);
-                        setPasswordError("");
-                        setPasswordSuccess("");
-                        setPasswordData({
-                          currentPassword: "",
-                          newPassword: "",
-                          confirmPassword: "",
-                        });
-                      }}
-                      disabled={isLoading}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className={`${styles.button} ${styles.primaryButton}`}
-                      disabled={isLoading}
-                    >
-                      {isLoading ? "Changing Password..." : "Change Password"}
-                    </button>
-                  </div>
-                </form>
               </div>
             </div>
           </div>

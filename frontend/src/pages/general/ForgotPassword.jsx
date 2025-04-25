@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import VerificationCodeInput from "../../components/VerificationCodeInput";
 import "./ForgotPassword.css";
 
 const ForgotPassword = () => {
+  const location = useLocation();
+  const [mode, setMode] = useState("forgot"); // "forgot" or "change"
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
@@ -20,6 +22,11 @@ const ForgotPassword = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const codeParam = params.get("code");
+    const modeParam = params.get("mode");
+
+    if (modeParam === "change") {
+      setMode("change");
+    }
 
     if (codeParam && codeParam.length === 6) {
       setVerificationCode(codeParam);
@@ -30,7 +37,12 @@ const ForgotPassword = () => {
     if (savedEmail) {
       setEmail(savedEmail);
     }
-  }, []);
+
+    // If user navigated from Settings with state, use that
+    if (location.state && location.state.mode === "change") {
+      setMode("change");
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -102,6 +114,7 @@ const ForgotPassword = () => {
         // Store verified data in localStorage as a fallback
         localStorage.setItem("resetPasswordEmail", email);
         localStorage.setItem("resetPasswordCode", verificationCode);
+        localStorage.setItem("resetPasswordMode", mode);
 
         // Navigate to reset password page with email and code
         // Use a shorter timeout and catch any navigation errors
@@ -109,14 +122,14 @@ const ForgotPassword = () => {
           try {
             console.log("Navigating to reset password page...");
             navigate("/reset-password-with-code", {
-              state: { email, code: verificationCode },
+              state: { email, code: verificationCode, mode },
             });
           } catch (error) {
             console.error("Navigation error:", error);
             // Fallback to direct URL with parameters
             window.location.href = `/reset-password-with-code?email=${encodeURIComponent(
               email
-            )}&code=${encodeURIComponent(verificationCode)}`;
+            )}&code=${encodeURIComponent(verificationCode)}&mode=${mode}`;
           }
         }, 500);
       } else {
@@ -173,129 +186,131 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-box">
-        <h2 className="auth-title">
-          {!isSubmitted ? "Forgot Password" : "Verify Your Email"}
-        </h2>
+    <div className="pwd-recovery-container">
+      <div className="pwd-recovery-card">
+        <div className="pwd-recovery-content">
+          <h2 className="pwd-recovery-title">
+            {!isSubmitted
+              ? mode === "change"
+                ? "Change Password"
+                : "Forgot Password"
+              : "Verify Your Email"}
+          </h2>
 
-        {message && (
-          <p
-            className={isError ? "auth-error-message" : "auth-success-message"}
-          >
-            {message}
-          </p>
-        )}
-
-        {!isSubmitted ? (
-          <form onSubmit={handleSubmit} className="auth-form">
-            <div className="input-group">
-              <label htmlFor="email" className="auth-label">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                className="auth-input"
-                placeholder="Enter your email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+          {message && (
+            <div
+              className={`pwd-recovery-message ${
+                isError ? "pwd-recovery-error" : "pwd-recovery-success"
+              }`}
+            >
+              {message}
             </div>
+          )}
 
-            <button
-              type="submit"
-              className="auth-button"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <div className="button-with-loader">
-                  <span className="button-loader"></span>
-                  <span>Sending...</span>
-                </div>
-              ) : (
-                "Send Verification Code"
-              )}
-            </button>
-          </form>
-        ) : !isCodeVerified ? (
-          <div className="verification-container">
-            <p className="auth-description">
-              Enter the 6-digit verification code sent to:
-              <strong> {email}</strong>
-            </p>
+          {!isSubmitted ? (
+            <form onSubmit={handleSubmit} className="pwd-recovery-form">
+              <div className="pwd-recovery-form-group">
+                <label htmlFor="email" className="pwd-recovery-label">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  className="pwd-recovery-input"
+                  placeholder="Enter your email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isSubmitting}
+                />
+              </div>
 
-            <VerificationCodeInput
-              length={6}
-              onChange={setVerificationCode}
-              autoFocus={true}
-            />
-
-            <button
-              onClick={handleVerifyCode}
-              className="auth-button"
-              disabled={isVerifyingCode || verificationCode.length !== 6}
-            >
-              {isVerifyingCode ? (
-                <div className="button-with-loader">
-                  <span className="button-loader"></span>
-                  <span>Verifying...</span>
-                </div>
-              ) : (
-                "Verify Code"
-              )}
-            </button>
-
-            <div className="auth-action-links">
               <button
-                onClick={handleResendCode}
-                className="text-button"
+                type="submit"
+                className="pwd-recovery-button"
                 disabled={isSubmitting}
               >
-                Didn't receive a code? Resend
+                {isSubmitting ? "Sending..." : `Send Verification Code`}
               </button>
-            </div>
-          </div>
-        ) : (
-          <div className="success-container">
-            <div className="success-icon">✓</div>
-            <p className="success-message">
-              Code verified successfully! Redirecting to reset password...
-            </p>
 
-            {/* Fallback button in case automatic navigation fails */}
-            <div className="auth-action-links" style={{ marginTop: "20px" }}>
-              <Link
-                to="/reset-password-with-code"
-                state={{ email, code: verificationCode }}
-                className="auth-button"
-              >
-                Continue to Reset Password
+              <div className="pwd-recovery-links">
+                <p>
+                  Remember your password?{" "}
+                  <Link to="/login" className="pwd-recovery-link">
+                    Log In
+                  </Link>
+                </p>
+                {mode === "change" && (
+                  <p>
+                    <Link to="/settings" className="pwd-recovery-link">
+                      Back to Settings
+                    </Link>
+                  </p>
+                )}
+              </div>
+            </form>
+          ) : !isCodeVerified ? (
+            <div className="pwd-recovery-verification">
+              <p className="pwd-recovery-verification-message">
+                {mode === "change"
+                  ? "We've sent a verification code to your email to confirm your password change request."
+                  : "We've sent a verification code to your email. Please enter it below to continue."}
+              </p>
+
+              <VerificationCodeInput
+                value={verificationCode}
+                onChange={setVerificationCode}
+              />
+
+              <div className="pwd-recovery-verification-actions">
+                <button
+                  className="pwd-recovery-button"
+                  onClick={handleVerifyCode}
+                  disabled={isVerifyingCode || verificationCode.length !== 6}
+                >
+                  {isVerifyingCode ? "Verifying..." : "Verify Code"}
+                </button>
+
+                <button
+                  className="pwd-recovery-text-button"
+                  onClick={handleResendCode}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Sending..." : "Resend Code"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="pwd-recovery-verification">
+              <div className="pwd-recovery-success-icon">✓</div>
+              <p className="pwd-recovery-verification-message">
+                {mode === "change"
+                  ? "Your identity has been verified! Redirecting to change your password..."
+                  : "Code verified successfully! Redirecting to reset your password..."}
+              </p>
+
+              <div className="pwd-recovery-verification-actions">
+                <Link
+                  to="/reset-password-with-code"
+                  state={{ email, code: verificationCode, mode }}
+                  className="pwd-recovery-button"
+                >
+                  {mode === "change"
+                    ? "Continue to Change Password"
+                    : "Continue to Reset Password"}
+                </Link>
+              </div>
+            </div>
+          )}
+
+          <div className="pwd-recovery-footer">
+            <p>
+              Remember your password?{" "}
+              <Link to="/login" className="pwd-recovery-link">
+                Sign In
               </Link>
-
-              <button
-                onClick={() => {
-                  window.location.href = `/reset-password-with-code?email=${encodeURIComponent(
-                    email
-                  )}&code=${encodeURIComponent(verificationCode)}`;
-                }}
-                className="text-button"
-                style={{ marginTop: "10px" }}
-              >
-                If redirection fails, click here
-              </button>
-            </div>
+            </p>
           </div>
-        )}
-
-        <div className="auth-footer">
-          <p>
-            Remember your password?{" "}
-            <Link to="/login" className="auth-link">
-              Sign In
-            </Link>
-          </p>
         </div>
       </div>
     </div>

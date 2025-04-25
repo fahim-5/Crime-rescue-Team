@@ -1,41 +1,47 @@
+/* Verification code input - isolated styles with consistent naming */
 .verification-code-input-container {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     justify-content: center;
-    margin: 16px 0;
+    margin: 24px 0;
 }
 
 .verification-digit-input {
     width: 50px;
-    height: 56px;
-    font-size: 24px;
+    height: 54px;
+    font-size: 22px;
     text-align: center;
-    border: 2px solid #ddd;
+    border: 2px solid #e2e8f0;
     border-radius: 8px;
-    background-color: #fafafa;
-    color: #333;
-    transition: all 0.2s ease;
+    background-color: #f7fafc;
+    color: #2c3e50;
+    transition: all 0.25s ease;
     cursor: text;
     font-weight: 600;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .verification-digit-input:focus {
-    border-color: #4361ee;
+    border-color: #B01B33;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    box-shadow: 0 0 0 3px rgba(176, 27, 51, 0.1);
     background-color: #fff;
 }
 
-.verification-digit-input::placeholder {
-    color: #bbb;
+.verification-digit-input:hover:not(:focus) {
+    border-color: #cbd5e0;
 }
 
-/* Autofill styles */
+.verification-digit-input::placeholder {
+    color: #a0aec0;
+}
+
+/* Autofill styles - prevent browser changing colors */
 .verification-digit-input:-webkit-autofill,
 .verification-digit-input:-webkit-autofill:hover,
 .verification-digit-input:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0 30px #fff inset !important;
+    -webkit-text-fill-color: #2c3e50 !important;
     transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -46,7 +52,7 @@
     }
 
     .verification-digit-input {
-        width: 40px;
+        width: 42px;
         height: 48px;
         font-size: 20px;
     }

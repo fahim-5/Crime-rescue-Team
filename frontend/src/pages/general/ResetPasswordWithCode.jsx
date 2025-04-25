@@ -10,6 +10,7 @@ const ResetPasswordWithCode = () => {
   });
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
+  const [mode, setMode] = useState("reset"); // "reset" or "change"
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,29 +32,38 @@ const ResetPasswordWithCode = () => {
   useEffect(() => {
     let emailValue = "";
     let codeValue = "";
+    let modeValue = "reset";
 
     if (location.state) {
       if (location.state.email) emailValue = location.state.email;
       if (location.state.code) codeValue = location.state.code;
+      if (location.state.mode === "change") modeValue = "change";
     }
 
     if (!emailValue || !codeValue) {
       const searchParams = new URLSearchParams(location.search);
       const urlEmail = searchParams.get("email");
       const urlCode = searchParams.get("code");
+      const urlMode = searchParams.get("mode");
+
       if (urlEmail) emailValue = urlEmail;
       if (urlCode) codeValue = urlCode;
+      if (urlMode === "change") modeValue = "change";
     }
 
     if (!emailValue || !codeValue) {
       const storedEmail = localStorage.getItem("resetPasswordEmail");
       const storedCode = localStorage.getItem("resetPasswordCode");
+      const storedMode = localStorage.getItem("resetPasswordMode");
+
       if (storedEmail) emailValue = storedEmail;
       if (storedCode) codeValue = storedCode;
+      if (storedMode === "change") modeValue = "change";
     }
 
     if (emailValue) setEmail(emailValue);
     if (codeValue) setCode(codeValue);
+    setMode(modeValue);
   }, [location]);
 
   const validatePassword = (password, confirmPassword) => {
@@ -180,10 +190,18 @@ const ResetPasswordWithCode = () => {
 
       if (response.data.success) {
         setMessage(
-          "Your password has been successfully reset. You can now login with your new password."
+          mode === "change"
+            ? "Your password has been successfully changed. You can now login with your new password."
+            : "Your password has been successfully reset. You can now login with your new password."
         );
         setIsError(false);
         setIsSubmitted(true);
+
+        // Clear the stored reset data
+        localStorage.removeItem("resetPasswordEmail");
+        localStorage.removeItem("resetPasswordCode");
+        localStorage.removeItem("resetPasswordMode");
+
         setTimeout(() => {
           navigate("/login");
         }, 5000);
@@ -198,7 +216,9 @@ const ResetPasswordWithCode = () => {
       if (error.response && error.response.data) {
         setMessage(
           error.response.data.message ||
-            "Failed to reset password. Please try again."
+            `Failed to ${
+              mode === "change" ? "change" : "reset"
+            } password. Please try again.`
         );
       } else if (error.request) {
         setMessage(
@@ -214,17 +234,26 @@ const ResetPasswordWithCode = () => {
 
   if (!email || !code) {
     return (
-      <div className="reset-password-container">
-        <div className="reset-password-box">
-          <h2 className="reset-password-title">Reset Your Password</h2>
-          <div className="error-container">
-            <div className="error-icon">!</div>
-            <p className="reset-error-message">
-              Missing verification information. Please start the password reset
-              process again.
-            </p>
-            <div className="reset-action-links">
-              <Link to="/forgot-password" className="reset-button">
+      <div className="pwd-recovery-container">
+        <div className="pwd-recovery-card">
+          <div className="pwd-recovery-content">
+            <h2 className="pwd-recovery-title">
+              {mode === "change"
+                ? "Change Your Password"
+                : "Reset Your Password"}
+            </h2>
+            <div className="pwd-recovery-message pwd-recovery-error">
+              Missing verification information. Please start the{" "}
+              {mode === "change" ? "password change" : "password reset"} process
+              again.
+            </div>
+            <div className="pwd-recovery-verification-actions">
+              <Link
+                to={`/forgot-password${
+                  mode === "change" ? "?mode=change" : ""
+                }`}
+                className="pwd-recovery-button"
+              >
                 Start Over
               </Link>
             </div>
@@ -235,47 +264,38 @@ const ResetPasswordWithCode = () => {
   }
 
   return (
-    <div className="reset-password-container">
-      <div className="reset-instructions">
-        <h2>Password Reset</h2>
-        <p>Please create a new secure password for your account.</p>
-        
-        <div className="password-tips">
-          <h3>Password Tips:</h3>
-          <ul>
-            <li>Use a combination of letters, numbers, and symbols</li>
-            <li>Avoid common words or personal information</li>
-            <li>Make it at least 8 characters long</li>
-            <li>Consider using a passphrase for better security</li>
-          </ul>
-        </div>
-        
-        <div className="security-info">
-          <h3>Security Note:</h3>
-          <p>Your password must meet the requirements shown to the right.</p>
-          <p>After resetting, you'll be automatically logged out of all devices.</p>
-        </div>
-      </div>
-      
-      <div className="reset-form-container">
-        {!isSubmitted ? (
-          <>
-            <h2 className="reset-form-title">Create New Password</h2>
-            
-            {message && (
-              <p className={isError ? "reset-error-message" : "reset-success-message"}>
-                {message}
-              </p>
-            )}
-            
-            <form onSubmit={handleSubmit} className="reset-form">
-              <div className="form-group">
-                <label htmlFor="new-password">New Password</label>
+    <div className="pwd-recovery-container">
+      <div className="pwd-recovery-card reset-password-with-code">
+        <div className="pwd-recovery-content">
+          <h2 className="pwd-recovery-title">
+            {mode === "change" ? "Change Password" : "Reset Password"}
+          </h2>
+
+          <p className="pwd-recovery-subtitle">
+            Please create a new secure password for your account.
+          </p>
+
+          {message && (
+            <div
+              className={`pwd-recovery-message ${
+                isError ? "pwd-recovery-error" : "pwd-recovery-success"
+              }`}
+            >
+              {message}
+            </div>
+          )}
+
+          {!isSubmitted ? (
+            <form onSubmit={handleSubmit} className="pwd-recovery-form">
+              <div className="pwd-recovery-form-group">
+                <label htmlFor="new-password" className="pwd-recovery-label">
+                  New Password
+                </label>
                 <input
                   type="password"
                   id="new-password"
                   name="newPassword"
-                  className={`form-input ${
+                  className={`pwd-recovery-input ${
                     validationErrors.newPassword ? "input-error" : ""
                   }`}
                   placeholder="Enter your new password"
@@ -285,30 +305,47 @@ const ResetPasswordWithCode = () => {
                   autoFocus
                 />
                 {validationErrors.newPassword && (
-                  <p className="error-message">{validationErrors.newPassword}</p>
+                  <p className="pwd-recovery-input-error">
+                    {validationErrors.newPassword}
+                  </p>
                 )}
-                
+
                 {passwords.newPassword && (
-                  <div className="password-strength">
-                    <div className="strength-meter">
-                      <div 
-                        className={`strength-bar strength-${passwordStrength}`}
+                  <div className="pwd-recovery-strength-meter">
+                    <div className="pwd-recovery-meter-bar">
+                      <div
+                        className={`pwd-recovery-meter-fill strength-${passwordStrength}`}
                       ></div>
                     </div>
-                    <span className="strength-text">
-                      Strength: {["Very weak", "Weak", "Fair", "Good", "Strong", "Very strong"][passwordStrength]}
+                    <span className="pwd-recovery-meter-text">
+                      Strength:{" "}
+                      {
+                        [
+                          "Very weak",
+                          "Weak",
+                          "Fair",
+                          "Good",
+                          "Strong",
+                          "Very strong",
+                        ][passwordStrength]
+                      }
                     </span>
                   </div>
                 )}
               </div>
-              
-              <div className="form-group">
-                <label htmlFor="confirm-password">Confirm Password</label>
+
+              <div className="pwd-recovery-form-group">
+                <label
+                  htmlFor="confirm-password"
+                  className="pwd-recovery-label"
+                >
+                  Confirm Password
+                </label>
                 <input
                   type="password"
                   id="confirm-password"
                   name="confirmPassword"
-                  className={`form-input ${
+                  className={`pwd-recovery-input ${
                     validationErrors.confirmPassword ? "input-error" : ""
                   }`}
                   placeholder="Confirm your new password"
@@ -317,53 +354,74 @@ const ResetPasswordWithCode = () => {
                   required
                 />
                 {validationErrors.confirmPassword && (
-                  <p className="error-message">{validationErrors.confirmPassword}</p>
+                  <p className="pwd-recovery-input-error">
+                    {validationErrors.confirmPassword}
+                  </p>
                 )}
               </div>
-              
-              <div className="requirements-box">
-                <h4>Password Requirements</h4>
-                <ul>
-                  {Object.entries(criteriaState).map(([key, { met, requirement }]) => (
-                    <li key={key} className={met ? "requirement-met" : ""}>
-                      {met ? "✓" : "•"} {requirement}
-                    </li>
-                  ))}
+
+              <div className="pwd-recovery-requirements">
+                <h4 className="pwd-recovery-requirements-title">
+                  Password Requirements
+                </h4>
+                <ul className="pwd-recovery-requirements-list">
+                  {Object.entries(criteriaState).map(
+                    ([key, { met, requirement }]) => (
+                      <li
+                        key={key}
+                        className={`pwd-recovery-requirement ${
+                          met ? "pwd-recovery-requirement-met" : ""
+                        }`}
+                      >
+                        {met ? "✓" : "•"} {requirement}
+                      </li>
+                    )
+                  )}
                 </ul>
               </div>
-              
-              <button 
-                type="submit" 
-                className="reset-button" 
+
+              <button
+                type="submit"
+                className="pwd-recovery-button"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <>
-                    <span className="spinner"></span>
-                    Resetting Password...
+                    <span className="pwd-recovery-spinner"></span>
+                    {mode === "change"
+                      ? "Changing Password..."
+                      : "Resetting Password..."}
                   </>
+                ) : mode === "change" ? (
+                  "Change Password"
                 ) : (
                   "Reset Password"
                 )}
               </button>
             </form>
-          </>
-        ) : (
-          <div className="success-container">
-            <div className="success-icon">✓</div>
-            <h3>Password Reset Successful!</h3>
-            <p>{message}</p>
-            <p>You will be redirected to the login page shortly.</p>
+          ) : (
+            <div className="pwd-recovery-verification">
+              <div className="pwd-recovery-success-icon">✓</div>
+              <h3 className="pwd-recovery-success-title">
+                {mode === "change"
+                  ? "Password Changed Successfully!"
+                  : "Password Reset Successful!"}
+              </h3>
+              <p className="pwd-recovery-verification-message">{message}</p>
+              <p className="pwd-recovery-verification-message">
+                You will be redirected to the login page shortly.
+              </p>
+            </div>
+          )}
+
+          <div className="pwd-recovery-footer">
+            <p>
+              Remember your password?{" "}
+              <Link to="/login" className="pwd-recovery-link">
+                Sign In
+              </Link>
+            </p>
           </div>
-        )}
-        
-        <div className="form-footer">
-          <p>
-            Remember your password?{" "}
-            <Link to="/login" className="footer-link">
-              Sign In
-            </Link>
-          </p>
         </div>
       </div>
     </div>
