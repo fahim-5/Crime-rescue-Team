@@ -1,4 +1,6 @@
 const ReportModel = require("../models/reportModel");
+const path = require("path");
+const fileUtils = require("../utils/fileUtils");
 
 const createReport = async (req, res) => {
   try {
@@ -10,20 +12,63 @@ const createReport = async (req, res) => {
       });
     }
 
-    const photos = req.files?.photos?.map((file) => file.path) || [];
-    const videos = req.files?.videos?.map((file) => file.path) || [];
+    // Process uploaded files and store only the paths relative to the uploads directory
+    // This makes it easier to serve files through the static middleware
+    const photos =
+      req.files?.photos?.map((file) => {
+        // Get path relative to uploads directory
+        const relativePath = path.relative(
+          path.join(__dirname, "../uploads"),
+          file.path
+        );
+        return relativePath.replace(/\\/g, "/"); // Ensure forward slashes for URLs
+      }) || [];
+
+    const videos =
+      req.files?.videos?.map((file) => {
+        // Get path relative to uploads directory
+        const relativePath = path.relative(
+          path.join(__dirname, "../uploads"),
+          file.path
+        );
+        return relativePath.replace(/\\/g, "/"); // Ensure forward slashes for URLs
+      }) || [];
+
+    // Validate numCriminals is a number
+    const numCriminals = parseInt(req.body.numCriminals);
+    if (isNaN(numCriminals) || numCriminals < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Number of criminals must be a valid number greater than 0",
+      });
+    }
 
     const reportId = await ReportModel.create(
       req.body.location,
       req.body.time,
       req.body.crimeType,
-      req.body.numCriminals,
+      numCriminals,
       req.body.victimGender,
       req.body.armed,
       photos,
       videos,
       req.user ? req.user.id : null // Pass user ID if authenticated
     );
+
+    // If report created successfully and has valid information, alert nearby police
+    if (
+      reportId &&
+      (req.body.armed === "yes" ||
+        req.body.crimeType === "homicide" ||
+        req.body.crimeType === "assault")
+    ) {
+      try {
+        await ReportModel.alertPolice(reportId);
+      } catch (alertError) {
+        console.error("Error alerting police:", alertError);
+        // We still want to return success even if alerting fails
+      }
+    }
 
     res.status(201).json({
       success: true,
@@ -32,6 +77,21 @@ const createReport = async (req, res) => {
     });
   } catch (error) {
     console.error("Report creation error:", error);
+
+    // Delete any uploaded files if report creation fails
+    if (req.files) {
+      try {
+        const allFiles = [
+          ...(req.files.photos || []),
+          ...(req.files.videos || []),
+        ].map((file) => file.path);
+
+        await fileUtils.deleteFiles(allFiles);
+      } catch (deleteError) {
+        console.error("Error deleting files after failed report:", deleteError);
+      }
+    }
+
     res.status(500).json({
       success: false,
       message: "Failed to create report",
@@ -232,6 +292,154 @@ const respondToAlert = async (req, res) => {
   }
 };
 
+/**
+ * Delete a report and its associated media files
+ */
+const deleteReport = async (req, res) => {
+  try {
+    const reportId = req.params.id;
+
+    // First get the report to find the media files
+    const report = await ReportModel.getById(reportId);
+
+    if (!report) {
+      return res.status(404).json({
+        success: false,
+        message: "Report not found",
+      });
+    }
+
+    // Check authorization (only admin or the report creator can delete)
+    if (
+      req.user.role !== "admin" &&
+      report.reporter_id &&
+      req.user.id !== report.reporter_id
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized to delete this report",
+      });
+    }
+
+    // Delete the report media files
+    const mediaFiles = [
+      ...report.photos.map((p) => p.path),
+      ...report.videos.map((v) => v.path),
+    ];
+
+    // Delete the files
+    await fileUtils.deleteFiles(mediaFiles);
+
+    // Delete the report from the database
+    const result = await ReportModel.delete(reportId);
+
+    res.status(200).json({
+      success: true,
+      message: "Report and associated media files deleted successfully",
+      deletedCount: result,
+    });
+  } catch (error) {
+    console.error("Error deleting report:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete report",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * Update a report including handling media files
+ */
+const updateReport = async (req, res) => {
+  try {
+    const reportId = req.params.id;
+
+    // Check if report exists
+    const report = await ReportModel.getById(reportId);
+    if (!report) {
+      return res.status(404).json({
+        success: false,
+        message: "Report not found",
+      });
+    }
+
+    // Check authorization
+    if (
+      req.user.role !== "admin" &&
+      report.reporter_id &&
+      req.user.id !== report.reporter_id
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized to update this report",
+      });
+    }
+
+    // Handle file updates if any
+    let updatedPhotos = report.photos.map((p) => p.path);
+    let updatedVideos = report.videos.map((v) => v.path);
+
+    // Process new photos if any
+    if (req.files?.photos) {
+      const newPhotos = req.files.photos.map((file) => {
+        const relativePath = path.relative(
+          path.join(__dirname, "../uploads"),
+          file.path
+        );
+        return relativePath.replace(/\\/g, "/");
+      });
+
+      // Add new photos to the existing ones
+      updatedPhotos = [...updatedPhotos, ...newPhotos];
+    }
+
+    // Process new videos if any
+    if (req.files?.videos) {
+      const newVideos = req.files.videos.map((file) => {
+        const relativePath = path.relative(
+          path.join(__dirname, "../uploads"),
+          file.path
+        );
+        return relativePath.replace(/\\/g, "/");
+      });
+
+      // Add new videos to the existing ones
+      updatedVideos = [...updatedVideos, ...newVideos];
+    }
+
+    // Prepare update data
+    const updateData = {
+      ...req.body,
+    };
+
+    // Only update media if there are changes
+    if (req.files?.photos) {
+      updateData.photos = updatedPhotos;
+    }
+
+    if (req.files?.videos) {
+      updateData.videos = updatedVideos;
+    }
+
+    // Update the report
+    const result = await ReportModel.update(reportId, updateData);
+
+    res.status(200).json({
+      success: true,
+      message: "Report updated successfully",
+      data: { id: reportId },
+    });
+  } catch (error) {
+    console.error("Error updating report:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update report",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createReport,
   getAllReports,
@@ -240,4 +448,6 @@ module.exports = {
   getNearbyReports,
   getPendingPoliceAlerts,
   respondToAlert,
+  deleteReport,
+  updateReport,
 };

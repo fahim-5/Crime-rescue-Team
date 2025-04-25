@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const path = require("path");
 
 const authRoutes = require("./routes/authRoutes");
 const reportRoutes = require("./routes/reportRoutes");
@@ -19,7 +20,9 @@ const app = express();
 app.use(express.json()); // JSON body parser
 app.use(cors({ origin: "http://localhost:5173", credentials: true })); // CORS for frontend
 app.use(morgan("dev")); // Logging requests
-app.use("/uploads", express.static("uploads")); // Static file serving for uploaded files
+
+// Serve static files from the uploads directory
+app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {

@@ -1,4 +1,5 @@
 const { pool } = require("../config/db");
+const fileUtils = require("../utils/fileUtils");
 
 class ReportModel {
   /**
@@ -66,12 +67,23 @@ class ReportModel {
          ORDER BY cr.created_at DESC`
       );
 
-      // Process and return the rows with parsed JSON data
-      return rows.map((row) => ({
-        ...row,
-        photos: row.photos ? JSON.parse(row.photos) : [],
-        videos: row.videos ? JSON.parse(row.videos) : [],
-      }));
+      // Process and return the rows with parsed JSON data and full URLs
+      return rows.map((row) => {
+        const photos = row.photos ? JSON.parse(row.photos) : [];
+        const videos = row.videos ? JSON.parse(row.videos) : [];
+
+        return {
+          ...row,
+          photos: photos.map((photo) => ({
+            path: photo,
+            url: fileUtils.getFileUrl(photo),
+          })),
+          videos: videos.map((video) => ({
+            path: video,
+            url: fileUtils.getFileUrl(video),
+          })),
+        };
+      });
     } catch (error) {
       throw error;
     } finally {
@@ -125,11 +137,21 @@ class ReportModel {
         [reportId]
       );
 
+      // Process photos and videos to include full URLs
+      const photos = report.photos ? JSON.parse(report.photos) : [];
+      const videos = report.videos ? JSON.parse(report.videos) : [];
+
       // Return the report with processed data
       return {
         ...report,
-        photos: report.photos ? JSON.parse(report.photos) : [],
-        videos: report.videos ? JSON.parse(report.videos) : [],
+        photos: photos.map((photo) => ({
+          path: photo,
+          url: fileUtils.getFileUrl(photo),
+        })),
+        videos: videos.map((video) => ({
+          path: video,
+          url: fileUtils.getFileUrl(video),
+        })),
         validations,
         alerts,
       };

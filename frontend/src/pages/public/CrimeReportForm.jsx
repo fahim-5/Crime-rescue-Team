@@ -8,10 +8,11 @@ import {
   FaCalendarAlt,
   FaUserShield,
   FaInfoCircle,
+  FaSpinner,
 } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const CrimeReportForm = () => {
   const [photos, setPhotos] = useState([]);
@@ -19,22 +20,46 @@ const CrimeReportForm = () => {
   const [location, setLocation] = useState("");
   const [time, setTime] = useState(new Date());
   const [crimeType, setCrimeType] = useState("theft");
-  const [numCriminals, setNumCriminals] = useState("");
+  const [numCriminals, setNumCriminals] = useState("1");
   const [victimGender, setVictimGender] = useState("male");
   const [armed, setArmed] = useState("yes");
   const [alert, setAlert] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const photoInputRef = React.useRef(null);
   const videoInputRef = React.useRef(null);
 
   const handlePhotoChange = (event) => {
     const files = Array.from(event.target.files);
-    setPhotos((prev) => [...prev, ...files]);
+
+    // Validate file size (max 5MB per file)
+    const validFiles = files.filter((file) => file.size <= 5 * 1024 * 1024);
+
+    if (validFiles.length !== files.length) {
+      showAlert(
+        "Some photos exceed the 5MB size limit and were not included.",
+        "error"
+      );
+    }
+
+    setPhotos((prev) => [...prev, ...validFiles]);
   };
 
   const handleVideoChange = (event) => {
     const files = Array.from(event.target.files);
-    setVideos((prev) => [...prev, ...files]);
+
+    // Validate file size (max 25MB per file)
+    const validFiles = files.filter((file) => file.size <= 25 * 1024 * 1024);
+
+    if (validFiles.length !== files.length) {
+      showAlert(
+        "Some videos exceed the 25MB size limit and were not included.",
+        "error"
+      );
+    }
+
+    setVideos((prev) => [...prev, ...validFiles]);
   };
 
   const showAlert = (message, type) => {
@@ -46,18 +71,49 @@ const CrimeReportForm = () => {
     setLocation("");
     setTime(new Date());
     setCrimeType("theft");
-    setNumCriminals("");
+    setNumCriminals("1");
     setVictimGender("male");
     setArmed("yes");
     setPhotos([]);
     setVideos([]);
+    setErrors({});
 
     if (photoInputRef.current) photoInputRef.current.value = "";
     if (videoInputRef.current) videoInputRef.current.value = "";
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!location.trim()) {
+      newErrors.location = "Location is required";
+    }
+
+    if (!time) {
+      newErrors.time = "Time is required";
+    }
+
+    if (
+      !numCriminals ||
+      isNaN(parseInt(numCriminals)) ||
+      parseInt(numCriminals) < 1
+    ) {
+      newErrors.numCriminals = "Please enter a valid number (min: 1)";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!validateForm()) {
+      showAlert("Please correct the errors in the form.", "error");
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
       const formData = new FormData();
@@ -83,10 +139,18 @@ const CrimeReportForm = () => {
       }
 
       resetForm();
-      showAlert("Report submitted successfully!", "success");
+      showAlert(
+        "Report submitted successfully! Law enforcement has been notified.",
+        "success"
+      );
     } catch (error) {
       console.error("Submission error:", error);
-      showAlert(error.message || "Please try again later.", "error");
+      showAlert(
+        error.message || "Failed to submit report. Please try again later.",
+        "error"
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -110,11 +174,14 @@ const CrimeReportForm = () => {
   return (
     <div className="crime-report-container">
       {alert && (
-        <>
-          <div className="alert-backdrop" onClick={() => setAlert(null)} />
-          <div className={`alert alert-${alert.type}`}>
+        <div className="alert-container">
+          <div className={`alert-box alert-${alert.type}`}>
             <div className="alert-content">
-              {alert.type === "success" ? <FaCheck /> : <FaTimes />}
+              {alert.type === "success" ? (
+                <FaCheck className="alert-icon" />
+              ) : (
+                <FaTimes className="alert-icon" />
+              )}
               <span className="alert-message">{alert.message}</span>
               <button
                 onClick={() => setAlert(null)}
@@ -125,7 +192,7 @@ const CrimeReportForm = () => {
               </button>
             </div>
           </div>
-        </>
+        </div>
       )}
 
       <div className="crime-report-wrapper">
@@ -159,17 +226,22 @@ const CrimeReportForm = () => {
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
                       required
-                      className="form-input"
+                      className={`form-input ${
+                        errors.location ? "form-input-error" : ""
+                      }`}
                     />
                     <button
                       type="button"
                       className="map-button"
-                      onClick={() => window.open("https://www.google.com/maps", "_blank")}
-                      
+                      onClick={handleMapButtonClick}
+                      disabled={!location.trim()}
                     >
                       <FaMapMarkerAlt />
                     </button>
                   </div>
+                  {errors.location && (
+                    <div className="error-message">{errors.location}</div>
+                  )}
                   <div className="input-guideline">
                     <FaInfoCircle className="guideline-icon" />
                     <span>
@@ -190,11 +262,17 @@ const CrimeReportForm = () => {
                       onChange={(date) => setTime(date)}
                       showTimeSelect
                       dateFormat="Pp"
-                      className="form-input datepicker-input"
+                      className={`form-input datepicker-input ${
+                        errors.time ? "form-input-error" : ""
+                      }`}
                       required
                       placeholderText="Select date and time"
+                      maxDate={new Date()}
                     />
                   </div>
+                  {errors.time && (
+                    <div className="error-message">{errors.time}</div>
+                  )}
                   <div className="input-guideline">
                     <FaInfoCircle className="guideline-icon" />
                     <span>
@@ -255,8 +333,13 @@ const CrimeReportForm = () => {
                       onChange={(e) => setNumCriminals(e.target.value)}
                       placeholder="Enter number"
                       required
-                      className="form-input"
+                      className={`form-input ${
+                        errors.numCriminals ? "form-input-error" : ""
+                      }`}
                     />
+                    {errors.numCriminals && (
+                      <div className="error-message">{errors.numCriminals}</div>
+                    )}
                     <div className="input-guideline">
                       <FaInfoCircle className="guideline-icon" />
                       <span>Estimate if exact number is unknown</span>
@@ -336,7 +419,7 @@ const CrimeReportForm = () => {
                     type="file"
                     id="crime-photos"
                     name="crime-photos"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/jpg"
                     multiple
                     onChange={handlePhotoChange}
                     ref={photoInputRef}
@@ -382,7 +465,8 @@ const CrimeReportForm = () => {
                     type="file"
                     id="crime-video"
                     name="crime-video"
-                    accept="video/*"
+                    accept="video/mp4,video/quicktime"
+                    multiple
                     onChange={handleVideoChange}
                     ref={videoInputRef}
                     className="file-input"
@@ -420,8 +504,18 @@ const CrimeReportForm = () => {
                 <button type="button" className="reset-btn" onClick={resetForm}>
                   Clear Form
                 </button>
-                <button type="submit" className="submit-btn">
-                  Submit Report
+                <button
+                  type="submit"
+                  className="submit-btn"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <FaSpinner className="spinner-icon" /> Submitting...
+                    </>
+                  ) : (
+                    "Submit Report"
+                  )}
                 </button>
               </div>
             </form>

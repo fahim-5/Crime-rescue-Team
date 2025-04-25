@@ -4,10 +4,9 @@ const reportController = require("../controllers/reportController");
 const upload = require("../middlewares/upload");
 const authMiddleware = require("../middlewares/authMiddleware");
 
-// Create a new crime report
+// Create a new crime report - no authentication required for public reporting
 router.post(
   "/",
-  authMiddleware.authenticateToken, // Optional: User can be authenticated or anonymous
   upload.fields([
     { name: "photos", maxCount: 5 },
     { name: "videos", maxCount: 3 },
@@ -18,17 +17,7 @@ router.post(
 // Get all reports
 router.get("/", reportController.getAllReports);
 
-// Get a specific report by ID
-router.get("/:id", reportController.getReportById);
-
-// Validate a crime report (requires authentication)
-router.post(
-  "/:reportId/validate",
-  authMiddleware.authenticateToken,
-  reportController.validateCrimeReport
-);
-
-// Get nearby reports based on location
+// Get nearby reports based on location (must be before :id route)
 router.get("/nearby", reportController.getNearbyReports);
 
 // Get pending police alerts (police only)
@@ -43,6 +32,34 @@ router.put(
   "/alerts/:alertId",
   authMiddleware.authenticateToken,
   reportController.respondToAlert
+);
+
+// Get a specific report by ID (must be after /nearby and /alerts routes)
+router.get("/:id", reportController.getReportById);
+
+// Update a report (requires authentication)
+router.put(
+  "/:id",
+  authMiddleware.authenticateToken,
+  upload.fields([
+    { name: "photos", maxCount: 5 },
+    { name: "videos", maxCount: 3 },
+  ]),
+  reportController.updateReport
+);
+
+// Delete a report (requires authentication)
+router.delete(
+  "/:id",
+  authMiddleware.authenticateToken,
+  reportController.deleteReport
+);
+
+// Validate a crime report (requires authentication)
+router.post(
+  "/:reportId/validate",
+  authMiddleware.authenticateToken,
+  reportController.validateCrimeReport
 );
 
 module.exports = router;

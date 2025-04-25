@@ -202,15 +202,15 @@ body {
 }
 
 .form-input:focus {
-  outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px var(--primary-transparent);
+  outline: none;
 }
 
 /* Location Input */
 .location-input-container {
   position: relative;
-  z-index: 1;
+  display: flex;
 }
 
 /* Radio Buttons - Improved for better accessibility */
@@ -557,53 +557,41 @@ body {
   display: inline-block;
 }
 
-/* Alerts - Improved animation and accessibility */
-.alert-backdrop {
+/* Alerts - Centered with no backdrop blur */
+.alert-container {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
-  animation: fadeIn 0.3s ease;
-}
-
-.alert {
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--border-radius-md);
   display: flex;
   align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  pointer-events: none;
+  /* Allow clicking through the container */
+}
+
+.alert-box {
+  padding: var(--space-lg) var(--space-xl);
+  border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-lg);
-  z-index: 1001;
-  animation: slideIn 0.3s ease-out;
-  max-width: 400px;
+  min-width: 300px;
+  max-width: 500px;
+  animation: fadeInScale 0.3s ease-out;
+  pointer-events: auto;
+  /* Make the alert box clickable */
 }
 
-@keyframes fadeIn {
+@keyframes fadeInScale {
   from {
     opacity: 0;
+    transform: scale(0.9);
   }
 
   to {
     opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(0);
-    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -620,24 +608,31 @@ body {
 .alert-content {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-md);
+}
+
+.alert-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
 }
 
 .alert-message {
   flex: 1;
   font-weight: 500;
+  font-size: var(--font-size-lg);
 }
 
 .alert-close {
   background: none;
   border: none;
   color: white;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   cursor: pointer;
-  margin-left: var(--space-md);
-  padding: 0 0.25rem;
   opacity: 0.8;
   transition: opacity var(--transition-fast), transform var(--transition-fast);
+  padding: 0;
+  margin-left: var(--space-md);
+  line-height: 1;
 }
 
 .alert-close:hover {
@@ -737,12 +732,14 @@ body {
     gap: var(--space-xs);
   }
 
-  .alert {
-    top: auto;
-    bottom: var(--space-md);
-    right: var(--space-md);
-    left: var(--space-md);
-    max-width: none;
+  /* Update the responsive alert styles for centered alerts */
+  .alert-box {
+    margin: 0 var(--space-md);
+    padding: var(--space-md);
+  }
+
+  .alert-message {
+    font-size: var(--font-size-md);
   }
 }
 
@@ -774,4 +771,63 @@ body {
   .section-title {
     font-size: 1.1rem;
   }
+}
+
+/* Form Validation Styles */
+.form-input-error {
+  border-color: var(--error-color) !important;
+  background-color: rgba(229, 62, 62, 0.05) !important;
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: var(--font-size-sm);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.error-message::before {
+  content: "!";
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+  background: var(--error-color);
+  color: white;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+/* Loading Spinner */
+.spinner-icon {
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.submit-btn:disabled {
+  background-color: var(--medium-gray);
+  color: var(--dark-gray);
+  cursor: not-allowed;
+  border-color: var(--medium-gray);
+  box-shadow: none;
+}
+
+.submit-btn:disabled:hover {
+  background-color: var(--medium-gray);
+  border-color: var(--medium-gray);
+  transform: none;
 }
