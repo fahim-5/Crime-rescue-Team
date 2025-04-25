@@ -1,14 +1,54 @@
 const express = require("express");
 const router = express.Router();
-const { authMiddleware } = require("../middlewares/authMiddleware");
 const { pool } = require("../config/db");
+
+// Test endpoint to check table existence
+router.get("/check-table", async (req, res) => {
+  try {
+    const [tables] = await pool.query("SHOW TABLES LIKE 'police_stations'");
+
+    if (tables.length > 0) {
+      // Table exists, check if it has data
+      const [count] = await pool.query(
+        "SELECT COUNT(*) as count FROM police_stations"
+      );
+      return res.status(200).json({
+        success: true,
+        message: "Table check completed",
+        exists: true,
+        count: count[0].count,
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        message: "Table check completed",
+        exists: false,
+      });
+    }
+  } catch (error) {
+    console.error("Error checking police_stations table:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to check table existence",
+      error: error.message,
+    });
+  }
+});
 
 // Get all police stations
 router.get("/", async (req, res) => {
   try {
+    console.log("Fetching police stations...");
+
     const [rows] = await pool.query(
       "SELECT * FROM police_stations WHERE is_active = true ORDER BY district, thana, name"
     );
+
+    console.log(`Found ${rows.length} police stations`);
+
+    if (rows.length > 0) {
+      console.log(`First station: ${JSON.stringify(rows[0])}`);
+    }
 
     return res.status(200).json({
       success: true,

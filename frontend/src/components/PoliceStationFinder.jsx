@@ -4,6 +4,8 @@ import "./PoliceStationFinder.css";
 
 const API_URL = "http://localhost:5000";
 
+console.log("API_URL:", API_URL);
+
 const PoliceStationFinder = ({ onClose, location }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -49,10 +51,22 @@ const PoliceStationFinder = ({ onClose, location }) => {
   const fetchPoliceStations = async () => {
     try {
       setLoading(true);
+      const apiUrl = `${API_URL}/api/police-stations`;
+      console.log("Fetching police stations from:", apiUrl);
 
-      const response = await axios.get(`${API_URL}/api/police-stations`);
+      // Use a timeout to avoid hanging requests
+      const response = await axios.get(apiUrl, {
+        timeout: 10000,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
 
-      if (response.data && response.data.success) {
+      console.log("Response received:", response);
+
+      if (response && response.data && response.data.success) {
+        console.log("Police stations data:", response.data.data);
         setPoliceStations(response.data.data);
         setFilteredStations(response.data.data);
 
@@ -62,11 +76,33 @@ const PoliceStationFinder = ({ onClose, location }) => {
         ];
         setDistricts(uniqueDistricts.sort());
       } else {
-        setError("Failed to load police stations");
+        console.error(
+          "API returned error:",
+          response ? response.data : "No response data"
+        );
+        setError("Failed to load police stations - server returned an error");
       }
     } catch (err) {
       console.error("Error fetching police stations:", err);
-      setError("Failed to load police stations. Please try again later.");
+
+      // Additional error details
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Error response data:", err.response.data);
+        console.error("Error response status:", err.response.status);
+        console.error("Error response headers:", err.response.headers);
+        setError(
+          `Failed to load police stations: Server returned ${err.response.status}`
+        );
+      } else if (err.request) {
+        // The request was made but no response was received
+        console.error("Error request:", err.request);
+        setError("Failed to load police stations: No response from server");
+      } else {
+        // Something else happened while setting up the request
+        setError(`Failed to load police stations: ${err.message}`);
+      }
     } finally {
       setLoading(false);
     }

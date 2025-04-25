@@ -79,11 +79,6 @@ const CrimeAlertBadge = () => {
     return () => clearInterval(intervalId);
   }, [user, token]);
 
-  // For debugging - display alert count in console
-  console.log("Alert count:", alertCount);
-  console.log("Has active alerts:", hasActiveAlerts);
-  console.log("Has active timers:", hasActiveTimers);
-
   // Export alert status to global window object so it can be accessed by Navbar
   useEffect(() => {
     // If there are active alerts by status OR active countdown timers, set active state to true
@@ -97,10 +92,8 @@ const CrimeAlertBadge = () => {
     window.dispatchEvent(event);
   }, [hasActiveAlerts, hasActiveTimers]);
 
-  // Hide badge if count is 0 or still loading
-  if (loading || alertCount === 0) return null;
-
-  return <span className="notification-badge alert-badge">{alertCount}</span>;
+  // Always return null - no badge will be displayed
+  return null;
 };
 
 export default CrimeAlertBadge;

@@ -9,6 +9,7 @@ const reportRoutes = require("./routes/reportRoutes");
 const requestRoutes = require("./routes/requestRoutes");
 const verificationRoutes = require("./routes/verificationRoutes");
 const policeRoutes = require("./routes/policeRoutes");
+const policeStationRoutes = require("./routes/policeStationRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const crimeAlertRoutes = require("./routes/crimeAlertRoutes");
@@ -22,6 +23,12 @@ const app = express();
 app.use(express.json()); // JSON body parser
 app.use(cors({ origin: "http://localhost:5173", credentials: true })); // CORS for frontend
 app.use(morgan("dev")); // Logging requests
+
+// Middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
 
 // Serve static files from the uploads directory
 app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
@@ -42,6 +49,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/verification", verificationRoutes);
 app.use("/api/police/requests", requestRoutes);
 app.use("/api/police", policeRoutes);
+app.use("/api/police-stations", policeStationRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/crime-alerts", crimeAlertRoutes);
