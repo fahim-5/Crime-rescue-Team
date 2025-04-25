@@ -5,10 +5,10 @@ require("dotenv").config();
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST || "smtp.gmail.com",
   port: process.env.EMAIL_PORT || 587,
-  secure: process.env.EMAIL_SECURE === "true" ? true : false, // true for 465, false for other ports
+  secure: process.env.EMAIL_SECURE === "true" ? true : false,
   auth: {
-    user: process.env.EMAIL_USER || "youremail@gmail.com", // your email account
-    pass: process.env.EMAIL_PASS || "yourpassword", // your email password or app password
+    user: process.env.EMAIL_USER || "youremail@gmail.com",
+    pass: process.env.EMAIL_PASS || "yourpassword",
   },
 });
 
@@ -25,45 +25,51 @@ const sendPasswordResetEmail = async (to, resetToken, username) => {
   }/reset-password/${resetToken}`;
 
   const mailOptions = {
-    from: `"Crime Rescue BD" <${
-      process.env.EMAIL_USER || "youremail@gmail.com"
-    }>`,
+    from: `"Crime Rescue BD" <${process.env.EMAIL_USER || "youremail@gmail.com"}>`,
     to,
-    subject: "Reset Your Password - Crime Rescue BD",
+    subject: "🔐 Password Reset Request - Crime Rescue BD",
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 5px;">
-        <div style="text-align: center; margin-bottom: 20px;">
-          <h2 style="color: #9e192d; margin-bottom: 5px;">Crime Rescue BD</h2>
-          <p style="color: #666; font-size: 14px;">Password Reset Request</p>
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <div style="background: linear-gradient(135deg, #9e192d 0%, #6e0f1d 100%); padding: 30px; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 600;">Password Assistance</h1>
+          <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 15px;">Reset your Crime Rescue BD account password</p>
         </div>
         
-        <div style="padding: 20px; background-color: #f9f9f9; border-radius: 5px;">
-          <p>Hello ${username || "User"},</p>
+        <div style="padding: 30px; background-color: #ffffff;">
+          <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">Hello ${username || "User"},</p>
           
-          <p>We received a request to reset your password. If you didn't make this request, you can safely ignore this email.</p>
+          <p style="color: #555; line-height: 1.6;">We received a request to reset your Crime Rescue BD account password. Click the button below to proceed:</p>
           
-          <p>To reset your password, click the button below:</p>
-          
-          <div style="text-align: center; margin: 25px 0;">
-            <a href="${resetUrl}" style="background-color: #9e192d; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Reset Password</a>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetUrl}" style="background-color: #9e192d; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 16px; display: inline-block; box-shadow: 0 2px 8px rgba(158, 25, 45, 0.3);">
+              Reset Password
+            </a>
           </div>
           
-          <p>Or copy and paste this link in your browser:</p>
-          <p style="word-break: break-all; background-color: #f1f1f1; padding: 10px; border-radius: 3px; font-size: 14px;">
-            ${resetUrl}
+          <p style="color: #777; font-size: 14px; text-align: center; margin-bottom: 25px;">
+            This link expires in 60 minutes
           </p>
           
-          <p>This link will expire in 60 minutes for security reasons.</p>
+          <div style="background-color: #f8f8f8; border-left: 4px solid #9e192d; padding: 15px; margin: 25px 0; border-radius: 0 4px 4px 0;">
+            <p style="color: #333; margin: 0 0 5px; font-weight: 600; font-size: 14px;">Can't click the button?</p>
+            <p style="color: #555; margin: 0; font-size: 13px; word-break: break-all;">
+              Copy and paste this URL into your browser:<br>
+              <span style="color: #9e192d;">${resetUrl}</span>
+            </p>
+          </div>
           
-          <p>If you're having trouble, please contact our support team.</p>
+          <p style="color: #555; line-height: 1.6; margin-top: 25px;">
+            If you didn't request this password reset, please ignore this email or contact our support team if you have concerns.
+          </p>
         </div>
         
-        <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-          <p>© ${new Date().getFullYear()} Crime Rescue BD. All rights reserved.</p>
-          <p>This is an automated email, please do not reply.</p>
+        <div style="background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #eee;">
+          <p style="margin: 5px 0;">For security reasons, this email was sent to you because someone requested a password reset.</p>
+          <p style="margin: 5px 0;">© ${new Date().getFullYear()} Crime Rescue BD. All rights reserved.</p>
         </div>
       </div>
     `,
+    text: `Password Reset Request - Crime Rescue BD\n\nHello ${username || "User"},\n\nWe received a request to reset your Crime Rescue BD account password. Please use the following link to reset your password:\n\n${resetUrl}\n\nThis link will expire in 60 minutes.\n\nIf you didn't request this password reset, please ignore this email or contact our support team if you have concerns.\n\n© ${new Date().getFullYear()} Crime Rescue BD. All rights reserved.`
   };
 
   try {
@@ -83,39 +89,51 @@ const sendPasswordResetEmail = async (to, resetToken, username) => {
  * @returns {Promise} - Resolves with info about the sent email
  */
 const sendPasswordChangeConfirmationEmail = async (to, username) => {
+  const loginUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/login`;
+
   const mailOptions = {
-    from: `"Crime Rescue BD" <${
-      process.env.EMAIL_USER || "youremail@gmail.com"
-    }>`,
+    from: `"Crime Rescue BD" <${process.env.EMAIL_USER || "youremail@gmail.com"}>`,
     to,
-    subject: "Your Password Has Been Changed - Crime Rescue BD",
+    subject: "✅ Password Changed Successfully - Crime Rescue BD",
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 5px;">
-        <div style="text-align: center; margin-bottom: 20px;">
-          <h2 style="color: #9e192d; margin-bottom: 5px;">Crime Rescue BD</h2>
-          <p style="color: #666; font-size: 14px;">Password Changed Successfully</p>
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <div style="background: linear-gradient(135deg, #9e192d 0%, #6e0f1d 100%); padding: 30px; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 600;">Password Updated</h1>
+          <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 15px;">Your Crime Rescue BD account security has been updated</p>
         </div>
         
-        <div style="padding: 20px; background-color: #f9f9f9; border-radius: 5px;">
-          <p>Hello ${username || "User"},</p>
+        <div style="padding: 30px; background-color: #ffffff;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
           
-          <p>Your password has been successfully changed.</p>
+          <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">Hello ${username || "User"},</p>
           
-          <p>If you did not make this change, please contact our support team immediately.</p>
+          <p style="color: #555; line-height: 1.6;">Your Crime Rescue BD account password was successfully changed on ${new Date().toLocaleString()}.</p>
           
-          <div style="text-align: center; margin: 25px 0;">
-            <a href="${
-              process.env.FRONTEND_URL || "http://localhost:5173"
-            }/login" style="background-color: #9e192d; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Login to Your Account</a>
+          <div style="background-color: #f8f8f8; border-left: 4px solid #4CAF50; padding: 15px; margin: 25px 0; border-radius: 0 4px 4px 0;">
+            <p style="color: #333; margin: 0 0 5px; font-weight: 600; font-size: 14px;">Security Tip:</p>
+            <p style="color: #555; margin: 0; font-size: 13px;">
+              If you didn't make this change, please contact our support team immediately.
+            </p>
+          </div>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${loginUrl}" style="background-color: #9e192d; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 16px; display: inline-block; box-shadow: 0 2px 8px rgba(158, 25, 45, 0.3);">
+              Sign In to Your Account
+            </a>
           </div>
         </div>
         
-        <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-          <p>© ${new Date().getFullYear()} Crime Rescue BD. All rights reserved.</p>
-          <p>This is an automated email, please do not reply.</p>
+        <div style="background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #eee;">
+          <p style="margin: 5px 0;">This email confirms recent changes to your Crime Rescue BD account.</p>
+          <p style="margin: 5px 0;">© ${new Date().getFullYear()} Crime Rescue BD. All rights reserved.</p>
         </div>
       </div>
     `,
+    text: `Password Changed Successfully - Crime Rescue BD\n\nHello ${username || "User"},\n\nYour Crime Rescue BD account password was successfully changed on ${new Date().toLocaleString()}.\n\nIf you didn't make this change, please contact our support team immediately.\n\nYou can now sign in to your account using your new password.\n\n© ${new Date().getFullYear()} Crime Rescue BD. All rights reserved.`
   };
 
   try {
