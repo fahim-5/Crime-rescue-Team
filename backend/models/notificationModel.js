@@ -153,12 +153,13 @@ const NotificationModel = {
         values = [userId];
       } else {
         // Mark a specific notification as read
+        // Also check user_id to ensure proper authorization
         query = `
           UPDATE notifications
           SET is_read = 1
-          WHERE id = ?
+          WHERE id = ? AND user_id = ?
         `;
-        values = [notificationId];
+        values = [notificationId, userId];
       }
 
       const [result] = await connection.execute(query, values);
@@ -196,11 +197,12 @@ const NotificationModel = {
         values = [userId];
       } else {
         // Delete a specific notification
+        // Also check user_id to ensure proper authorization
         query = `
           DELETE FROM notifications
-          WHERE id = ?
+          WHERE id = ? AND user_id = ?
         `;
-        values = [notificationId];
+        values = [notificationId, userId];
       }
 
       const [result] = await connection.execute(query, values);

@@ -89,8 +89,11 @@ const NotificationController = {
       const notificationId = req.params.id;
       const userId = req.user.id;
 
-      // Mark notification as read
-      const success = await NotificationModel.markAsRead(notificationId);
+      // Mark notification as read - always pass userId
+      const success = await NotificationModel.markAsRead(
+        notificationId,
+        userId
+      );
 
       if (!success) {
         return res.status(404).json({
@@ -145,10 +148,12 @@ const NotificationController = {
   deleteNotification: async (req, res) => {
     try {
       const notificationId = req.params.id;
+      const userId = req.user.id;
 
-      // Delete the notification
+      // Delete the notification - add userId for proper authorization
       const success = await NotificationModel.deleteNotification(
-        notificationId
+        notificationId,
+        userId
       );
 
       if (!success) {
