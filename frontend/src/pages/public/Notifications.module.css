@@ -240,6 +240,11 @@
     color: #6b7280;
     max-width: 400px;
     margin: 0 auto;
+    margin-bottom: 1.5rem;
+}
+
+.refreshButton {
+    margin-top: 1rem;
 }
 
 /* Loading State */

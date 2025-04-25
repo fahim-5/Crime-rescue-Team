@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/useAuth";
+import { useNavigate } from "react-router-dom";
 import "./CrimeReportForm.css";
 import {
   FaMapMarkerAlt,
@@ -17,6 +18,7 @@ import { Link } from "react-router-dom";
 
 const CrimeReportForm = () => {
   const { user, token } = useAuth();
+  const navigate = useNavigate();
   const [photos, setPhotos] = useState([]);
   const [videos, setVideos] = useState([]);
   const [location, setLocation] = useState("");
@@ -66,7 +68,9 @@ const CrimeReportForm = () => {
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
-    setTimeout(() => setAlert(null), 5000);
+    if (type !== "success") {
+      setTimeout(() => setAlert(null), 5000);
+    }
   };
 
   const resetForm = () => {
@@ -179,14 +183,6 @@ const CrimeReportForm = () => {
         "Report submitted successfully! Law enforcement has been notified.",
         "success"
       );
-
-      // After successful submission, alert the user to check their reports
-      setTimeout(() => {
-        showAlert(
-          "You can view your submitted report in 'My Reports' section.",
-          "success"
-        );
-      }, 5000);
     } catch (error) {
       console.error("Submission error:", error);
       showAlert(
@@ -220,21 +216,40 @@ const CrimeReportForm = () => {
       {alert && (
         <div className="alert-container">
           <div className={`alert-box alert-${alert.type}`}>
-            <div className="alert-content">
-              {alert.type === "success" ? (
-                <FaCheck className="alert-icon" />
-              ) : (
+            {alert.type === "success" ? (
+              <div className="alert-success-content">
+                <div className="alert-message-row">
+                  <FaCheck className="alert-icon" />
+                  <span className="alert-message">{alert.message}</span>
+                </div>
+                <div className="alert-buttons-row">
+                  <button
+                    onClick={() => setAlert(null)}
+                    className="alert-btn alert-btn-cancel"
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={() => navigate("/reports")}
+                    className="alert-btn alert-btn-view"
+                  >
+                    View Reports
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="alert-content">
                 <FaTimes className="alert-icon" />
-              )}
-              <span className="alert-message">{alert.message}</span>
-              <button
-                onClick={() => setAlert(null)}
-                className="alert-close"
-                aria-label="Close alert"
-              >
-                &times;
-              </button>
-            </div>
+                <span className="alert-message">{alert.message}</span>
+                <button
+                  onClick={() => setAlert(null)}
+                  className="alert-close"
+                  aria-label="Close alert"
+                >
+                  &times;
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

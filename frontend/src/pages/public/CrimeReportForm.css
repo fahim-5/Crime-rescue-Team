@@ -611,6 +611,25 @@ body {
   gap: var(--space-md);
 }
 
+.alert-success-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.alert-message-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.alert-buttons-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
 .alert-icon {
   font-size: 1.5rem;
   flex-shrink: 0;
@@ -620,6 +639,42 @@ body {
   flex: 1;
   font-weight: 500;
   font-size: var(--font-size-lg);
+}
+
+.alert-buttons {
+  display: flex;
+  gap: var(--space-md);
+  margin-left: var(--space-md);
+}
+
+.alert-btn {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+  min-width: 120px;
+}
+
+.alert-btn-cancel {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.alert-btn-cancel:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.alert-btn-view {
+  background-color: white;
+  color: var(--success-color);
+}
+
+.alert-btn-view:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
 }
 
 .alert-close {

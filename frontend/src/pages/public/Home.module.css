@@ -119,12 +119,12 @@
 }
 
 .viewReportsButton {
-    background: transparent;
-    color: #4a5568;
+    background: #28a745;
+    color: white;
     padding: 1.1rem 2.8rem;
     font-size: 1.1rem;
     font-weight: 500;
-    border: 2px solid #e2e8f0;
+    border: 2px solid #28a745;
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -134,10 +134,10 @@
 }
 
 .viewReportsButton:hover {
-    background-color: #f7fafc;
-    border-color: #cbd5e0;
+    background-color: #218838;
+    border-color: #218838;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
 
 .secondaryText {

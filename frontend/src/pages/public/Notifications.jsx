@@ -272,7 +272,7 @@ const Notifications = () => {
           <p>{error}</p>
           <button
             className={`${styles.actionButton} ${styles.primary}`}
-            onClick={fetchNotifications}
+            onClick={() => window.location.reload()}
           >
             Try Again
           </button>
@@ -363,6 +363,12 @@ const Notifications = () => {
             You're all caught up! When new alerts or updates arrive, they'll
             appear here.
           </p>
+          <button
+            className={`${styles.actionButton} ${styles.primary} ${styles.refreshButton}`}
+            onClick={() => window.location.reload()}
+          >
+            <FiLoader /> Refresh
+          </button>
         </div>
       )}
     </main>
