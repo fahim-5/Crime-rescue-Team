@@ -14,7 +14,7 @@ import {
   FaInfoCircle,
   FaRedo,
   FaSignInAlt,
-  FaPlus
+  FaPlus,
 } from "react-icons/fa";
 import { formatDistanceToNow } from "date-fns";
 
@@ -168,11 +168,15 @@ const MyReports = () => {
       <div className="reports-container empty">
         <h2>My Reports</h2>
         <p className="reports-subtitle">
-          Track the status of your crime reports and view responses from authorities
+          Track the status of your crime reports and view responses from
+          authorities
         </p>
         <div className="empty-state">
           <FaExclamationTriangle className="empty-icon" />
-          <p>You haven't submitted any reports yet. Start by submitting your first crime report to help keep your community safe.</p>
+          <p>
+            You haven't submitted any reports yet. Start by submitting your
+            first crime report to help keep your community safe.
+          </p>
           <a href="/report" className="report-button">
             <FaPlus /> Submit a Report
           </a>
@@ -212,7 +216,10 @@ const MyReports = () => {
                 <FaCalendarAlt className="detail-icon" />
                 <span>
                   {new Date(report.time).toLocaleDateString()} at{" "}
-                  {new Date(report.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {new Date(report.time).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                   <small className="time-ago">
                     {formatDistanceToNow(new Date(report.time), {
                       addSuffix: true,
