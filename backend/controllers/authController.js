@@ -644,19 +644,51 @@ const getUserProfile = async (req, res) => {
 const deleteAccount = async (req, res) => {
   try {
     const userId = req.user.id; // Get user ID from authenticated request
+    const userRole = req.user.role; // Get user role from authenticated request
 
-    // Delete user account
-    await UserModel.deleteAccount(userId);
+    try {
+      // Delete user account with enhanced handling
+      await UserModel.deleteAccount(userId);
 
-    return res.status(200).json({
-      success: true,
-      message: "Account deleted successfully",
-    });
+      return res.status(200).json({
+        success: true,
+        message: "Account deleted successfully",
+        role: userRole,
+        redirectTo: "/",
+      });
+    } catch (dbError) {
+      console.error("Database Error during account deletion:", dbError);
+
+      // Handle table doesn't exist errors gracefully
+      if (dbError.code === "ER_NO_SUCH_TABLE") {
+        return res.status(500).json({
+          success: false,
+          message:
+            "Account deletion partially completed. Some data tables were missing.",
+          details: dbError.message,
+        });
+      }
+
+      throw dbError; // Re-throw for the outer catch block
+    }
   } catch (error) {
     console.error("Delete Account Error:", error);
-    return res.status(error.status || 500).json({
+
+    // Determine status code based on error
+    const status = error.status || 500;
+    const errorMessage = error.message || "Failed to delete account";
+
+    // Cleanup for database error messages to make them more user-friendly
+    let cleanMessage = errorMessage;
+    if (errorMessage.includes("doesn't exist")) {
+      cleanMessage =
+        "Could not delete all account data. Some tables are missing, but your account has been removed.";
+    }
+
+    return res.status(status).json({
       success: false,
-      message: error.message || "Failed to delete account",
+      message: cleanMessage,
+      details: error.details || null,
     });
   }
 };

@@ -757,7 +757,7 @@ class UserModel {
     try {
       await connection.beginTransaction();
 
-      // Get user details first to determine role
+      // Get user details first to determine role and email
       const [userResult] = await connection.query(
         "SELECT * FROM users WHERE id = ?",
         [userId]
@@ -768,24 +768,101 @@ class UserModel {
       }
 
       const user = userResult[0];
-      const { role } = user;
+      const { role, email } = user;
 
-      // Delete from role-specific table first (foreign key constraints)
+      // Check if tables exist before attempting operations
+      const tableCheckQueries = {
+        reports: "SHOW TABLES LIKE 'reports'",
+        assistance_requests: "SHOW TABLES LIKE 'assistance_requests'",
+        notifications: "SHOW TABLES LIKE 'notifications'",
+        password_reset_codes: "SHOW TABLES LIKE 'password_reset_codes'",
+        comments: "SHOW TABLES LIKE 'comments'",
+        police_responses: "SHOW TABLES LIKE 'police_responses'",
+      };
+
+      const tableExists = {};
+
+      // Check which tables exist
+      for (const [table, query] of Object.entries(tableCheckQueries)) {
+        const [result] = await connection.query(query);
+        tableExists[table] = result.length > 0;
+        console.log(`Table ${table} exists: ${tableExists[table]}`);
+      }
+
+      // First, delete any related records based on user's role
       if (role === "public") {
-        await connection.query("DELETE FROM public WHERE email = ?", [
-          user.email,
-        ]);
+        // Delete user's reports if table exists
+        if (tableExists.reports) {
+          await connection.query("DELETE FROM reports WHERE user_id = ?", [
+            userId,
+          ]);
+        }
+
+        // Delete user's assistance requests if table exists
+        if (tableExists.assistance_requests) {
+          await connection.query(
+            "DELETE FROM assistance_requests WHERE user_id = ?",
+            [userId]
+          );
+        }
+
+        // Delete from public table
+        await connection.query("DELETE FROM public WHERE email = ?", [email]);
       } else if (role === "police") {
-        await connection.query("DELETE FROM police WHERE email = ?", [
-          user.email,
-        ]);
+        // Update assigned cases/reports if table exists
+        if (tableExists.reports) {
+          await connection.query(
+            "UPDATE reports SET assigned_officer_id = NULL WHERE assigned_officer_id = ?",
+            [userId]
+          );
+        }
+
+        // Delete police responses if table exists
+        if (tableExists.police_responses) {
+          await connection.query(
+            "DELETE FROM police_responses WHERE officer_id = ?",
+            [userId]
+          );
+        }
+
+        // Delete from police table
+        await connection.query("DELETE FROM police WHERE email = ?", [email]);
       } else if (role === "admin") {
-        await connection.query("DELETE FROM admin WHERE email = ?", [
-          user.email,
+        // Reset any admin-specific actions if reports table exists
+        if (tableExists.reports) {
+          await connection.query(
+            "UPDATE reports SET reviewed_by = NULL WHERE reviewed_by = ?",
+            [userId]
+          );
+        }
+
+        // Delete from admin table
+        await connection.query("DELETE FROM admin WHERE email = ?", [email]);
+      }
+
+      // Delete any notifications for this user if table exists
+      if (tableExists.notifications) {
+        await connection.query("DELETE FROM notifications WHERE user_id = ?", [
+          userId,
         ]);
       }
 
-      // Delete from users table
+      // Delete any reset codes for this user if table exists
+      if (tableExists.password_reset_codes) {
+        await connection.query(
+          "DELETE FROM password_reset_codes WHERE email = ?",
+          [email]
+        );
+      }
+
+      // Delete any comments by this user if table exists
+      if (tableExists.comments) {
+        await connection.query("DELETE FROM comments WHERE user_id = ?", [
+          userId,
+        ]);
+      }
+
+      // Delete from users table (this should cascade to other tables with foreign key constraints)
       await connection.query("DELETE FROM users WHERE id = ?", [userId]);
 
       await connection.commit();

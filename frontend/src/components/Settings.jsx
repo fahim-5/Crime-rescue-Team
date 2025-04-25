@@ -46,6 +46,9 @@ const Settings = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [showDeletionSuccess, setShowDeletionSuccess] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState(5);
+  const [redirectPath, setRedirectPath] = useState("/");
 
   // Determine if the user is an admin when component mounts
   useEffect(() => {
@@ -539,6 +542,32 @@ const Settings = () => {
     }
   };
 
+  // Add this new function to handle the deletion success modal
+  const handleDeletionSuccessDisplay = (path) => {
+    setRedirectPath(path);
+    setShowDeletionSuccess(true);
+
+    // Start countdown for redirection
+    let countdownTime = 5;
+    setRedirectCountdown(countdownTime);
+
+    const countdownInterval = setInterval(() => {
+      countdownTime -= 1;
+      setRedirectCountdown(countdownTime);
+
+      if (countdownTime <= 0) {
+        clearInterval(countdownInterval);
+        // Navigate when countdown finishes
+        try {
+          navigate(path);
+        } catch (navError) {
+          console.error("Navigation error:", navError);
+          window.location.href = path;
+        }
+      }
+    }, 1000);
+  };
+
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== "DELETE") {
       return;
@@ -595,16 +624,15 @@ const Settings = () => {
             console.error("Error during logout:", error);
           }
 
-          alert("Your account has been successfully deleted.");
+          // Hide the delete confirmation modal
+          setShowDeleteConfirmation(false);
 
-          // Navigate to home page
-          try {
-            navigate("/");
-          } catch (navError) {
-            console.error("Navigation error:", navError);
-            // Fallback if navigation fails
-            window.location.href = "/";
-          }
+          // Get redirect path from the server response or default to home page
+          const redirectPath = response.data.redirectTo || "/";
+          console.log("Will redirect to:", redirectPath);
+
+          // Show the success modal with countdown instead of alert
+          handleDeletionSuccessDisplay(redirectPath);
         } else {
           alert(
             response.data.message ||
@@ -633,7 +661,6 @@ const Settings = () => {
       alert("An unexpected error occurred. Please try again later.");
     } finally {
       setIsLoading(false);
-      setShowDeleteConfirmation(false);
     }
   };
 
@@ -663,6 +690,51 @@ const Settings = () => {
                   onClick={() => setShowSuccessAlert(false)}
                 >
                   Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Account Deletion Success Modal */}
+        {showDeletionSuccess && (
+          <div className={styles.modalOverlay}>
+            <div
+              className={`${styles.modalContent} ${styles.deletionSuccessModal}`}
+            >
+              <div className={`${styles.modalHeader} ${styles.successHeader}`}>
+                <h2 className={styles.modalTitle}>
+                  Account Deleted Successfully
+                </h2>
+              </div>
+              <div className={styles.modalBody}>
+                <div className={styles.deletionSuccessIcon}>
+                  <FiCheck size={48} color="#4CAF50" />
+                </div>
+                <p className={styles.deletionSuccessMessage}>
+                  Your account has been permanently deleted. All your data has
+                  been removed from our system.
+                </p>
+                <p className={styles.deletionRedirectMessage}>
+                  You will be redirected to the home page in{" "}
+                  <span className={styles.countdownTimer}>
+                    {redirectCountdown}
+                  </span>{" "}
+                  seconds.
+                </p>
+                <div className={styles.redirectProgressContainer}>
+                  <div
+                    className={styles.redirectProgressBar}
+                    style={{ width: `${(redirectCountdown / 5) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+              <div className={styles.modalFooter}>
+                <button
+                  className={`${styles.button} ${styles.primaryButton}`}
+                  onClick={() => navigate(redirectPath)}
+                >
+                  Go to Home Now
                 </button>
               </div>
             </div>
