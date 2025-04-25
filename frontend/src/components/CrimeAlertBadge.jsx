@@ -4,10 +4,13 @@ import { AuthContext } from "../context/AuthContext";
 import "./NotificationBadge.css"; // Reuse the same styling
 
 const API_URL = "http://localhost:5000";
+const ALERT_VISIBILITY_HOURS = 12; // Alerts will be visible for 12 hours
 
 const CrimeAlertBadge = () => {
   const [alertCount, setAlertCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [hasActiveAlerts, setHasActiveAlerts] = useState(false);
+  const [hasActiveTimers, setHasActiveTimers] = useState(false);
   const { user, token } = useContext(AuthContext);
 
   useEffect(() => {
@@ -38,7 +41,27 @@ const CrimeAlertBadge = () => {
           if (alertsResponse.data && alertsResponse.data.success) {
             const alerts = alertsResponse.data.data;
             console.log("Found alerts:", alerts.length, alerts);
-            setAlertCount(alerts.length);
+
+            // Filter alerts that still have time remaining
+            const now = new Date();
+            const validAlerts = alerts.filter((alert) => {
+              const createdTime = new Date(alert.created_at || alert.timestamp);
+              const expiryTime = new Date(
+                createdTime.getTime() + ALERT_VISIBILITY_HOURS * 60 * 60 * 1000
+              );
+              return now < expiryTime;
+            });
+
+            setAlertCount(validAlerts.length);
+
+            // Check if there are any active alerts by status
+            const activeStatusAlerts = alerts.filter(
+              (alert) => alert.status === "active"
+            );
+            setHasActiveAlerts(activeStatusAlerts.length > 0);
+
+            // Set active timers if any alerts have time remaining
+            setHasActiveTimers(validAlerts.length > 0);
           }
         }
       } catch (error) {
@@ -58,6 +81,21 @@ const CrimeAlertBadge = () => {
 
   // For debugging - display alert count in console
   console.log("Alert count:", alertCount);
+  console.log("Has active alerts:", hasActiveAlerts);
+  console.log("Has active timers:", hasActiveTimers);
+
+  // Export alert status to global window object so it can be accessed by Navbar
+  useEffect(() => {
+    // If there are active alerts by status OR active countdown timers, set active state to true
+    const isActive = hasActiveAlerts || hasActiveTimers;
+    window.hasActiveAlerts = isActive;
+
+    // Dispatch a custom event that the Navbar can listen for
+    const event = new CustomEvent("alertsStatusChanged", {
+      detail: { hasActiveAlerts: isActive },
+    });
+    window.dispatchEvent(event);
+  }, [hasActiveAlerts, hasActiveTimers]);
 
   // Hide badge if count is 0 or still loading
   if (loading || alertCount === 0) return null;

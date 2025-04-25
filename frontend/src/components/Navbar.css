@@ -55,6 +55,23 @@
   position: relative;
 }
 
+/* Alert link container styling */
+.alert-link-container {
+  position: relative;
+}
+
+/* Style for Crime Alerts link when there are active alerts */
+.nav-links .alert-active a {
+  color: #ff0000 !important;
+  /* Red color for active alerts */
+  font-weight: bold !important;
+}
+
+.nav-links .alert-active a:hover {
+  color: #ff5555 !important;
+  /* Lighter red on hover */
+}
+
 .nav-links a {
   text-decoration: none;
   color: rgb(226, 214, 214);

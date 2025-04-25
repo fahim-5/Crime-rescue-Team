@@ -228,13 +228,17 @@
 .alert-description {
   color: var(--gray-700);
   margin: 0;
+  margin-bottom: var(--space-sm);
 }
 
 .alert-footer {
   padding: var(--space-md);
   border-top: 1px solid var(--gray-200);
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
 }
 
 .details-btn {
@@ -401,8 +405,10 @@
   padding: var(--space-md) var(--space-xl);
   border-top: 1px solid var(--gray-200);
   display: flex;
-  justify-content: flex-end;
-  gap: var(--space-sm);
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
 }
 
 .action-btn {
@@ -460,7 +466,15 @@
 
   .modal-footer {
     flex-direction: column;
-    gap: var(--space-sm);
+    align-items: stretch;
+    gap: var(--space-md);
+  }
+
+  .validation-buttons {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: var(--space-sm);
   }
 
   .action-btn {
@@ -535,4 +549,107 @@
 .error-container h3 {
   margin-bottom: 8px;
   font-size: 1.4rem;
+}
+
+/* Alert Countdown Timer */
+.alert-countdown {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-md);
+}
+
+.countdown-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.countdown-timer {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--secondary);
+  background-color: rgba(167, 44, 64, 0.1);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+/* Validation Buttons */
+.validation-buttons {
+  display: flex;
+  gap: var(--space-md);
+  margin-right: auto;
+  /* Push to left side */
+}
+
+.validate-btn,
+.false-report-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 120px;
+}
+
+.validate-btn {
+  background-color: #1e8a4c;
+  color: white;
+  border: 1px solid #156a3a;
+}
+
+.validate-btn:hover:not(:disabled) {
+  background-color: #25a25a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.validate-btn.active {
+  background-color: #25a25a;
+  color: white;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: translateY(1px);
+}
+
+.false-report-btn {
+  background-color: #c0392b;
+  color: white;
+  border: 1px solid #962d22;
+}
+
+.false-report-btn:hover:not(:disabled) {
+  background-color: #e74c3c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.false-report-btn.active {
+  background-color: #e74c3c;
+  color: white;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: translateY(1px);
+}
+
+.validate-btn:disabled,
+.false-report-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.validate-btn svg,
+.false-report-btn svg {
+  stroke-width: 2.5;
 }

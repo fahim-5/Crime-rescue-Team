@@ -8,12 +8,37 @@ import "./profile_popup.css";
 
 const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
+  const [hasActiveAlerts, setHasActiveAlerts] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const popupRef = useRef(null);
   const { user, logout: authLogout } = useAuth();
 
   const toggleProfilePopup = () => setProfileOpen((prev) => !prev);
+
+  // Check if the current route is crime-alerts
+  const isOnAlertsPage = location.pathname.includes("/crime-alerts");
+
+  // Listen for changes in alert status
+  useEffect(() => {
+    const handleAlertsStatusChange = (event) => {
+      setHasActiveAlerts(event.detail.hasActiveAlerts);
+    };
+
+    // Check if the global variable has already been set
+    if (window.hasActiveAlerts !== undefined) {
+      setHasActiveAlerts(window.hasActiveAlerts);
+    }
+
+    window.addEventListener("alertsStatusChanged", handleAlertsStatusChange);
+
+    return () => {
+      window.removeEventListener(
+        "alertsStatusChanged",
+        handleAlertsStatusChange
+      );
+    };
+  }, []);
 
   const showAlert = (message, type = "info") => {
     const alertBox = document.createElement("div");
@@ -80,7 +105,11 @@ const Navbar = () => {
             <Link to="/notifications">Notifications</Link>
             <NotificationBadge />
           </li>
-          <li className="alert-link-container">
+          <li
+            className={`alert-link-container ${
+              hasActiveAlerts || isOnAlertsPage ? "alert-active" : ""
+            }`}
+          >
             <Link to="/crime-alerts">Crime Alerts</Link>
             <CrimeAlertBadge />
           </li>
@@ -108,7 +137,11 @@ const Navbar = () => {
             <Link to="/notifications">Notifications</Link>
             <NotificationBadge />
           </li>
-          <li className="alert-link-container">
+          <li
+            className={`alert-link-container ${
+              hasActiveAlerts || isOnAlertsPage ? "alert-active" : ""
+            }`}
+          >
             <Link to="/crime-alerts">Crime Alerts</Link>
             <CrimeAlertBadge />
           </li>
@@ -146,7 +179,11 @@ const Navbar = () => {
                 <Link to="/notifications">Notifications</Link>
                 <NotificationBadge />
               </li>
-              <li className="alert-link-container">
+              <li
+                className={`alert-link-container ${
+                  hasActiveAlerts || isOnAlertsPage ? "alert-active" : ""
+                }`}
+              >
                 <Link to="/crime-alerts">Crime Alerts</Link>
                 <CrimeAlertBadge />
               </li>
