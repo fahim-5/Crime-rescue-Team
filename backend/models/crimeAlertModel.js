@@ -20,9 +20,9 @@ const CrimeAlertModel = {
           location, 
           description, 
           status,
-          created_at,
-          details
-        ) VALUES (?, ?, ?, ?, ?, NOW(), ?)
+          created_at
+          -- details -- Comment out the details column for now
+        ) VALUES (?, ?, ?, ?, ?, NOW())
       `;
 
       const values = [
@@ -31,7 +31,7 @@ const CrimeAlertModel = {
         data.location,
         data.description,
         data.status || "active",
-        JSON.stringify(data.details || {}),
+        // JSON.stringify(data.details || {}), -- Comment out until column exists
       ];
 
       const [result] = await connection.execute(query, values);
@@ -43,6 +43,7 @@ const CrimeAlertModel = {
       return {
         id: result.insertId,
         ...data,
+        details: {}, // Use empty object
         created_at: new Date().toISOString(),
       };
     } catch (err) {
@@ -75,7 +76,7 @@ const CrimeAlertModel = {
           ca.description,
           ca.status,
           ca.created_at,
-          ca.details,
+          -- ca.details, -- Comment out the details column for now
           cr.time as timestamp
         FROM 
           crime_alerts ca
@@ -101,7 +102,7 @@ const CrimeAlertModel = {
 
       return alerts.map((alert) => ({
         ...alert,
-        details: JSON.parse(alert.details || "{}"),
+        details: {}, // Use empty object instead of parsing
         created_at: alert.created_at.toISOString(),
         timestamp: alert.timestamp
           ? new Date(alert.timestamp).toISOString()
@@ -132,7 +133,7 @@ const CrimeAlertModel = {
           ca.description,
           ca.status,
           ca.created_at,
-          ca.details,
+          -- ca.details, -- Comment out the details column for now
           cr.time as timestamp
         FROM 
           crime_alerts ca
@@ -166,7 +167,8 @@ const CrimeAlertModel = {
 
       return alerts.map((alert) => ({
         ...alert,
-        details: JSON.parse(alert.details || "{}"),
+        // Set details to empty object if the column doesn't exist in the result
+        details: {},
         created_at: alert.created_at.toISOString(),
         timestamp: alert.timestamp
           ? new Date(alert.timestamp).toISOString()
@@ -222,7 +224,7 @@ const CrimeAlertModel = {
           ca.description,
           ca.status,
           ca.created_at,
-          ca.details,
+          -- ca.details, -- Comment out the details column for now
           cr.time as timestamp
         FROM 
           crime_alerts ca
@@ -241,7 +243,7 @@ const CrimeAlertModel = {
       const alert = alerts[0];
       return {
         ...alert,
-        details: JSON.parse(alert.details || "{}"),
+        details: {}, // Use empty object instead of parsing
         created_at: alert.created_at.toISOString(),
         timestamp: alert.timestamp
           ? new Date(alert.timestamp).toISOString()

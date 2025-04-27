@@ -1,0 +1,42 @@
+To fix the "Unknown column 'ca.details' in 'field list'" error:
+
+1. Stop your server if it's running
+
+2. Open phpMyAdmin (http://localhost/phpmyadmin) and select the 'crime_rescue_bd' database
+
+3. Run this SQL query to add the missing 'details' column:
+   ```sql
+   ALTER TABLE `crime_alerts` 
+   ADD COLUMN `details` LONGTEXT DEFAULT NULL AFTER `response_details`;
+   
+   UPDATE `crime_alerts` SET `details` = '{}' WHERE `details` IS NULL;
+   ```
+
+4. Alternatively, you can modify the crime_alerts table structure directly in phpMyAdmin:
+   - Click on the "crime_alerts" table
+   - Go to the "Structure" tab
+   - Click "Add column"
+   - Enter "details" as the Name
+   - Select "LONGTEXT" as the Type
+   - Set Default to "NULL"
+   - Position: "After" "response_details"
+   - Click "Save"
+
+5. Then update all existing records to have empty JSON objects:
+   - Go to the "SQL" tab
+   - Run: `UPDATE crime_alerts SET details = '{}' WHERE details IS NULL;`
+
+6. To fix the "Duplicate entry '0' for key 'PRIMARY'" error with crime_reports table:
+   ```sql
+   -- Delete any record with id=0 (if it exists)
+   DELETE FROM crime_reports WHERE id = 0;
+   
+   -- Reset the AUTO_INCREMENT value
+   ALTER TABLE crime_reports AUTO_INCREMENT = 4;
+   ```
+
+7. Restart your server
+   
+The errors should now be resolved.
+
+Note: We've also modified the code in backend/models/crimeAlertModel.js to handle the case when the details column doesn't exist, but adding the column is the proper long-term fix. 
