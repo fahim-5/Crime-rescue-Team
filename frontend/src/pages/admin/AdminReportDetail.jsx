@@ -47,11 +47,14 @@ const AdminReportDetail = () => {
         setLoading(true);
         setError(null);
 
-        const response = await axios.get(`${API_URL}/admin/reports/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `http://localhost:5000/api/reports/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.data && response.data.success) {
           setReport(response.data.data);
@@ -120,7 +123,7 @@ const AdminReportDetail = () => {
       setStatusUpdateError(null);
 
       const response = await axios.put(
-        `${API_URL}/admin/reports/${id}/status`,
+        `http://localhost:5000/api/reports/${id}`,
         { status: newStatus },
         {
           headers: {

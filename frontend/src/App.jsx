@@ -33,6 +33,7 @@ import Navbar from "./components/Navbar";
 import Instructions from "./components/Instructions";
 import ForgotPassword from "./pages/general/ForgotPassword";
 import ResetPasswordWithCode from "./pages/general/ResetPasswordWithCode";
+import AdminReportDetail from "./pages/admin/AdminReportDetail";
 
 function App() {
   return (
@@ -132,6 +133,14 @@ function App() {
             element={
               <PrivateRoute allowedRole="admin">
                 <Settings />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/report/:id"
+            element={
+              <PrivateRoute allowedRole="admin">
+                <AdminReportDetail />
               </PrivateRoute>
             }
           />

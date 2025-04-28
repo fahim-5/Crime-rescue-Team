@@ -775,6 +775,73 @@ const getReportsWithReporterDetails = async (req, res) => {
   }
 };
 
+/**
+ * Get dashboard stats (total count, pending count, active alerts count)
+ */
+const getDashboardStats = async (req, res) => {
+  try {
+    // Get total reports count
+    const connection = await require("../config/db").pool.getConnection();
+    let totalCount = 0;
+    let pendingCount = 0;
+    let activeAlertsCount = 0;
+
+    try {
+      // Get total count
+      const [totalRows] = await connection.query(
+        "SELECT COUNT(*) as count FROM crime_reports"
+      );
+      totalCount = totalRows[0].count;
+
+      // Get pending count
+      pendingCount = await ReportModel.getPendingReportsCount();
+
+      // Get active alerts (reports from last 12 hours)
+      activeAlertsCount = await ReportModel.getActiveAlertsCount();
+    } finally {
+      connection.release();
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalReports: totalCount,
+        pendingReports: pendingCount,
+        activeAlerts: activeAlertsCount,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching dashboard stats:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch dashboard statistics",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * Get recent reports (limited to 3)
+ */
+const getRecentReports = async (req, res) => {
+  try {
+    const limit = 3; // Hard-coded to 3 as per requirement
+    const recentReports = await ReportModel.getRecentReports(limit);
+
+    return res.status(200).json({
+      success: true,
+      data: recentReports,
+    });
+  } catch (error) {
+    console.error("Error fetching recent reports:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch recent reports",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createReport,
   getAllReports,
@@ -788,4 +855,6 @@ module.exports = {
   getUserReports,
   getReportsWithReporterDetails,
   healthCheck,
+  getDashboardStats,
+  getRecentReports,
 };

@@ -84,4 +84,20 @@ router.post(
   reportController.validateCrimeReport
 );
 
+// Get dashboard statistics (for admin)
+router.get(
+  "/dashboard/stats",
+  authMiddleware.authenticateToken,
+  authMiddleware.isAdmin,
+  reportController.getDashboardStats
+);
+
+// Get recent reports - max 3 (for admin)
+router.get(
+  "/dashboard/recent",
+  authMiddleware.authenticateToken,
+  authMiddleware.isAdmin,
+  reportController.getRecentReports
+);
+
 module.exports = router;

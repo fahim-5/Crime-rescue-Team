@@ -707,6 +707,180 @@ class ReportModel {
       connection.release();
     }
   }
+
+  /**
+   * Get recent reports with limit
+   * @param {number} limit - Maximum number of reports to return
+   * @returns {Promise<Array>} - Array of recent reports
+   */
+  static async getRecentReports(limit = 3) {
+    const connection = await pool.getConnection();
+    try {
+      // Get the most recent reports with validation counts
+      const [rows] = await connection.query(
+        `SELECT cr.*, 
+         COUNT(v.id) AS total_validations,
+         SUM(CASE WHEN v.is_valid = true THEN 1 ELSE 0 END) AS valid_count,
+         SUM(CASE WHEN v.is_valid = false THEN 1 ELSE 0 END) AS invalid_count
+         FROM crime_reports cr
+         LEFT JOIN validations v ON cr.id = v.report_id
+         GROUP BY cr.id
+         ORDER BY cr.created_at DESC
+         LIMIT ?`,
+        [limit]
+      );
+
+      // If no reports are found, return an empty array
+      if (rows.length === 0) {
+        return [];
+      }
+
+      // Get the report IDs to fetch validations and alerts
+      const reportIds = rows.map((report) => report.id);
+
+      // Get all validations for the reports in a single query
+      const [validations] = await connection.query(
+        `SELECT v.*, v.report_id, u.username, u.full_name
+         FROM validations v
+         JOIN users u ON v.user_id = u.id
+         WHERE v.report_id IN (?)
+         ORDER BY v.created_at DESC`,
+        [reportIds]
+      );
+
+      // Get all police alerts for the reports in a single query
+      const [alerts] = await connection.query(
+        `SELECT pa.*, pa.report_id, p.full_name as police_name, p.badge_number, p.station
+         FROM police_alerts pa
+         LEFT JOIN police p ON pa.police_id = p.id
+         WHERE pa.report_id IN (?)
+         ORDER BY pa.created_at DESC`,
+        [reportIds]
+      );
+
+      // Group validations and alerts by report_id
+      const validationsByReportId = validations.reduce((acc, validation) => {
+        if (!acc[validation.report_id]) {
+          acc[validation.report_id] = [];
+        }
+        acc[validation.report_id].push(validation);
+        return acc;
+      }, {});
+
+      const alertsByReportId = alerts.reduce((acc, alert) => {
+        if (!acc[alert.report_id]) {
+          acc[alert.report_id] = [];
+        }
+        acc[alert.report_id].push(alert);
+        return acc;
+      }, {});
+
+      // Get all reporter IDs from the reports
+      const reporterIds = rows
+        .filter((report) => report.reporter_id)
+        .map((report) => report.reporter_id);
+
+      // If we have reporter IDs, get their details
+      let reporters = [];
+      if (reporterIds.length > 0) {
+        try {
+          [reporters] = await connection.query(
+            `SELECT 
+              id, 
+              username, 
+              full_name, 
+              email, 
+              address 
+            FROM 
+              users 
+            WHERE 
+              id IN (?)`,
+            [reporterIds]
+          );
+        } catch (err) {
+          console.error("Error fetching reporter details:", err);
+        }
+      }
+
+      // Create a map of reporter IDs to reporter details for easy lookup
+      const reporterMap = {};
+      reporters.forEach((reporter) => {
+        reporterMap[reporter.id] = {
+          id: reporter.id,
+          name: reporter.full_name || reporter.username,
+          email: reporter.email || "No email provided",
+          address: reporter.address || "No address provided",
+        };
+      });
+
+      // Process and return the reports with validations, alerts, and media URLs
+      return rows.map((report) => {
+        const photos = report.photos ? JSON.parse(report.photos) : [];
+        const videos = report.videos ? JSON.parse(report.videos) : [];
+
+        return {
+          ...report,
+          photos: photos.map((photo) => ({
+            path: photo,
+            url: fileUtils.getFileUrl(photo),
+          })),
+          videos: videos.map((video) => ({
+            path: video,
+            url: fileUtils.getFileUrl(video),
+          })),
+          validations: validationsByReportId[report.id] || [],
+          alerts: alertsByReportId[report.id] || [],
+          reporter: report.reporter_id
+            ? reporterMap[report.reporter_id] || null
+            : null,
+        };
+      });
+    } catch (error) {
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
+
+  /**
+   * Get count of pending reports
+   * @returns {Promise<number>} - Count of pending reports
+   */
+  static async getPendingReportsCount() {
+    const connection = await pool.getConnection();
+    try {
+      const [rows] = await connection.query(
+        `SELECT COUNT(*) as count
+         FROM crime_reports
+         WHERE status = 'pending'`
+      );
+      return rows[0].count;
+    } catch (error) {
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
+
+  /**
+   * Get count of active alerts (reports created in the last 12 hours)
+   * @returns {Promise<number>} - Count of active alerts
+   */
+  static async getActiveAlertsCount() {
+    const connection = await pool.getConnection();
+    try {
+      const [rows] = await connection.query(
+        `SELECT COUNT(*) as count
+         FROM crime_reports
+         WHERE created_at >= DATE_SUB(NOW(), INTERVAL 12 HOUR)`
+      );
+      return rows[0].count;
+    } catch (error) {
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
 }
 
 module.exports = ReportModel;
