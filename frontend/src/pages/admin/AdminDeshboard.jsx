@@ -56,34 +56,7 @@ const AdminDashboard = () => {
           </table>
         </section>
 
-        <section className="user-management">
-          <h2>User Registrations</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>User ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>U001</td>
-                <td>John Doe</td>
-                <td>john@example.com</td>
-                <td><button className="btn approve-btn">Approve</button></td>
-              </tr>
-              <tr>
-                <td>U002</td>
-                <td>Jane Smith</td>
-                <td>jane@example.com</td>
-                <td><button className="btn approve-btn">Approve</button></td>
-              </tr>
-              {/* Add more user rows as needed */}
-            </tbody>
-          </table>
-        </section>
+        
       </div>
   );
 };
