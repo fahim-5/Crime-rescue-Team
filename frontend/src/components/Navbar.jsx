@@ -104,13 +104,6 @@ const Navbar = () => {
             <Link to="/notifications">Notifications</Link>
             <NotificationBadge />
           </li>
-          <li
-            className={`alert-link-container ${
-              hasActiveAlerts || isOnAlertsPage ? "alert-active" : ""
-            }`}
-          >
-            <Link to="/crime-alerts">Crime Alerts</Link>
-          </li>
           <li>
             <Link to="/admin/analytics">Analytics</Link>
           </li>
