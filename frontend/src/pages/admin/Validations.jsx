@@ -9,6 +9,10 @@ const Validations = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showOfficerData, setShowOfficerData] = useState(false);
+  const [officerData, setOfficerData] = useState(null);
+  const [searchId, setSearchId] = useState("");
+  const [searchError, setSearchError] = useState("");
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -39,6 +43,7 @@ const Validations = () => {
       setSuccess("Request approved successfully");
       setRequests(requests.filter((request) => request.police_id !== policeId));
       setSelectedRequest(null);
+      setShowOfficerData(false);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to approve request");
       console.error("Approve error:", err);
@@ -53,6 +58,7 @@ const Validations = () => {
       setSuccess("Request rejected successfully");
       setRequests(requests.filter((request) => request.police_id !== policeId));
       setSelectedRequest(null);
+      setShowOfficerData(false);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to reject request");
       console.error("Reject error:", err);
@@ -63,7 +69,46 @@ const Validations = () => {
     setSelectedRequest(request);
   };
 
-  // Clear any alerts when opening modal
+  const handleOpenOfficerData = () => {
+    setShowOfficerData(true);
+  };
+
+  const handleSearchOfficer = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setSearchError("Please login to search officers");
+        return;
+      }
+  
+      const response = await axios.get(
+        `http://localhost:5000/api/police-files/${searchId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      if (response.data.success) {
+        setOfficerData(response.data.data);
+        setSearchError("");
+      } else {
+        setOfficerData(null);
+        setSearchError(response.data.message || "No officer found with this ID");
+      }
+    } catch (err) {
+      setOfficerData(null);
+      if (err.response?.status === 401) {
+        setSearchError("Session expired. Please login again.");
+      } else if (err.response?.status === 403) {
+        setSearchError("Access denied. You don't have permission.");
+      } else {
+        setSearchError(err.response?.data?.message || "Failed to search officer");
+      }
+    }
+  };
+
   const clearAlerts = () => {
     if (error) setError("");
     if (success) setSuccess("");
@@ -205,19 +250,140 @@ const Validations = () => {
 
             <div className="modal-footer">
               <button
-                className="approve-btn"
-                onClick={() => handleApprove(selectedRequest.police_id)}
-                aria-label="Approve request"
+                className="open-data-btn"
+                onClick={handleOpenOfficerData}
+                aria-label="Open officers data"
               >
-                Approve
+                Open Officers Data for Verify 
               </button>
-              <button
-                className="reject-btn"
-                onClick={() => handleReject(selectedRequest.police_id)}
-                aria-label="Reject request"
-              >
-                Reject
-              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showOfficerData && (
+        <div className="dual-modal-overlay">
+          <div className="dual-modal-container">
+            {/* Left modal - Search existing officer */}
+            <div className="officer-search-modal">
+              <div className="modal-header">
+                <h2>Search Officer Data</h2>
+                <button
+                  className="close-modal"
+                  onClick={() => setShowOfficerData(false)}
+                  aria-label="Close search"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="search-container">
+                  <input
+                    type="text"
+                    placeholder="Enter Police ID"
+                    value={searchId}
+                    onChange={(e) => setSearchId(e.target.value)}
+                  />
+                  <button
+                    className="search-btn"
+                    onClick={handleSearchOfficer}
+                  >
+                    Search
+                  </button>
+                </div>
+                {searchError && (
+                  <div className="error-message">{searchError}</div>
+                )}
+                {officerData && (
+                  <div className="officer-details">
+                    <h3>Officer Details</h3>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td><strong>Full Name:</strong></td>
+                          <td>{officerData.full_name}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Police ID:</strong></td>
+                          <td>{officerData.police_id}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Badge Number:</strong></td>
+                          <td>{officerData.badge_number}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Station:</strong></td>
+                          <td>{officerData.station}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Rank:</strong></td>
+                          <td>{officerData.rank}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Joining Date:</strong></td>
+                          <td>{new Date(officerData.joining_date).toLocaleDateString()}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right modal - Request officer data */}
+            <div className="request-officer-modal">
+              <div className="modal-header">
+                <h2>Request Officer Data</h2>
+              </div>
+              <div className="modal-body">
+                <div className="officer-details">
+                  <h3>Officer Details</h3>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td><strong>Full Name:</strong></td>
+                        <td>{selectedRequest.full_name}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Police ID:</strong></td>
+                        <td>{selectedRequest.police_id}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Badge Number:</strong></td>
+                        <td>{selectedRequest.badge_number}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Station:</strong></td>
+                        <td>{selectedRequest.station}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Rank:</strong></td>
+                        <td>{selectedRequest.rank}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Joining Date:</strong></td>
+                        <td>{new Date(selectedRequest.joining_date).toLocaleDateString()}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="approve-btn"
+                  onClick={() => handleApprove(selectedRequest.police_id)}
+                  aria-label="Approve request"
+                >
+                  Approve
+                </button>
+                <button
+                  className="reject-btn"
+                  onClick={() => handleReject(selectedRequest.police_id)}
+                  aria-label="Reject request"
+                >
+                  Reject
+                </button>
+              </div>
             </div>
           </div>
         </div>

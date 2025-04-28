@@ -174,19 +174,15 @@ const ReportedCrimes = () => {
                   {selectedReport.status || "Pending"}
                 </span>
               </div>
-              <div className="report-detail">
-                <span className="detail-label">Victim Name:</span>
-                <span className="detail-value">
-                  {selectedReport.victimName || "Not provided"}
-                </span>
-              </div>
+              
+           
             </div>
             <div className="modal-footer">
               <button
                 className="more-details-btn"
                 onClick={() => handleViewFullDetails(selectedReport.id)}
               >
-                More Details
+                Report Details
               </button>
               <button className="close-btn" onClick={closeModal}>
                 Close

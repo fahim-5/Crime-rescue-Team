@@ -358,7 +358,7 @@ button i {
 
 .close-modal:hover {
   background-color: rgb(0, 0, 0);
-  color:white;
+  color: white;
 }
 
 /* =============== No Requests =============== */
@@ -501,4 +501,175 @@ button:focus,
 
 .close-modal:focus {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
+}
+
+/* =============== Dual Modal Styles =============== */
+.dual-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.dual-modal-container {
+  display: flex;
+  width: 90%;
+  max-width: 1400px;
+  gap: 1.5rem;
+}
+
+.officer-search-modal,
+.request-officer-modal {
+  background: white;
+  border-radius: 0.75rem;
+  width: 50%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  transform: translateY(20px);
+  animation: slideUp 0.3s ease forwards;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+
+/* Search Container */
+.search-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-container input {
+  flex: 1;
+  padding: 0.625rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.search-container input:focus {
+  outline: none;
+  border-color: #861d29;
+  box-shadow: 0 0 0 3px rgba(134, 29, 41, 0.2);
+}
+
+/* Officer Details Table */
+.officer-details table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.officer-details td {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.officer-details td:first-child {
+  width: 40%;
+  color: #4b5563;
+}
+
+/* Open Data Button */
+.open-data-btn {
+  background-color: #4a6fa5;
+  color: white;
+  margin-right: auto;
+  width: 100%;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(74, 111, 165, 0.2);
+}
+
+.open-data-btn:hover {
+  background-color: #3a5a8c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(58, 90, 140, 0.3);
+}
+
+.open-data-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(58, 90, 140, 0.2);
+}
+
+.open-data-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.open-data-btn:hover::after {
+  transform: translateX(100%);
+}
+
+/* Optional: Add an icon */
+.open-data-btn .icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.open-data-btn:hover .icon {
+  transform: translateX(3px);
+}
+
+/* Search Button */
+.search-btn {
+  background-color: #861d29;
+  color: white;
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.search-btn:hover {
+  background-color: #6e1722;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+  .dual-modal-container {
+    flex-direction: column;
+    width: 95%;
+  }
+
+  .officer-search-modal,
+  .request-officer-modal {
+    width: 100%;
+  }
 }

@@ -13,6 +13,7 @@ const policeStationRoutes = require("./routes/policeStationRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const crimeAlertRoutes = require("./routes/crimeAlertRoutes");
+const policeFilesRoutes = require("./routes/policeFilesRoutes"); // New route file
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const upload = require("./middlewares/upload");
 
@@ -38,7 +39,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Additional CORS headers for browsers that don't fully respect the cors package
+// Additional CORS headers
 app.use((req, res, next) => {
   res.header(
     "Access-Control-Allow-Origin",
@@ -51,7 +52,6 @@ app.use((req, res, next) => {
   );
   res.header("Access-Control-Allow-Credentials", "true");
 
-  // Handle preflight requests
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
@@ -61,13 +61,13 @@ app.use((req, res, next) => {
 
 app.use(morgan("dev")); // Logging requests
 
-// Middleware to log all requests
+// Request logging
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
 
-// Serve static files from the uploads directory
+// Serve static files
 app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Health check endpoint
@@ -80,8 +80,8 @@ app.get("/api/health", (req, res) => {
 });
 
 // Routes
-app.use("/", authRoutes); // This will make auth routes available at root path
-app.use("/api/auth", authRoutes); // Also keep them available at /api/auth for API consistency
+app.use("/", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/verification", verificationRoutes);
 app.use("/api/police/requests", requestRoutes);
@@ -90,8 +90,9 @@ app.use("/api/police-stations", policeStationRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/crime-alerts", crimeAlertRoutes);
+app.use("/api/police-files", policeFilesRoutes); // New police files route
 
-// Error handling middleware should be last
+// Error handling middleware
 app.use(errorMiddleware);
 
 module.exports = app;
