@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { useApi } from "../../utils/useApi";
 import "./ReportedCrimes.css";
 
 const ReportedCrimes = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { fetchWithAuth, isLoading, error: apiError, setError } = useApi();
   const [crimes, setCrimes] = useState([]);
@@ -54,6 +56,11 @@ const ReportedCrimes = () => {
   const closeModal = () => {
     setShowModal(false);
     setSelectedReport(null);
+  };
+
+  const handleViewFullDetails = (reportId) => {
+    closeModal();
+    navigate(`/admin/report/${reportId}`);
   };
 
   return (
@@ -175,6 +182,12 @@ const ReportedCrimes = () => {
               </div>
             </div>
             <div className="modal-footer">
+              <button
+                className="more-details-btn"
+                onClick={() => handleViewFullDetails(selectedReport.id)}
+              >
+                More Details
+              </button>
               <button className="close-btn" onClick={closeModal}>
                 Close
               </button>
