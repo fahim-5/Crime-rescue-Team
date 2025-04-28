@@ -1,126 +1,187 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../../context/useAuth";
+import { useApi } from "../../utils/useApi";
 import "./ReportedCrimes.css";
 
-
 const ReportedCrimes = () => {
-  // Sample crime data
-  const crimes = [
-    {
-      id: 'CR-2023-001',
-      location: 'Mirpur Road, Dhaka',
-      time: '2023-05-15 14:30',
-      victim: 'Abdul Rahman',
-      gender: 'Male',
-      criminalsCount: 3,
-      hasArms: true,
-      status: 'Pending'
-    },
-    {
-      id: 'CR-2023-002',
-      location: 'Gulshan Avenue, Dhaka',
-      time: '2023-05-16 21:15',
-      victim: 'Fatima Begum',
-      gender: 'Female',
-      criminalsCount: 2,
-      hasArms: false,
-      status: 'Under Investigation'
-    },
-    {
-      id: 'CR-2023-003',
-      location: 'Chittagong Port Area',
-      time: '2023-05-17 08:45',
-      victim: 'Rajesh Chowdhury',
-      gender: 'Male',
-      criminalsCount: 5,
-      hasArms: true,
-      status: 'Solved'
-    },
-    {
-      id: 'CR-2023-004',
-      location: 'Sylhet Central Market',
-      time: '2023-05-18 17:20',
-      victim: 'Anika Islam',
-      gender: 'Female',
-      criminalsCount: 1,
-      hasArms: false,
-      status: 'Pending'
+  const { user } = useAuth();
+  const { fetchWithAuth, isLoading, error: apiError, setError } = useApi();
+  const [crimes, setCrimes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setErrorMessage] = useState(null);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Update component error state when API error changes
+  useEffect(() => {
+    if (apiError) {
+      setErrorMessage(apiError);
     }
-  ];
+  }, [apiError]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const data = await fetchWithAuth(
+        "http://localhost:5000/api/reports/admin"
+      );
+
+      if (data && data.success) {
+        setCrimes(data.data || []);
+        setErrorMessage(null);
+      } else {
+        throw new Error("Failed to fetch crime reports");
+      }
+    } catch (err) {
+      console.error("Error fetching crime reports:", err);
+      setErrorMessage(err.message || "Failed to load crime reports");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleViewReport = (report) => {
+    setSelectedReport(report);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedReport(null);
+  };
 
   return (
     <div className="reported-crimes-container">
       <h2 className="reported-crimes-header">All Reported Crimes</h2>
-      
-      <div className="crime-filters">
-        <div className="filter-group">
-          <label htmlFor="status-filter">Filter by Status:</label>
-          <select id="status-filter" className="filter-select">
-            <option value="all">All</option>
-            <option value="pending">Pending</option>
-            <option value="investigation">Under Investigation</option>
-            <option value="solved">Solved</option>
-          </select>
-        </div>
-        
-        <div className="filter-group">
-          <label htmlFor="arms-filter">Armed Criminals:</label>
-          <select id="arms-filter" className="filter-select">
-            <option value="all">All</option>
-            <option value="armed">Armed</option>
-            <option value="unarmed">Unarmed</option>
-          </select>
-        </div>
-      </div>
 
-      <div className="crimes-table-container">
-        <table className="crimes-table">
-          <thead>
-            <tr>
-              <th>Crime ID</th>
-              <th>Location</th>
-              <th>Time</th>
-              <th>Victim</th>
-              <th>Gender</th>
-              <th>Criminals</th>
-              <th>Armed</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {crimes.map((crime) => (
-              <tr key={crime.id}>
-                <td>{crime.id}</td>
-                <td>{crime.location}</td>
-                <td>{crime.time}</td>
-                <td>{crime.victim}</td>
-                <td>{crime.gender}</td>
-                <td>{crime.criminalsCount}</td>
-                <td>
-                  <span className={`arms-indicator ${crime.hasArms ? 'armed' : 'unarmed'}`}>
-                    {crime.hasArms ? 'Yes' : 'No'}
-                  </span>
-                </td>
-                <td>
-                  <span className={`status-badge ${crime.status.toLowerCase().replace(' ', '-')}`}>
-                    {crime.status}
-                  </span>
-                </td>
-                <td>
-                  <button className="action-btn view-btn">View</button>
-                  <button className="action-btn update-btn">Update</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {error && <div className="error-message">{error}</div>}
 
-      <div className="pagination-controls">
-        <button className="pagination-btn">Previous</button>
-        <span className="page-numbers">1 of 4</span>
-        <button className="pagination-btn">Next</button>
-      </div>
+      {loading ? (
+        <div className="loading-message">Loading crime reports...</div>
+      ) : (
+        <div className="crimes-table-container">
+          {crimes.length === 0 ? (
+            <div className="no-crimes-message">No crime reports found.</div>
+          ) : (
+            <table className="crimes-table">
+              <thead>
+                <tr>
+                  <th>Crime ID</th>
+                  <th>Location</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {crimes.map((crime) => (
+                  <tr key={crime.id}>
+                    <td>{crime.id}</td>
+                    <td>{crime.location || "Unknown"}</td>
+                    <td>
+                      {crime.time
+                        ? new Date(crime.time).toLocaleString()
+                        : "Unknown"}
+                    </td>
+                    <td>{crime.status || "Pending"}</td>
+                    <td>
+                      <button
+                        className="view-btn"
+                        onClick={() => handleViewReport(crime)}
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {/* Reporter Details Modal */}
+      {showModal && selectedReport && (
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <div className="modal-header">
+              <h3>Reporter Details</h3>
+              <button className="close-modal-btn" onClick={closeModal}>
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="report-detail">
+                <span className="detail-label">Report ID:</span>
+                <span className="detail-value">{selectedReport.id}</span>
+              </div>
+              <div className="report-detail">
+                <span className="detail-label">Reporter Name:</span>
+                <span className="detail-value">
+                  {selectedReport.reporter?.name ||
+                    selectedReport.reporter?.full_name ||
+                    "Anonymous"}
+                </span>
+              </div>
+              <div className="report-detail">
+                <span className="detail-label">Reporter ID:</span>
+                <span className="detail-value">
+                  {selectedReport.reporter?.id || "Not available"}
+                </span>
+              </div>
+              <div className="report-detail">
+                <span className="detail-label">Reporter Email:</span>
+                <span className="detail-value">
+                  {selectedReport.reporter?.email || "Not available"}
+                </span>
+              </div>
+              <div className="report-detail">
+                <span className="detail-label">Reporter Address:</span>
+                <span className="detail-value">
+                  {selectedReport.reporter?.address || "Not available"}
+                </span>
+              </div>
+              <div className="report-detail">
+                <span className="detail-label">Report Location:</span>
+                <span className="detail-value">
+                  {selectedReport.location || "Unknown"}
+                </span>
+              </div>
+              <div className="report-detail">
+                <span className="detail-label">Report Time:</span>
+                <span className="detail-value">
+                  {selectedReport.time
+                    ? new Date(selectedReport.time).toLocaleString()
+                    : "Unknown"}
+                </span>
+              </div>
+              <div className="report-detail">
+                <span className="detail-label">Report Status:</span>
+                <span className="detail-value">
+                  {selectedReport.status || "Pending"}
+                </span>
+              </div>
+              <div className="report-detail">
+                <span className="detail-label">Victim Name:</span>
+                <span className="detail-value">
+                  {selectedReport.victimName || "Not provided"}
+                </span>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="close-btn" onClick={closeModal}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

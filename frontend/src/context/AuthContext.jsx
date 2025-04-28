@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const userData = JSON.parse(storedUser);
         setUser(userData);
+        console.log("Loaded user from localStorage:", userData);
       } catch (error) {
         console.error("Error parsing user data from localStorage:", error);
         localStorage.removeItem("user");
@@ -34,7 +35,11 @@ export const AuthProvider = ({ children }) => {
   // Login function
   const login = (userData, authToken) => {
     console.log("Storing user in context:", userData); // Debugging
-    setUser(userData);
+
+    // Ensure user role is properly set and preserved
+    if (!userData.role) {
+      console.error("Warning: User data is missing role information", userData);
+    }
 
     // If authToken is provided directly, use it
     // Otherwise check if token is in userData
@@ -53,6 +58,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     // Store user data
+    setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
   };
 

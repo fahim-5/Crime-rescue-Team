@@ -588,6 +588,125 @@ class ReportModel {
       connection.release();
     }
   }
+
+  /**
+   * Get all reports with reporter details
+   * Simplified and optimized for reliability
+   */
+  static async getAllWithReporterDetails() {
+    const connection = await pool.getConnection();
+
+    try {
+      // First, get all the reports
+      const [reports] = await connection.query(`
+        SELECT 
+          cr.id, 
+          cr.crime_id, 
+          cr.location, 
+          cr.time, 
+          cr.crime_type, 
+          cr.num_criminals, 
+          cr.victim_gender, 
+          cr.armed, 
+          cr.status, 
+          cr.photos, 
+          cr.videos, 
+          cr.reporter_id,
+          cr.created_at
+        FROM 
+          crime_reports cr
+        ORDER BY 
+          cr.created_at DESC
+      `);
+
+      // Get all reporter IDs from the reports
+      const reporterIds = reports
+        .filter((report) => report.reporter_id)
+        .map((report) => report.reporter_id);
+
+      // If we have reporter IDs, get their details
+      let reporters = [];
+      if (reporterIds.length > 0) {
+        try {
+          [reporters] = await connection.query(
+            `
+            SELECT 
+              id, 
+              username, 
+              full_name, 
+              email, 
+              address 
+            FROM 
+              users 
+            WHERE 
+              id IN (?)
+          `,
+            [reporterIds]
+          );
+        } catch (err) {
+          console.error("Error fetching reporter details:", err);
+          // Continue even if we can't get reporter details
+        }
+      }
+
+      // Create a map of reporter IDs to reporter details for easy lookup
+      const reporterMap = {};
+      reporters.forEach((reporter) => {
+        reporterMap[reporter.id] = {
+          id: reporter.id,
+          name: reporter.full_name || reporter.username,
+          email: reporter.email || "No email provided",
+          address: reporter.address || "No address provided",
+        };
+      });
+
+      // Map the reports with reporter details
+      const reportsWithDetails = reports.map((report) => {
+        // Parse JSON fields
+        let photos = [];
+        let videos = [];
+
+        try {
+          photos = report.photos ? JSON.parse(report.photos) : [];
+        } catch (e) {
+          console.error(`Error parsing photos for report ${report.id}:`, e);
+        }
+
+        try {
+          videos = report.videos ? JSON.parse(report.videos) : [];
+        } catch (e) {
+          console.error(`Error parsing videos for report ${report.id}:`, e);
+        }
+
+        return {
+          id: report.id,
+          crimeId: report.crime_id,
+          location: report.location,
+          time: report.time,
+          crimeType: report.crime_type,
+          numCriminals: report.num_criminals,
+          victimName: report.victim_name,
+          victimGender: report.victim_gender,
+          armed: report.armed,
+          status: report.status,
+          photos: photos,
+          videos: videos,
+          createdAt: report.created_at,
+          // Add reporter details if available
+          reporter: report.reporter_id
+            ? reporterMap[report.reporter_id] || null
+            : null,
+        };
+      });
+
+      return reportsWithDetails;
+    } catch (error) {
+      console.error("Error in getAllWithReporterDetails:", error);
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
 }
 
 module.exports = ReportModel;

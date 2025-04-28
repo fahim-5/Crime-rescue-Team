@@ -167,17 +167,53 @@ const createReport = async (req, res) => {
   }
 };
 
+/**
+ * @desc   Health check endpoint
+ * @route  GET /api/health
+ * @access Public
+ */
+const healthCheck = async (req, res) => {
+  try {
+    // Check database connection
+    const connection = await require("../config/db").pool.getConnection();
+    connection.release();
+
+    res.status(200).json({
+      status: "success",
+      message: "API is healthy",
+      database: "connected",
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Health check failed:", error);
+    res.status(500).json({
+      status: "error",
+      message: "API health check failed",
+      error: error.message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+};
+
+/**
+ * @desc   Get all reports (admin access)
+ * @route  GET /api/reports/admin
+ * @access Private
+ */
 const getAllReports = async (req, res) => {
   try {
-    const reports = await ReportModel.getAll();
+    // Using the improved model method to get reports with reporter details
+    const reports = await ReportModel.getAllWithReporterDetails();
+
     res.status(200).json({
-      success: true,
+      status: "success",
+      count: reports.length,
       data: reports,
     });
   } catch (error) {
-    console.error("Error fetching reports:", error);
+    console.error("Error fetching all reports:", error);
     res.status(500).json({
-      success: false,
+      status: "error",
       message: "Failed to fetch reports",
       error: error.message,
     });
@@ -665,6 +701,80 @@ const getUserReports = async (req, res) => {
   }
 };
 
+/**
+ * Get all reports with reporter details for admin
+ */
+const getReportsWithReporterDetails = async (req, res) => {
+  try {
+    // Simple approach - just retrieve the basic data
+    const connection = await require("../config/db").pool.getConnection();
+    try {
+      // Simple query to get all reports with basic info
+      const [reports] = await connection.query(
+        "SELECT * FROM crime_reports ORDER BY created_at DESC"
+      );
+
+      // Get reporter info for each report
+      const reporterInfo = {};
+      if (reports.length > 0) {
+        const reporterIds = reports
+          .filter((report) => report.reporter_id)
+          .map((report) => report.reporter_id);
+
+        if (reporterIds.length > 0) {
+          const [users] = await connection.query(
+            "SELECT id, full_name, email, address FROM users WHERE id IN (?)",
+            [reporterIds]
+          );
+
+          // Create a lookup map
+          users.forEach((user) => {
+            reporterInfo[user.id] = {
+              id: user.id,
+              name: user.full_name,
+              email: user.email,
+              address: user.address,
+            };
+          });
+        }
+      }
+
+      // Format the response
+      const formattedReports = reports.map((report) => {
+        return {
+          id: report.id,
+          crimeId: report.crime_id,
+          location: report.location,
+          time: report.time,
+          crimeType: report.crime_type,
+          numCriminals: report.num_criminals,
+          victimGender: report.victim_gender,
+          armed: report.armed,
+          status: report.status,
+          createdAt: report.created_at,
+          reporter: report.reporter_id
+            ? reporterInfo[report.reporter_id] || null
+            : null,
+        };
+      });
+
+      return res.status(200).json({
+        success: true,
+        data: formattedReports,
+      });
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error("Error in getReportsWithReporterDetails:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to retrieve crime reports",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createReport,
   getAllReports,
@@ -676,4 +786,6 @@ module.exports = {
   deleteReport,
   updateReport,
   getUserReports,
+  getReportsWithReporterDetails,
+  healthCheck,
 };

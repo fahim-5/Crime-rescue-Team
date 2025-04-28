@@ -3,6 +3,10 @@ const router = express.Router();
 const reportController = require("../controllers/reportController");
 const upload = require("../middlewares/upload");
 const authMiddleware = require("../middlewares/authMiddleware");
+const { protect, admin, isPolice } = require("../middlewares/authMiddleware");
+
+// Health check endpoint - public access
+router.get("/health", reportController.healthCheck);
 
 // Create a new crime report - with optional authentication to associate with user
 router.post(
@@ -15,7 +19,7 @@ router.post(
   reportController.createReport
 );
 
-// Get all reports
+// Get all reports - Public access
 router.get("/", reportController.getAllReports);
 
 // Get nearby reports based on location (must be before :id route)
@@ -28,10 +32,19 @@ router.get(
   reportController.getUserReports
 );
 
+// Get all reports with reporter details for admin
+router.get(
+  "/admin",
+  authMiddleware.authenticateToken,
+  authMiddleware.isAdmin,
+  reportController.getReportsWithReporterDetails
+);
+
 // Get pending police alerts (police only)
 router.get(
   "/alerts",
   authMiddleware.authenticateToken,
+  authMiddleware.isPolice,
   reportController.getPendingPoliceAlerts
 );
 
@@ -39,6 +52,7 @@ router.get(
 router.put(
   "/alerts/:alertId",
   authMiddleware.authenticateToken,
+  authMiddleware.isPolice,
   reportController.respondToAlert
 );
 

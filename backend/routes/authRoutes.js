@@ -292,4 +292,21 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
+// Add a status route to check authentication
+router.get("/status", authMiddleware.authenticateToken, (req, res) => {
+  // Return the user's authentication status
+  res.status(200).json({
+    success: true,
+    message: "Authentication status",
+    isAuthenticated: !!req.user,
+    user: req.user
+      ? {
+          id: req.user.id,
+          role: req.user.role,
+          email: req.user.email,
+        }
+      : null,
+  });
+});
+
 module.exports = router;
