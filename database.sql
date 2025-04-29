@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 28, 2025 at 07:05 PM
+-- Generation Time: Apr 29, 2025 at 08:11 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -405,7 +405,9 @@ INSERT INTO `police` (`id`, `full_name`, `username`, `email`, `national_id`, `pa
 (3, 'Mahir Forhad', 'forhad', 'forhad@gmail.com', '7536894210', '321789', '0142698534', '$2b$10$mbvjmjRC6Di9lK/hNuRcw.KuzpYIAd.rlDLDYJ/Z.ib2/mhkxvjNe', 'Dinajpur-kotoali', '101', 'Badda', 'ASP', '55', '2025-03-04', '2025-03-28 15:57:58', '2025-03-28 15:57:58', 1),
 (4, 'Ruhul Amin', 'ruhul', 'ruhul@gmail.com', '95136746952', NULL, '1477953264', '$2b$10$qcknsgIyY01uK9h7N1p2hu193JBnsv3AHJnvdDUcxCdbqSwVBk3x.', 'Thana-Birol', '789', 'dhaka', '12', '56', '2025-04-18', '2025-04-17 15:44:00', '2025-04-17 15:44:00', 2),
 (5, 'Md Abdullah', 'abdullah', 'abdulllah@gmail.com', '569981659465', NULL, '01456986251', '$2b$10$RuqMTxpDUGJ1hl421HGZ2ueHi1pirXGfhPWPMthvxI/Jo3aj9qR2K', 'Dhaka-Mirpur', '96', 'Misrup', 'SI', '02', '2025-04-08', '2025-04-18 09:48:55', '2025-04-18 09:48:55', 3),
-(6, 'rakin', 'rakib', 'rakib@gmail.com', '4569332154', NULL, '01774071126', '$2b$10$T/owIsT.zn8mofsylmgTXOy8wad2.Ysugad8mhIRRGx4KwOjk9Fk6', 'dhaka-bangladesh', '78', 'cazcxzcvcx', 'acas', 'fg', '2025-04-26', '2025-04-21 16:15:22', '2025-04-21 16:15:22', 4);
+(6, 'rakin', 'rakib', 'rakib@gmail.com', '4569332154', NULL, '01774071126', '$2b$10$T/owIsT.zn8mofsylmgTXOy8wad2.Ysugad8mhIRRGx4KwOjk9Fk6', 'dhaka-bangladesh', '78', 'cazcxzcvcx', 'acas', 'fg', '2025-04-26', '2025-04-21 16:15:22', '2025-04-21 16:15:22', 4),
+(8, 'police vai', 'plc', 'police2@gmail.com', '98989898988', '565654984', '01756565656', '$2a$10$Sbd2Cq.z4J9SCjsOwhmrm.29.RzpMKvzbxsLzvCfOB2kidqKsjHf.', 'Dhaka-Mirpur', '8925262', 'Vatara', 'ASp', '89', '2025-04-19', '2025-04-28 18:35:34', '2025-04-28 18:35:34', NULL),
+(9, 'police-3', 'plc3', 'police3@gmail.com', '15951595159', '55555500', '017762598413', '$2a$10$CAVpF2f3u58VR2lJ5H9o4e55DK8NqRsov4aXetnzSe6/PfFXTw92S', 'Dhaka-Mirpur', '3695', 'Mirpur', 'ADC', '56-U', '2025-04-18', '2025-04-28 18:58:16', '2025-04-28 18:58:16', NULL);
 
 -- --------------------------------------------------------
 
@@ -436,6 +438,83 @@ INSERT INTO `police_alerts` (`id`, `report_id`, `police_id`, `status`, `response
 (5, 7, NULL, 'pending', NULL, '2025-04-28 14:24:28', NULL, '2025-04-28 14:24:28'),
 (6, 8, NULL, 'pending', NULL, '2025-04-28 14:26:41', NULL, '2025-04-28 14:26:41'),
 (7, 9, NULL, 'pending', NULL, '2025-04-28 14:26:49', NULL, '2025-04-28 14:26:49');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `police_files`
+--
+
+CREATE TABLE `police_files` (
+  `id` int(11) NOT NULL,
+  `police_id` varchar(20) NOT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `badge_number` varchar(20) NOT NULL,
+  `station` varchar(100) NOT NULL,
+  `rank` varchar(50) NOT NULL,
+  `joining_date` date NOT NULL,
+  `contact_number` varchar(20) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `status` enum('active','inactive','suspended','retired') DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `police_files`
+--
+
+INSERT INTO `police_files` (`id`, `police_id`, `full_name`, `badge_number`, `station`, `rank`, `joining_date`, `contact_number`, `email`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'POL-10001', 'John Smith', 'B-1001', 'Central Police Station', 'Inspector', '2010-05-15', '555-1234', 'john.smith@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(2, 'POL-10002', 'Sarah Johnson', 'B-1002', 'Northern District', 'Sergeant', '2012-08-20', '555-2345', 'sarah.j@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(3, 'POL-10003', 'Michael Williams', 'B-1003', 'Southern Precinct', 'Lieutenant', '2008-04-10', '555-3456', 'mwilliams@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(4, 'POL-10004', 'Jessica Brown', 'B-1004', 'Eastern Division', 'Constable', '2015-11-05', '555-4567', 'jessica.b@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(5, 'POL-10005', 'David Miller', 'B-1005', 'Western District', 'Deputy Inspector', '2009-01-25', '555-5678', 'd.miller@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(6, 'POL-10006', 'Jennifer Davis', 'B-1006', 'Central Police Station', 'Constable', '2017-07-14', '555-6789', 'j.davis@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(7, 'POL-10007', 'Robert Wilson', 'B-1007', 'Northern District', 'Inspector', '2011-06-30', '555-7890', 'rwilson@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(8, 'POL-10008', 'Lisa Anderson', 'B-1008', 'Southern Precinct', 'Sergeant', '2013-09-12', '555-8901', 'lisa.a@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(9, 'POL-10009', 'Thomas Taylor', 'B-1009', 'Eastern Division', 'Constable', '2016-02-28', '555-9012', 't.taylor@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(10, 'POL-10010', 'Rebecca Moore', 'B-1010', 'Western District', 'Inspector', '2010-12-08', '555-0123', 'rebecca.m@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(11, 'POL-10011', 'Christopher Jackson', 'B-1011', 'Central Police Station', 'Sergeant', '2014-05-17', '555-1234', 'chris.j@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(12, 'POL-10012', 'Amanda White', 'B-1012', 'Northern District', 'Lieutenant', '2011-08-23', '555-2345', 'a.white@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(13, 'POL-10013', 'Daniel Harris', 'B-1013', 'Southern Precinct', 'Constable', '2018-01-15', '555-3456', 'd.harris@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(14, 'POL-10014', 'Michelle Martin', 'B-1014', 'Eastern Division', 'Deputy Inspector', '2012-10-09', '555-4567', 'michelle.m@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(15, 'POL-10015', 'Matthew Thompson', 'B-1015', 'Western District', 'Inspector', '2009-07-21', '555-5678', 'm.thompson@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(16, 'POL-10016', 'Elizabeth Garcia', 'B-1016', 'Central Police Station', 'Constable', '2019-03-02', '555-6789', 'e.garcia@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(17, 'POL-10017', 'Brandon Martinez', 'B-1017', 'Northern District', 'Sergeant', '2013-12-14', '555-7890', 'b.martinez@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(18, 'POL-10018', 'Stephanie Robinson', 'B-1018', 'Southern Precinct', 'Lieutenant', '2010-09-05', '555-8901', 's.robinson@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(19, 'POL-10019', 'Kevin Clark', 'B-1019', 'Eastern Division', 'Constable', '2017-05-30', '555-9012', 'k.clark@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(20, 'POL-10020', 'Laura Rodriguez', 'B-1020', 'Western District', 'Inspector', '2011-02-18', '555-0123', 'laura.r@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(21, 'POL-10021', 'Steven Lewis', 'B-1021', 'Central Police Station', 'Sergeant', '2015-08-07', '555-1234', 's.lewis@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(22, 'POL-10022', 'Nicole Lee', 'B-1022', 'Northern District', 'Constable', '2018-11-19', '555-2345', 'nicole.l@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(23, 'POL-10023', 'Mark Walker', 'B-1023', 'Southern Precinct', 'Deputy Inspector', '2012-04-23', '555-3456', 'm.walker@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(24, 'POL-10024', 'Emily Hall', 'B-1024', 'Eastern Division', 'Lieutenant', '2009-10-16', '555-4567', 'e.hall@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(25, 'POL-10025', 'Joshua Allen', 'B-1025', 'Western District', 'Constable', '2016-06-08', '555-5678', 'j.allen@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(26, 'POL-10026', 'Catherine Young', 'B-1026', 'Central Police Station', 'Inspector', '2013-01-31', '555-6789', 'c.young@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(27, 'POL-10027', 'Brian King', 'B-1027', 'Northern District', 'Sergeant', '2010-11-22', '555-7890', 'b.king@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(28, 'POL-10028', 'Melissa Wright', 'B-1028', 'Southern Precinct', 'Constable', '2019-07-13', '555-8901', 'm.wright@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(29, 'POL-10029', 'Jonathan Scott', 'B-1029', 'Eastern Division', 'Lieutenant', '2014-09-05', '555-9012', 'j.scott@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(30, 'POL-10030', 'Rachel Green', 'B-1030', 'Western District', 'Inspector', '2011-05-28', '555-0123', 'r.green@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(31, 'POL-10031', 'Patrick Adams', 'B-1031', 'Central Police Station', 'Constable', '2017-12-09', '555-1234', 'p.adams@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(32, 'POL-10032', 'Christine Baker', 'B-1032', 'Northern District', 'Deputy Inspector', '2012-02-14', '555-2345', 'c.baker@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(33, 'POL-10033', 'Gregory Gonzalez', 'B-1033', 'Southern Precinct', 'Sergeant', '2008-08-17', '555-3456', 'g.gonzalez@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(34, 'POL-10034', 'Tiffany Nelson', 'B-1034', 'Eastern Division', 'Constable', '2015-04-03', '555-4567', 't.nelson@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(35, 'POL-10035', 'Adam Carter', 'B-1035', 'Western District', 'Lieutenant', '2013-10-25', '555-5678', 'a.carter@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(36, 'POL-10036', 'Natalie Mitchell', 'B-1036', 'Central Police Station', 'Inspector', '2010-03-11', '555-6789', 'n.mitchell@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(37, 'POL-10037', 'Justin Perez', 'B-1037', 'Northern District', 'Constable', '2018-06-20', '555-7890', 'j.perez@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(38, 'POL-10038', 'Kimberly Roberts', 'B-1038', 'Southern Precinct', 'Sergeant', '2014-12-05', '555-8901', 'k.roberts@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(39, 'POL-10039', 'Brandon Turner', 'B-1039', 'Eastern Division', 'Deputy Inspector', '2011-09-19', '555-9012', 'b.turner@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(40, 'POL-10040', 'Olivia Phillips', 'B-1040', 'Western District', 'Constable', '2016-04-28', '555-0123', 'o.phillips@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(41, 'POL-10041', 'Ethan Campbell', 'B-1041', 'Central Police Station', 'Lieutenant', '2012-07-12', '555-1234', 'e.campbell@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(42, 'POL-10042', 'Hannah Parker', 'B-1042', 'Northern District', 'Inspector', '2009-11-30', '555-2345', 'h.parker@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(43, 'POL-10043', 'Ryan Evans', 'B-1043', 'Southern Precinct', 'Constable', '2017-02-14', '555-3456', 'r.evans@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(44, 'POL-10044', 'Megan Edwards', 'B-1044', 'Eastern Division', 'Sergeant', '2013-05-24', '555-4567', 'm.edwards@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(45, 'POL-10045', 'Jacob Collins', 'B-1045', 'Western District', 'Lieutenant', '2010-08-09', '555-5678', 'j.collins@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(46, 'POL-10046', 'Victoria Stewart', 'B-1046', 'Central Police Station', 'Constable', '2015-01-15', '555-6789', 'v.stewart@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(47, 'POL-10047', 'Andrew Morris', 'B-1047', 'Northern District', 'Deputy Inspector', '2012-06-27', '555-7890', 'a.morris@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(48, 'POL-10048', 'Samantha Rogers', 'B-1048', 'Southern Precinct', 'Inspector', '2008-12-11', '555-8901', 's.rogers@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(49, 'POL-10049', 'Tyler Reed', 'B-1049', 'Eastern Division', 'Constable', '2019-04-06', '555-9012', 't.reed@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41'),
+(50, 'POL-10050', 'Lauren Cook', 'B-1050', 'Western District', 'Sergeant', '2014-10-22', '555-0123', 'l.cook@police.gov', 'active', '2025-04-28 19:33:41', '2025-04-28 19:33:41');
 
 -- --------------------------------------------------------
 
@@ -593,7 +672,9 @@ INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `national_id`, `pas
 (20, 'Fahim Faysal', 'bafu', 'fahimbafu@gmail.com', '333333333', '111111', '017740711130', '$2a$10$EJdx.IbHjkAUFUbWuE9wJ.WY.wRYFe9lLenh3I6X2lKw4hzrHEFkS', 'public', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-27 21:11:49', '2025-04-27 21:12:49', NULL, NULL),
 (21, 'Mr.one', 'one', 'one@gmail.com', '5555555553', '1239999', '0177345678', '$2a$10$h6fq8658j1jhI3b1PgBSauMYUJZth9NdIAobyosFjgi.YniCMEs7m', 'public', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-27 21:14:17', '2025-04-27 21:14:17', NULL, NULL),
 (22, 'Mr.two', 'two', 'two@gmail.com', '5565626262', '333333', '01775692261', '$2a$10$ZvYIXk/lRR7tuLRbNRbnue0Lo/FshUYyi/U1RSA/vR59x80MAnoVG', 'public', 'Dinajpur-Birol', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-27 21:15:06', '2025-04-28 14:27:50', NULL, NULL),
-(24, 'admin1', 'admin', 'mfaysal223224@bscse.uiu.ac.bd', '6395959595', '1212121', '0174646464', '$2a$10$zJnE3Wpv9GHrQw/IligOGevRMvzIxYMsOp00qxqX8uaNcOYCm802C', 'admin', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-28 11:58:04', '2025-04-28 11:58:04', NULL, NULL);
+(24, 'admin1', 'admin', 'mfaysal223224@bscse.uiu.ac.bd', '6395959595', '1212121', '0174646464', '$2a$10$zJnE3Wpv9GHrQw/IligOGevRMvzIxYMsOp00qxqX8uaNcOYCm802C', 'admin', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-28 11:58:04', '2025-04-28 11:58:04', NULL, NULL),
+(25, 'police vai', 'plc', 'police2@gmail.com', '98989898988', '565654984', '01756565656', '$2a$10$Sbd2Cq.z4J9SCjsOwhmrm.29.RzpMKvzbxsLzvCfOB2kidqKsjHf.', 'police', 'Dhaka-Mirpur', 'approved', '8925262', 'Vatara', 'ASp', '89', '2025-04-19', '2025-04-28 18:35:34', '2025-04-28 18:55:43', NULL, NULL),
+(26, 'police-3', 'plc3', 'police3@gmail.com', '15951595159', '55555500', '017762598413', '$2a$10$CAVpF2f3u58VR2lJ5H9o4e55DK8NqRsov4aXetnzSe6/PfFXTw92S', 'police', 'Dhaka-Mirpur', 'approved', '3695', 'Mirpur', 'ADC', '56-U', '2025-04-18', '2025-04-28 18:58:16', '2025-04-28 21:14:53', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -730,6 +811,13 @@ ALTER TABLE `police_alerts`
   ADD KEY `fk_alert_police` (`police_id`);
 
 --
+-- Indexes for table `police_files`
+--
+ALTER TABLE `police_files`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `police_id` (`police_id`);
+
+--
 -- Indexes for table `police_stations`
 --
 ALTER TABLE `police_stations`
@@ -852,13 +940,19 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `police`
 --
 ALTER TABLE `police`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `police_alerts`
 --
 ALTER TABLE `police_alerts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `police_files`
+--
+ALTER TABLE `police_files`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `police_stations`
@@ -882,7 +976,7 @@ ALTER TABLE `requests`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `validations`
@@ -959,3 +1053,5 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
