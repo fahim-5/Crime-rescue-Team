@@ -9,25 +9,11 @@ const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(" ")[1];
 
-    // Check if it's a route that requires authentication
-    const requiresAuth = [
-      "/api/auth/profile",
-      "/api/auth/change-password",
-      "/api/auth/account",
-    ].some((route) => req.originalUrl.includes(route));
-
     if (!token) {
-      if (requiresAuth) {
-        return res.status(401).json({
-          success: false,
-          message: "Authentication required. Please login.",
-        });
-      }
-      // For non-auth routes, continue without authentication
-      console.log(
-        "No authentication token provided - continuing as anonymous user"
-      );
-      return next();
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required. Please login.",
+      });
     }
 
     try {
@@ -52,25 +38,17 @@ const authenticateToken = async (req, res, next) => {
 
       next();
     } catch (tokenError) {
-      if (requiresAuth) {
-        if (tokenError.name === "JsonWebTokenError") {
-          return res.status(401).json({
-            success: false,
-            message: "Invalid token",
-          });
-        }
-        if (tokenError.name === "TokenExpiredError") {
-          return res.status(401).json({
-            success: false,
-            message: "Token expired",
-          });
-        }
-      } else {
-        // For non-auth routes, continue without authentication
-        console.log(
-          "Token validation failed but continuing for non-auth route"
-        );
-        return next();
+      if (tokenError.name === "JsonWebTokenError") {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid token",
+        });
+      }
+      if (tokenError.name === "TokenExpiredError") {
+        return res.status(401).json({
+          success: false,
+          message: "Token expired",
+        });
       }
       throw tokenError; // Re-throw for the outer catch block
     }
