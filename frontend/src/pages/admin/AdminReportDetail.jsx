@@ -16,7 +16,11 @@ import {
   FaTimes,
   FaPhoneAlt,
   FaEnvelope,
-  FaUserCircle
+  FaUserCircle,
+  FaShieldAlt,
+  FaFileAlt,
+  FaImages,
+  FaVideo
 } from "react-icons/fa";
 import "./AdminReportDetail.css";
 
@@ -94,8 +98,29 @@ const AdminReportDetail = () => {
   const getStatusBadge = (status) => {
     if (!status) return null;
     const statusClass = status.toLowerCase();
+    
+    // Add appropriate icon based on status
+    let statusIcon;
+    switch (statusClass) {
+      case 'pending':
+        
+        break;
+      case 'verified':
+        
+        break;
+      case 'rejected':
+        
+        break;
+      case 'investigating':
+        
+        break;
+      default:
+        statusIcon = <FaFileAlt />;
+    }
+    
     return (
       <span className={`status-badge ${statusClass}`}>
+        {statusIcon}
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     );
@@ -140,6 +165,10 @@ const AdminReportDetail = () => {
     );
   }
 
+  // Calculate validation percentage
+  const totalVotes = (report.valid_count || 0) + (report.invalid_count || 0);
+  const validPercentage = totalVotes ? ((report.valid_count || 0) / totalVotes) * 100 : 0;
+
   return (
     <div className="admin-report-container">
       <div className="report-header">
@@ -150,18 +179,18 @@ const AdminReportDetail = () => {
           <div className="header-title">
             <h1>
               {report.crime_type?.charAt(0).toUpperCase() + report.crime_type?.slice(1)} Report
-              <span className="crime-id">#{report.crimeId}</span>
+              <span className="crime-id">{report.crimeId}</span>
             </h1>
             <div className="header-meta">
               {getStatusBadge(report.status)}
+              <span>Reported {report.created_at && formatDistanceToNow(new Date(report.created_at), { addSuffix: true })}</span>
             </div>
           </div>
-          <div class="back-button-wrapper">
-  <button class="contact-button">
-     Contact with Reporter
-  </button>
-</div>
-
+          <div className="back-button-wrapper">
+            <button className="contact-button" onClick={handleContactReporter}>
+              <FaPhoneAlt /> Contact Reporter
+            </button>
+          </div>
         </div>
       </div>
 
@@ -222,7 +251,7 @@ const AdminReportDetail = () => {
               
               {report.photos?.length > 0 && (
                 <div className="evidence-group">
-                  <h3>Photos ({report.photos.length})</h3>
+                  <h3><FaImages /> Photos ({report.photos.length})</h3>
                   <div className="media-grid">
                     {report.photos.map((photo, index) => (
                       <div key={`photo-${index}`} className="media-item">
@@ -235,7 +264,7 @@ const AdminReportDetail = () => {
               
               {report.videos?.length > 0 && (
                 <div className="evidence-group">
-                  <h3>Videos ({report.videos.length})</h3>
+                  <h3><FaVideo /> Videos ({report.videos.length})</h3>
                   <div className="media-grid">
                     {report.videos.map((video, index) => (
                       <div key={`video-${index}`} className="media-item">
@@ -272,7 +301,7 @@ const AdminReportDetail = () => {
                   onClick={handleContactReporter}
                   className="contact-button"
                 >
-                  Contact Reporter
+                  <FaPhoneAlt /> Contact Reporter
                 </button>
               </>
             ) : (
@@ -302,7 +331,7 @@ const AdminReportDetail = () => {
               <div 
                 className="progress-bar"
                 style={{
-                  width: `${((report.valid_count || 0) / ((report.valid_count || 0) + (report.invalid_count || 0))) * 100}%`
+                  width: `${validPercentage}%`
                 }}
               ></div>
             </div>
