@@ -7,7 +7,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
 
 
-{/* my name is FaHeadSideMask.i am clone repo */}
+{/* Myself Abdullah is cheking */}
    
 
     <App />
