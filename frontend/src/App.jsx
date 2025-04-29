@@ -94,7 +94,7 @@ function App() {
 
           {/* Police Routes */}
           <Route path="/police/dashboard" element={<PoliceDashboard />} />
-          <Route path="/police/reports" element={<PoliceReports />} />
+          <Route path="/police/reports" element={<ReportedCrimes />} />
           <Route path="/police/analytics" element={<Analytics />} />
           <Route path="/police/settings" element={<PoliceSettings />} />
           <Route path="/police/pending" element={<PendingCases />} />

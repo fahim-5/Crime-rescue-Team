@@ -75,7 +75,7 @@ const NotificationService = {
   },
 
   /**
-   * Get all user IDs from the database
+   * Get all public user IDs from the database
    * @param {string} [excludeUserId] - User ID to exclude from the results
    * @returns {Promise<Array<number|string>>} Array of user IDs
    */
@@ -104,6 +104,69 @@ const NotificationService = {
   },
 
   /**
+   * Get all admin user IDs from the database
+   * @returns {Promise<Array<number|string>>} Array of admin user IDs
+   */
+  getAllAdminIds: async () => {
+    const connection = await pool.getConnection();
+    try {
+      const query = `
+        SELECT id FROM users
+        WHERE role = 'admin'
+      `;
+
+      const [admins] = await connection.execute(query, []);
+      return admins.map((admin) => admin.id);
+    } catch (error) {
+      console.error("Error fetching admin IDs:", error);
+      throw error;
+    } finally {
+      if (connection) connection.release();
+    }
+  },
+
+  /**
+   * Send a notification to all admin users
+   * @param {Object} data - Notification data
+   * @param {string} data.title - Notification title
+   * @param {string} data.message - Notification message
+   * @param {string} [data.type] - Type of notification (alert, warning, info, success) - defaults to "alert"
+   * @param {string} [data.relatedId] - Optional ID of related entity (report ID, case ID, etc.)
+   * @returns {Promise<Array>} Array of created notifications
+   */
+  notifyAllAdmins: async (data) => {
+    try {
+      if (!data.title || !data.message) {
+        throw new Error("Missing required notification data");
+      }
+
+      // Get all admin user IDs
+      const adminIds = await NotificationService.getAllAdminIds();
+      
+      if (adminIds.length === 0) {
+        return [];
+      }
+      
+      // Prepare notification data for admins
+      const notificationData = {
+        type: data.type || "alert",
+        title: data.title,
+        message: data.message,
+        relatedId: data.relatedId || null
+      };
+      
+      // Send notifications to all admin users
+      return await NotificationService.sendBulkNotifications(
+        adminIds,
+        notificationData
+      );
+    } catch (error) {
+      console.error("Error sending admin notifications:", error);
+      throw error;
+    }
+  },
+
+  /**
    * Send a notification about a new report to all users
    * @param {Object} data - Report notification data
    * @param {string} data.reportId - ID of the report
@@ -119,15 +182,18 @@ const NotificationService = {
         throw new Error("Missing required report data");
       }
 
-      // Get all user IDs, excluding the reporter
+      // Get all public user IDs, excluding the reporter
       const userIds = await NotificationService.getAllUserIds(data.reporterId);
 
+      // Don't get admin IDs here, to avoid duplicate notifications
+      // Admin notifications are now sent separately in reportController
+      
       if (userIds.length === 0) {
         return [];
       }
 
-      // Prepare notification data
-      const notificationData = {
+      // Prepare notification data for public users
+      const publicNotificationData = {
         type: "info",
         title: "New Crime Report",
         message:
@@ -136,10 +202,10 @@ const NotificationService = {
         relatedId: data.reportId,
       };
 
-      // Send notifications to all users
+      // Send notifications to all public users only
       return await NotificationService.sendBulkNotifications(
         userIds,
-        notificationData
+        publicNotificationData
       );
     } catch (error) {
       console.error("Error sending community notifications:", error);

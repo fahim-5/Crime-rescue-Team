@@ -137,6 +137,25 @@ const createReport = async (req, res) => {
       // We still want to return success even if notification fails
     }
 
+    // Explicitly notify admins about high-risk reports that need urgent attention
+    if (req.body.armed === "yes" || 
+        req.body.crimeType === "homicide" || 
+        req.body.crimeType === "assault" || 
+        req.body.crimeType === "robbery") {
+      try {
+        await NotificationService.notifyAllAdmins({
+          title: "URGENT: High-Risk Crime Report",
+          message: `A ${req.body.armed === "yes" ? "ARMED " : ""}${req.body.crimeType} report (#${reportId}) in ${req.body.location} requires immediate attention.`,
+          type: "alert",
+          relatedId: reportId
+        });
+        console.log("Urgent admin notifications sent successfully");
+      } catch (notificationError) {
+        console.error("Error sending admin urgent notifications:", notificationError);
+        // We still want to return success even if notification fails
+      }
+    }
+
     res.status(201).json({
       success: true,
       message: "Report created successfully",
