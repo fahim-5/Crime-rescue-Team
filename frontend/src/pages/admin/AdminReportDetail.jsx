@@ -158,9 +158,11 @@ const AdminReportDetail = () => {
       <div className="error-container">
         <h2>Report Not Found</h2>
         <p>{error || "The requested report could not be loaded."}</p>
-        <button onClick={() => navigate("/admin/reports")} className="back-button">
-          <FaArrowLeft /> Back to Reports
-        </button>
+        <div className="back-button-container">
+          <button onClick={() => navigate("/admin/reports")} className="back-button">
+            <FaArrowLeft /> Back to Reports
+          </button>
+        </div>
       </div>
     );
   }
@@ -173,9 +175,7 @@ const AdminReportDetail = () => {
     <div className="admin-report-container">
       <div className="report-header">
         <div className="header-content">
-          <button onClick={() => navigate("/admin/reports")} className="back-button">
-            <FaArrowLeft /> Back to Reports
-          </button>
+          
           <div className="header-title">
             <h1>
               {report.crime_type?.charAt(0).toUpperCase() + report.crime_type?.slice(1)} Report
@@ -187,9 +187,9 @@ const AdminReportDetail = () => {
             </div>
           </div>
           <div className="back-button-wrapper">
-            <button className="contact-button" onClick={handleContactReporter}>
+            {/* <button className="contact-button" onClick={handleContactReporter}>
               <FaPhoneAlt /> Contact Reporter
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -239,10 +239,7 @@ const AdminReportDetail = () => {
               </div>
             </div>
             
-            <div className="description-card">
-              <h3>Description</h3>
-              <p>{report.description || "No description provided"}</p>
-            </div>
+            
           </section>
 
           {(report.photos?.length > 0 || report.videos?.length > 0) && (
@@ -282,32 +279,7 @@ const AdminReportDetail = () => {
         </div>
 
         <div className="report-sidebar">
-          <div className="contact-reporter-card">
-            <h2>Reporter Information</h2>
-            {report.reporter ? (
-              <>
-                <div className="reporter-details">
-                  <h3>{report.reporter.name}</h3>
-                  <div className="contact-method">
-                    <FaPhoneAlt className="contact-icon" />
-                    <span>{report.reporter.phone || "Not provided"}</span>
-                  </div>
-                  <div className="contact-method">
-                    <FaEnvelope className="contact-icon" />
-                    <span>{report.reporter.email || "Not provided"}</span>
-                  </div>
-                </div>
-                <button 
-                  onClick={handleContactReporter}
-                  className="contact-button"
-                >
-                  <FaPhoneAlt /> Contact Reporter
-                </button>
-              </>
-            ) : (
-              <p>No reporter information available</p>
-            )}
-          </div>
+          
 
           <div className="validation-card">
             <h2>Community Validation</h2>
@@ -351,6 +323,12 @@ const AdminReportDetail = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="back-button-container">
+        <button onClick={() => navigate("/admin/reports")} className="back-button">
+          <FaArrowLeft /> Back to Reports
+        </button>
       </div>
     </div>
   );
