@@ -13,6 +13,7 @@ const ReportedCrimes = () => {
   const [error, setErrorMessage] = useState(null);
   const [selectedReport, setSelectedReport] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Fetch data on component mount
   useEffect(() => {
@@ -63,6 +64,11 @@ const ReportedCrimes = () => {
     navigate(`/admin/report/${reportId}`);
   };
 
+  // Filter crimes based on search term
+  const filteredCrimes = crimes.filter((crime) =>
+    crime.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="reported-crimes-container">
       <h2 className="reported-crimes-header">All Reported Crimes</h2>
@@ -73,8 +79,20 @@ const ReportedCrimes = () => {
         <div className="loading-message">Loading crime reports...</div>
       ) : (
         <div className="crimes-table-container">
-          {crimes.length === 0 ? (
-            <div className="no-crimes-message">No crime reports found.</div>
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search by Crime ID..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
+
+          {filteredCrimes.length === 0 ? (
+            <div className="no-crimes-message">
+              {searchTerm ? "No matching crime reports found." : "No crime reports found."}
+            </div>
           ) : (
             <table className="crimes-table">
               <thead>
@@ -87,7 +105,7 @@ const ReportedCrimes = () => {
                 </tr>
               </thead>
               <tbody>
-                {crimes.map((crime) => (
+                {filteredCrimes.map((crime) => (
                   <tr key={crime.id}>
                     <td>{crime.id}</td>
                     <td>{crime.location || "Unknown"}</td>

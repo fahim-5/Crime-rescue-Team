@@ -47,7 +47,7 @@
     flex-direction: column;
     padding: 1rem;
     margin-bottom: 1rem;
-    background-color: white;
+    background-color: #ffffff;
     border-radius: 8px;
     border-left: 4px solid #4b5563;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -138,6 +138,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .notificationTitle svg {
@@ -148,9 +149,21 @@
 
 .message {
     font-size: 0.95rem;
-    color: #4b5563;
+    color: #1f2937;
     line-height: 1.6;
     margin: 0;
+    font-weight: 500;
+}
+
+.crimeId {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: #4b5563;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    background-color: #f3f4f6;
+    border-radius: 4px;
+    display: inline-block;
 }
 
 .meta {

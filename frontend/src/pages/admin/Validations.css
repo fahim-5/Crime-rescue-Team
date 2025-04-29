@@ -214,6 +214,7 @@ button i {
   box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
 }
 
+
 /* =============== Modal Styles =============== */
 .modal-overlay {
   position: fixed;
@@ -233,13 +234,11 @@ button i {
 }
 
 @keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
 
 .modal-content {
-  background: white;
+  background: #fff;
   border-radius: 0.75rem;
   width: 95%;
   max-width: 1200px;
@@ -253,15 +252,22 @@ button i {
 }
 
 @keyframes slideUp {
-  to {
-    transform: translateY(0);
-  }
+  to { transform: translateY(0); }
 }
 
-/* Modal Header */
+.modal-header-tag {
+  background-color: #263851;
+  color: #fff;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .modal-header {
   background-color: #861d29;
-  color: white;
+  color: #fff;
   padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
@@ -275,7 +281,6 @@ button i {
   font-weight: 600;
 }
 
-/* Modal Body */
 .modal-body {
   padding: 1.75rem;
   flex: 1;
@@ -315,13 +320,13 @@ button i {
 
 .detail-group p {
   margin: 0.5rem 0;
-  color: #4b5563;
+  color: #374151;
   font-size: 0.9375rem;
   line-height: 1.4;
 }
 
 .detail-group strong {
-  color: #1f2937;
+  color: #4B5563;
   font-weight: 600;
   display: inline-block;
   margin-right: 0.5rem;

@@ -100,7 +100,6 @@ const Navbar = () => {
       return (
         <>
           <li><Link to="/police/dashboard">Dashboard</Link></li>
-          <li><Link to="/police/reports">All Reports</Link></li>
           <li><Link to="/police/pending">Pending Cases</Link></li>
           <li className="notification-link-container">
             <Link to="/notifications">Notifications</Link>

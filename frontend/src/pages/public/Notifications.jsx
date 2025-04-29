@@ -328,12 +328,8 @@ const Notifications = () => {
                 <p className={styles.message}>{notification.message}</p>
 
                 {notification.related_id && (
-                  <div className={`${styles.detailsLink} ${styles.tooltip}`}>
-                    View full details
-                    <FiArrowRight size={14} />
-                    <span className={styles.tooltipText}>
-                      Click to see full report details
-                    </span>
+                  <div className={styles.crimeId}>
+                    Crime ID: {notification.related_id}
                   </div>
                 )}
               </div>
