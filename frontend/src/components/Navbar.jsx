@@ -15,16 +15,13 @@ const Navbar = () => {
 
   const toggleProfilePopup = () => setProfileOpen((prev) => !prev);
 
-  // Check if the current route is crime-alerts
   const isOnAlertsPage = location.pathname.includes("/crime-alerts");
 
-  // Listen for changes in alert status
   useEffect(() => {
     const handleAlertsStatusChange = (event) => {
       setHasActiveAlerts(event.detail.hasActiveAlerts);
     };
 
-    // Check if the global variable has already been set
     if (window.hasActiveAlerts !== undefined) {
       setHasActiveAlerts(window.hasActiveAlerts);
     }
@@ -32,10 +29,7 @@ const Navbar = () => {
     window.addEventListener("alertsStatusChanged", handleAlertsStatusChange);
 
     return () => {
-      window.removeEventListener(
-        "alertsStatusChanged",
-        handleAlertsStatusChange
-      );
+      window.removeEventListener("alertsStatusChanged", handleAlertsStatusChange);
     };
   }, []);
 
@@ -86,61 +80,38 @@ const Navbar = () => {
     };
   }, [profileOpen]);
 
-  // Role-based navigation links
   const getNavLinks = () => {
     if (user?.role === "admin") {
       return (
         <>
-          <li>
-            <Link to="/admin/dashboard">Dashboard</Link>
-          </li>
-          <li>
-            <Link to="/admin/reports">Reports</Link>
-          </li>
-          <li>
-            <Link to="/admin/validations">Validations</Link>
-          </li>
+          <li><Link to="/admin/dashboard">Dashboard</Link></li>
+          <li><Link to="/admin/reports">Reports</Link></li>
+          <li><Link to="/admin/validations">Validations</Link></li>
           <li className="notification-link-container">
             <Link to="/notifications">Notifications</Link>
             <NotificationBadge />
           </li>
-          <li>
-            <Link to="/admin/analytics">Analytics</Link>
-          </li>
-          <li>
-            <Link to="/admin/settings">Console</Link>
-          </li>
+          <li><Link to="/admin/analytics">Analytics</Link></li>
+          <li><Link to="/admin/settings">Console</Link></li>
+          <li><Link to="/messages">Messages</Link></li>
         </>
       );
     } else if (user?.role === "police") {
       return (
         <>
-          <li>
-            <Link to="/police/dashboard">Dashboard</Link>
-          </li>
-          <li>
-            <Link to="/police/reports">All Reports</Link>
-          </li>
-          <li>
-            <Link to="/police/pending">Pending Cases</Link>
-          </li>
+          <li><Link to="/police/dashboard">Dashboard</Link></li>
+          <li><Link to="/police/reports">All Reports</Link></li>
+          <li><Link to="/police/pending">Pending Cases</Link></li>
           <li className="notification-link-container">
             <Link to="/notifications">Notifications</Link>
             <NotificationBadge />
           </li>
-          <li
-            className={`alert-link-container ${
-              hasActiveAlerts || isOnAlertsPage ? "alert-active" : ""
-            }`}
-          >
+          <li className={`alert-link-container ${hasActiveAlerts || isOnAlertsPage ? "alert-active" : ""}`}>
             <Link to="/crime-alerts">Crime Alerts</Link>
           </li>
-          <li>
-            <Link to="/police/analytics">Analytics</Link>
-          </li>
-          <li>
-            <Link to="/police/settings">Console</Link>
-          </li>
+          <li><Link to="/police/analytics">Analytics</Link></li>
+          <li><Link to="/police/settings">Console</Link></li>
+          <li><Link to="/messages">Messages</Link></li>
         </>
       );
     } else {
@@ -148,37 +119,23 @@ const Navbar = () => {
         <>
           {!user && (
             <>
-              <li>
-                <Link to="/instructions">Instruction</Link>
-              </li>
-              <li>
-                <Link to="/about">About</Link>
-              </li>
+              <li><Link to="/instructions">Instruction</Link></li>
+              <li><Link to="/about">About</Link></li>
             </>
           )}
-
           {user && (
             <>
-              <li>
-                <Link to="/home">Home</Link>
-              </li>
-              <li>
-                <Link to="/report">Report</Link>
-              </li>
+              <li><Link to="/home">Home</Link></li>
+              <li><Link to="/report">Report</Link></li>
               <li className="notification-link-container">
                 <Link to="/notifications">Notifications</Link>
                 <NotificationBadge />
               </li>
-              <li
-                className={`alert-link-container ${
-                  hasActiveAlerts || isOnAlertsPage ? "alert-active" : ""
-                }`}
-              >
+              <li className={`alert-link-container ${hasActiveAlerts || isOnAlertsPage ? "alert-active" : ""}`}>
                 <Link to="/crime-alerts">Crime Alerts</Link>
               </li>
-              <li>
-                <Link to="/public/settings">Account</Link>
-              </li>
+              <li><Link to="/public/settings">Account</Link></li>
+              <li><Link to="/messages">Messages</Link></li>
             </>
           )}
         </>
@@ -201,46 +158,24 @@ const Navbar = () => {
             {user.full_name || user.username || "Guest"}
           </span>
           <span className="profile-btn-icon">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M19 9l-7 7-7-7"></path>
             </svg>
           </span>
         </button>
       );
     } else {
-      // When not on signin/signup pages, show both buttons
       if (location.pathname !== "/" && location.pathname !== "/start") {
         return (
           <div className="auth-buttons-container">
-            <Link to="/" className="auth-btn">
-              Sign In
-            </Link>
-            <Link to="/start" className="auth-btn sign-up-btn">
-              Sign Up
-            </Link>
+            <Link to="/" className="auth-btn">Sign In</Link>
+            <Link to="/start" className="auth-btn sign-up-btn">Sign Up</Link>
           </div>
         );
       } else if (location.pathname === "/") {
-        // On signin page, show only signup
-        return (
-          <Link to="/start" className="auth-btn sign-up-btn">
-            Sign Up
-          </Link>
-        );
+        return <Link to="/start" className="auth-btn sign-up-btn">Sign Up</Link>;
       } else if (location.pathname === "/start") {
-        // On signup page, show only signin
-        return (
-          <Link to="/" className="auth-btn">
-            Sign In
-          </Link>
-        );
+        return <Link to="/" className="auth-btn">Sign In</Link>;
       }
     }
   };
@@ -261,21 +196,14 @@ const Navbar = () => {
 
       {profileOpen && (
         <>
-          <div
-            className="profile-overlay"
-            onClick={() => setProfileOpen(false)}
-          ></div>
+          <div className="profile-overlay" onClick={() => setProfileOpen(false)}></div>
           <div className="profile-popup" ref={popupRef}>
             <div className="profile-header">
               <div className="profile-avatar">
-                {user?.full_name?.charAt(0).toUpperCase() ||
-                  user?.username?.charAt(0).toUpperCase() ||
-                  "G"}
+                {user?.full_name?.charAt(0).toUpperCase() || user?.username?.charAt(0).toUpperCase() || "G"}
               </div>
               <div className="profile-info">
-                <h2 className="profile-name">
-                  {user?.full_name || user?.username || "Guest User"}
-                </h2>
+                <h2 className="profile-name">{user?.full_name || user?.username || "Guest User"}</h2>
                 <span className="profile-role">{user?.role || "Public"}</span>
               </div>
             </div>
@@ -293,19 +221,13 @@ const Navbar = () => {
 
             <div className="profile-actions">
               <Link
-                to={
-                  user?.role === "admin"
-                    ? "/admin/settings"
-                    : "/public/settings"
-                }
+                to={user?.role === "admin" ? "/admin/settings" : "/public/settings"}
                 className="action-btn"
                 onClick={() => setProfileOpen(false)}
               >
                 Account Settings
               </Link>
-              <button className="logout-btn" onClick={handleLogout}>
-                Sign Out
-              </button>
+              <button className="logout-btn" onClick={handleLogout}>Sign Out</button>
             </div>
           </div>
         </>

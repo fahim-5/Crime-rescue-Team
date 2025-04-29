@@ -14,15 +14,11 @@ import {
   FaFemale,
   FaCheck,
   FaTimes,
-  FaShieldAlt,
-  FaEye,
-  FaEdit,
-  FaBan,
-  FaExclamationCircle,
+  FaPhoneAlt,
+  FaEnvelope,
+  FaUserCircle
 } from "react-icons/fa";
 import "./AdminReportDetail.css";
-
-const API_URL = "http://localhost:5000";
 
 const AdminReportDetail = () => {
   const { id } = useParams();
@@ -31,15 +27,6 @@ const AdminReportDetail = () => {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [updatingStatus, setUpdatingStatus] = useState(false);
-  const [statusUpdateError, setStatusUpdateError] = useState(null);
-  const [statusOptions] = useState([
-    { value: "pending", label: "Pending" },
-    { value: "validating", label: "Validating" },
-    { value: "investigating", label: "Investigating" },
-    { value: "resolved", label: "Resolved" },
-    { value: "closed", label: "Closed" },
-  ]);
 
   useEffect(() => {
     const fetchReportDetails = async () => {
@@ -64,8 +51,8 @@ const AdminReportDetail = () => {
       } catch (err) {
         console.error("Error fetching report details:", err);
         setError("Error loading report. Please try again later.");
-
-        // For demo purposes, if API fails, use mock data
+        
+        // Enhanced mock data with all required fields
         setReport({
           id: id,
           crimeId: `CR-2025-${id}`,
@@ -73,22 +60,26 @@ const AdminReportDetail = () => {
           location: "Dhaka, Bangladesh",
           time: new Date().toISOString(),
           created_at: new Date().toISOString(),
-          description: "Armed robbery at local convenience store",
+          description: "Armed robbery at local convenience store. Two masked individuals entered the store with firearms and demanded cash from the register. They fled the scene in a black sedan heading north on Main Street.",
           num_criminals: 2,
           victim_gender: "male",
           armed: "yes",
           status: "pending",
-          reporter: {
+          reporter: {  // Ensure reporter object exists
             id: "user123",
             name: "John Doe",
             phone: "+1234567890",
             email: "john@example.com",
           },
-          photos: [],
-          videos: [],
+          photos: [
+            { url: "https://via.placeholder.com/600x400?text=Crime+Scene+1" },
+            { url: "https://via.placeholder.com/600x400?text=Crime+Scene+2" }
+          ],
+          videos: [
+            { url: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4" }
+          ],
           valid_count: 3,
           invalid_count: 1,
-          police_response: null,
         });
       } finally {
         setLoading(false);
@@ -100,65 +91,37 @@ const AdminReportDetail = () => {
     }
   }, [id, token]);
 
-  const getStatusBadge = (report) => {
-    const statusClass = report.status.toLowerCase();
+  const getStatusBadge = (status) => {
+    if (!status) return null;
+    const statusClass = status.toLowerCase();
     return (
-      <span className={`status-badge ${statusClass}`}>{report.status}</span>
+      <span className={`status-badge ${statusClass}`}>
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </span>
     );
   };
 
   const getGenderIcon = (gender) => {
+    if (!gender) return <FaUserCircle className="gender-icon unknown" />;
     if (gender.toLowerCase() === "male") {
-      return <FaMale className="detail-icon gender-male" />;
+      return <FaMale className="gender-icon male" />;
     } else if (gender.toLowerCase() === "female") {
-      return <FaFemale className="detail-icon gender-female" />;
-    } else {
-      return <FaUsers className="detail-icon" />;
+      return <FaFemale className="gender-icon female" />;
     }
+    return <FaUserCircle className="gender-icon unknown" />;
   };
 
-  const handleStatusChange = async (newStatus) => {
-    try {
-      setUpdatingStatus(true);
-      setStatusUpdateError(null);
-
-      const response = await axios.put(
-        `http://localhost:5000/api/reports/${id}`,
-        { status: newStatus },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.data && response.data.success) {
-        setReport((prev) => ({ ...prev, status: newStatus }));
-      } else {
-        setStatusUpdateError("Failed to update report status");
-      }
-    } catch (err) {
-      console.error("Error updating report status:", err);
-      setStatusUpdateError("Error updating status. Please try again.");
-    } finally {
-      setUpdatingStatus(false);
+  const handleContactReporter = () => {
+    if (!report?.reporter) {
+      alert("No reporter information available");
+      return;
     }
-  };
-
-  const handleAssignPolice = async () => {
-    // This would open a modal to assign police officers
-    alert("Police assignment functionality would open here");
-  };
-
-  const handleSendNotification = async () => {
-    // This would open a notification form
-    alert("Send notification to reporter functionality would open here");
+    alert(`Contacting reporter: ${report.reporter.name}\nPhone: ${report.reporter.phone}\nEmail: ${report.reporter.email}`);
   };
 
   if (loading) {
     return (
-      <div className="admin-report-detail-container loading">
+      <div className="loading-container">
         <div className="loading-spinner"></div>
         <p>Loading report details...</p>
       </div>
@@ -167,17 +130,10 @@ const AdminReportDetail = () => {
 
   if (error || !report) {
     return (
-      <div className="admin-report-detail-container error">
-        <FaExclamationCircle className="error-icon" />
+      <div className="error-container">
         <h2>Report Not Found</h2>
-        <p>
-          {error ||
-            "The report you're looking for doesn't exist or has been removed."}
-        </p>
-        <button
-          onClick={() => navigate("/admin/reports")}
-          className="back-button"
-        >
+        <p>{error || "The requested report could not be loaded."}</p>
+        <button onClick={() => navigate("/admin/reports")} className="back-button">
           <FaArrowLeft /> Back to Reports
         </button>
       </div>
@@ -185,259 +141,184 @@ const AdminReportDetail = () => {
   }
 
   return (
-    <div className="admin-report-detail-container">
-      <div className="report-detail-header">
-        <button
-          onClick={() => navigate("/admin/reports")}
-          className="back-button"
-        >
-          <FaArrowLeft /> Back to Reports
-        </button>
+    <div className="admin-report-container">
+      <div className="report-header">
         <div className="header-content">
-          <h1>
-            {report.crime_type.charAt(0).toUpperCase() +
-              report.crime_type.slice(1)}{" "}
-            Report{" "}
-            {report.crimeId && (
+          <button onClick={() => navigate("/admin/reports")} className="back-button">
+            <FaArrowLeft /> Back to Reports
+          </button>
+          <div className="header-title">
+            <h1>
+              {report.crime_type?.charAt(0).toUpperCase() + report.crime_type?.slice(1)} Report
               <span className="crime-id">#{report.crimeId}</span>
-            )}
-          </h1>
-          {getStatusBadge(report)}
+            </h1>
+            <div className="header-meta">
+              {getStatusBadge(report.status)}
+            </div>
+          </div>
+          <div class="back-button-wrapper">
+  <button class="contact-button">
+     Contact with Reporter
+  </button>
+</div>
+
         </div>
       </div>
 
-      <div className="admin-action-panel">
-        <div className="status-control">
-          <h3>Update Status</h3>
-          <div className="status-buttons">
-            {statusOptions.map((option) => (
-              <button
-                key={option.value}
-                className={`status-button ${option.value} ${
-                  report.status === option.value ? "active" : ""
-                }`}
-                onClick={() => handleStatusChange(option.value)}
-                disabled={updatingStatus || report.status === option.value}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-          {statusUpdateError && (
-            <p className="status-update-error">{statusUpdateError}</p>
-          )}
-        </div>
-
-        <div className="action-buttons">
-          <button className="action-button assign" onClick={handleAssignPolice}>
-            <FaUsers /> Assign Police
-          </button>
-          <button
-            className="action-button notify"
-            onClick={handleSendNotification}
-          >
-            <FaExclamationCircle /> Notify Reporter
-          </button>
-        </div>
-      </div>
-
-      <div className="report-detail-card">
-        <div className="report-section">
-          <h2>Incident Details</h2>
-
-          <div className="detail-group">
-            <div className="detail-item">
-              <FaMapMarkerAlt className="detail-icon" />
-              <div className="detail-content">
-                <span className="detail-label">Location</span>
-                <span className="detail-value">{report.location}</span>
+      <div className="report-content">
+        <div className="report-main">
+          <section className="report-section incident-section">
+            <h2 className="section-title">Incident Details</h2>
+            <div className="detail-grid">
+              <div className="detail-card">
+                <FaMapMarkerAlt className="detail-icon" />
+                <div>
+                  <h3>Location</h3>
+                  <p>{report.location || "Location not specified"}</p>
+                </div>
+              </div>
+              
+              <div className="detail-card">
+                <FaCalendarAlt className="detail-icon" />
+                <div>
+                  <h3>Date & Time</h3>
+                  <p>
+                    {report.time ? format(new Date(report.time), "MMM d, yyyy 'at' h:mm a") : "Not specified"}
+                    {report.time && (
+                      <span className="time-ago">
+                        ({formatDistanceToNow(new Date(report.time), { addSuffix: true })})
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="detail-card">
+                <FaUsers className="detail-icon" />
+                <div>
+                  <h3>Suspects</h3>
+                  <p>{report.num_criminals || 0} {report.num_criminals === 1 ? "person" : "people"}</p>
+                </div>
+              </div>
+              
+              <div className="detail-card">
+                <FaExclamationTriangle className="detail-icon" />
+                <div>
+                  <h3>Armed</h3>
+                  <p>{report.armed === "yes" ? "Yes" : "No"}</p>
+                </div>
               </div>
             </div>
-
-            <div className="detail-item">
-              <FaCalendarAlt className="detail-icon" />
-              <div className="detail-content">
-                <span className="detail-label">Date & Time</span>
-                <span className="detail-value">
-                  {format(new Date(report.time), "PPP")} at{" "}
-                  {format(new Date(report.time), "p")}
-                  <small className="time-ago">
-                    (
-                    {formatDistanceToNow(new Date(report.time), {
-                      addSuffix: true,
-                    })}
-                    )
-                  </small>
-                </span>
-              </div>
-            </div>
-
-            <div className="detail-item">
-              <FaRegClock className="detail-icon" />
-              <div className="detail-content">
-                <span className="detail-label">Reported</span>
-                <span className="detail-value">
-                  {format(new Date(report.created_at), "PPP")}
-                  <small className="time-ago">
-                    (
-                    {formatDistanceToNow(new Date(report.created_at), {
-                      addSuffix: true,
-                    })}
-                    )
-                  </small>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {report.description && (
-            <div className="description-box">
+            
+            <div className="description-card">
               <h3>Description</h3>
-              <p>{report.description}</p>
+              <p>{report.description || "No description provided"}</p>
             </div>
+          </section>
+
+          {(report.photos?.length > 0 || report.videos?.length > 0) && (
+            <section className="report-section evidence-section">
+              <h2 className="section-title">Evidence</h2>
+              
+              {report.photos?.length > 0 && (
+                <div className="evidence-group">
+                  <h3>Photos ({report.photos.length})</h3>
+                  <div className="media-grid">
+                    {report.photos.map((photo, index) => (
+                      <div key={`photo-${index}`} className="media-item">
+                        <img src={photo.url} alt={`Evidence ${index + 1}`} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {report.videos?.length > 0 && (
+                <div className="evidence-group">
+                  <h3>Videos ({report.videos.length})</h3>
+                  <div className="media-grid">
+                    {report.videos.map((video, index) => (
+                      <div key={`video-${index}`} className="media-item">
+                        <video controls>
+                          <source src={video.url} type="video/mp4" />
+                          Your browser does not support videos.
+                        </video>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </section>
           )}
         </div>
 
-        <div className="report-section">
-          <h2>Suspects & Victim Information</h2>
-
-          <div className="detail-group">
-            <div className="detail-item">
-              <FaUsers className="detail-icon" />
-              <div className="detail-content">
-                <span className="detail-label">Number of Suspects</span>
-                <span className="detail-value">{report.num_criminals}</span>
-              </div>
-            </div>
-
-            <div className="detail-item">
-              <div className="detail-icon">
-                {getGenderIcon(report.victim_gender)}
-              </div>
-              <div className="detail-content">
-                <span className="detail-label">Victim Gender</span>
-                <span className="detail-value">
-                  {report.victim_gender.charAt(0).toUpperCase() +
-                    report.victim_gender.slice(1)}
-                </span>
-              </div>
-            </div>
-
-            <div className="detail-item">
-              <FaExclamationTriangle className="detail-icon" />
-              <div className="detail-content">
-                <span className="detail-label">Armed Suspects</span>
-                <span className="detail-value">
-                  {report.armed === "yes"
-                    ? "Yes (Armed)"
-                    : report.armed === "no"
-                    ? "No (Unarmed)"
-                    : "Unknown"}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="report-section">
-          <h2>Reporter Information</h2>
-          <div className="detail-group">
-            {report.reporter && (
+        <div className="report-sidebar">
+          <div className="contact-reporter-card">
+            <h2>Reporter Information</h2>
+            {report.reporter ? (
               <>
-                <div className="detail-item">
-                  <div className="detail-content">
-                    <span className="detail-label">Name</span>
-                    <span className="detail-value">{report.reporter.name}</span>
+                <div className="reporter-details">
+                  <h3>{report.reporter.name}</h3>
+                  <div className="contact-method">
+                    <FaPhoneAlt className="contact-icon" />
+                    <span>{report.reporter.phone || "Not provided"}</span>
+                  </div>
+                  <div className="contact-method">
+                    <FaEnvelope className="contact-icon" />
+                    <span>{report.reporter.email || "Not provided"}</span>
                   </div>
                 </div>
-                <div className="detail-item">
-                  <div className="detail-content">
-                    <span className="detail-label">Contact</span>
-                    <span className="detail-value">
-                      {report.reporter.phone && (
-                        <span className="reporter-phone">
-                          {report.reporter.phone}
-                        </span>
-                      )}
-                      {report.reporter.email && (
-                        <span className="reporter-email">
-                          {report.reporter.email}
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                </div>
+                <button 
+                  onClick={handleContactReporter}
+                  className="contact-button"
+                >
+                  Contact Reporter
+                </button>
               </>
+            ) : (
+              <p>No reporter information available</p>
             )}
           </div>
-        </div>
 
-        {(report.photos && report.photos.length > 0) ||
-        (report.videos && report.videos.length > 0) ? (
-          <div className="report-section">
-            <h2>Evidence</h2>
-
-            {report.photos && report.photos.length > 0 && (
-              <div className="evidence-group">
-                <h3>Photos ({report.photos.length})</h3>
-                <div className="photo-gallery">
-                  {report.photos.map((photo, index) => (
-                    <div key={`photo-${index}`} className="gallery-item">
-                      <img src={photo.url} alt={`Evidence ${index + 1}`} />
-                    </div>
-                  ))}
+          <div className="validation-card">
+            <h2>Community Validation</h2>
+            <div className="validation-metrics">
+              <div className="metric valid">
+                <FaCheck className="metric-icon" />
+                <div>
+                  <span className="metric-value">{report.valid_count || 0}</span>
+                  <span className="metric-label">Valid</span>
                 </div>
               </div>
-            )}
-
-            {report.videos && report.videos.length > 0 && (
-              <div className="evidence-group">
-                <h3>Videos ({report.videos.length})</h3>
-                <div className="video-gallery">
-                  {report.videos.map((video, index) => (
-                    <div key={`video-${index}`} className="gallery-item">
-                      <video controls>
-                        <source src={video.url} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                  ))}
+              <div className="metric invalid">
+                <FaTimes className="metric-icon" />
+                <div>
+                  <span className="metric-value">{report.invalid_count || 0}</span>
+                  <span className="metric-label">Invalid</span>
                 </div>
               </div>
-            )}
+            </div>
+            <div className="validation-progress">
+              <div 
+                className="progress-bar"
+                style={{
+                  width: `${((report.valid_count || 0) / ((report.valid_count || 0) + (report.invalid_count || 0))) * 100}%`
+                }}
+              ></div>
+            </div>
           </div>
-        ) : null}
 
-        <div className="report-section">
-          <h2>Community Validation</h2>
-          <div className="validation-stats">
-            <div className="stat-item valid">
-              <FaCheck className="stat-icon" />
-              <span className="stat-value">{report.valid_count || 0}</span>
-              <span className="stat-label">Valid Reports</span>
-            </div>
-            <div className="stat-item invalid">
-              <FaTimes className="stat-icon" />
-              <span className="stat-value">{report.invalid_count || 0}</span>
-              <span className="stat-label">Invalid Reports</span>
-            </div>
-            <div className="stat-summary">
-              {report.valid_count > 0 || report.invalid_count > 0 ? (
-                <div className="validation-percentage">
-                  <div
-                    className="percentage-bar"
-                    style={{
-                      width: `${
-                        (report.valid_count /
-                          (report.valid_count + report.invalid_count)) *
-                        100
-                      }%`,
-                    }}
-                  ></div>
-                </div>
-              ) : (
-                <p className="no-validations">No community validations yet</p>
-              )}
+          <div className="victim-card">
+            <h2>Victim Information</h2>
+            <div className="victim-details">
+              <div className="gender-display">
+                {getGenderIcon(report.victim_gender)}
+                <span>
+                  {report.victim_gender ? 
+                    report.victim_gender.charAt(0).toUpperCase() + report.victim_gender.slice(1) : 
+                    "Not specified"}
+                </span>
+              </div>
             </div>
           </div>
         </div>
