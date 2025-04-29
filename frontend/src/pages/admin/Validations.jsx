@@ -189,7 +189,7 @@ const Validations = () => {
       {selectedRequest && (
         <div className="modal-overlay" onClick={() => setSelectedRequest(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
+            <div className="modal-header-tag">
               <h2>Officer Details</h2>
               <button
                 className="close-modal"
@@ -254,7 +254,7 @@ const Validations = () => {
                 onClick={handleOpenOfficerData}
                 aria-label="Open officers data"
               >
-                Open Officers Data for Verify 
+               Review Data
               </button>
             </div>
           </div>
@@ -266,7 +266,7 @@ const Validations = () => {
           <div className="dual-modal-container">
             {/* Left modal - Search existing officer */}
             <div className="officer-search-modal">
-              <div className="modal-header">
+              <div className="modal-header-tag">
                 <h2>Search Officer Data</h2>
                 <button
                   className="close-modal"
@@ -332,7 +332,7 @@ const Validations = () => {
 
             {/* Right modal - Request officer data */}
             <div className="request-officer-modal">
-              <div className="modal-header">
+              <div className="modal-header-tag">
                 <h2>Request Officer Data</h2>
               </div>
               <div className="modal-body">
