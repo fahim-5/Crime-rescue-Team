@@ -42,6 +42,7 @@ import PendingCases from "./pages/police/PendingCases";
 import UserReports from "./components/UserReports";
 import PrivateRoute from "./components/PrivateRoute";
 import MessagesPanel from "./components/MessagesPanel";
+import Management from "./components/Management";
 
 function App() {
   return (
@@ -135,10 +136,10 @@ function App() {
             }
           />
           <Route
-            path="/admin/validations"
+            path="/admin/management"
             element={
               <PrivateRoute allowedRole="admin">
-                <Validations />
+                <Management />
               </PrivateRoute>
             }
           />

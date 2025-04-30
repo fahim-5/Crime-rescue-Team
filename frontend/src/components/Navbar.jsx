@@ -86,14 +86,15 @@ const Navbar = () => {
         <>
           <li><Link to="/admin/dashboard">Dashboard</Link></li>
           <li><Link to="/admin/reports">Reports</Link></li>
-          <li><Link to="/admin/validations">Validations</Link></li>
+          <li><Link to="/admin/analytics">Analytics</Link></li>
+          <li><Link to="/messages">Messages</Link></li>
+          <li><Link to="/admin/management">Management</Link></li>
+          {/* <li><Link to="/admin/validations">Management</Link></li> */}
           <li className="notification-link-container">
             <Link to="/notifications">Notifications</Link>
             <NotificationBadge />
           </li>
-          <li><Link to="/admin/analytics">Analytics</Link></li>
           <li><Link to="/admin/settings">Console</Link></li>
-          <li><Link to="/messages">Messages</Link></li>
         </>
       );
     } else if (user?.role === "police") {
