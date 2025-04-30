@@ -42,7 +42,7 @@ import PendingCases from "./pages/police/PendingCases";
 import UserReports from "./components/UserReports";
 import PrivateRoute from "./components/PrivateRoute";
 import MessagesPanel from "./components/MessagesPanel";
-import Management from "./components/Management";
+import Management from "./pages/admin/Management";
 
 function App() {
   return (
@@ -140,6 +140,15 @@ function App() {
             element={
               <PrivateRoute allowedRole="admin">
                 <Management />
+              </PrivateRoute>
+            }
+          />
+
+<Route
+            path="/admin/validations"
+            element={
+              <PrivateRoute allowedRole="admin">
+                <Validations />
               </PrivateRoute>
             }
           />
