@@ -19,6 +19,9 @@
   margin-bottom: 2.5rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid #eaeaea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .title {
@@ -26,12 +29,14 @@
   font-weight: 700;
   color: #121212;
   margin-bottom: 0.5rem;
+  margin-right: 100px;;
 }
 
 .subtitle {
   font-size: 1.1rem;
   color: #666;
   font-weight: 400;
+  font-style: italic;
 }
 
 .mainGrid {
@@ -187,14 +192,17 @@
 }
 
 .secondaryButton {
-  background: white;
-  color: #333;
-  border: 1px solid #ddd;
+  background: linear-gradient(135deg, #061123 0%, #200f5e 100%);
+  color: white;
+  margin-top: 10px;
 }
 
 .secondaryButton:hover {
-  background: #f9f9f9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(158, 25, 45, 0.2);
+
 }
+
 
 .dangerButton {
   background: #e63946;
@@ -582,4 +590,140 @@
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* === ERROR MESSAGE STYLES === */
+.errorMessage {
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid #fca5a5;
+  font-weight: 500;
+  width: 100%;
+  animation: errorSlideIn 0.3s ease-out;
+}
+
+.errorMessage::before {
+  content: '';
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23dc2626'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+  width: 1.5em;
+  height: 1.5em;
+  background-size: contain;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+}
+
+@keyframes errorSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Form-specific error messages */
+.formError {
+  background-color: #fff5f5;
+  border: 1px solid #fed7d7;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+}
+
+.formError::before {
+  content: '⚠ ';
+  color: #dc2626;
+  font-weight: bold;
+}
+
+/* Input error states */
+.inputError {
+  border-color: #fca5a5 !important;
+  background-color: #fff5f5;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+/* Error message in modals */
+.modalContent .errorMessage {
+  margin: -0.5rem 0 1.5rem;
+}
+
+/* === SUCCESS MESSAGE STYLES === */
+.successMessage {
+  background-color: #dcfce7;
+  color: #166534;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid #86efac;
+  font-weight: 500;
+  width: 100%;
+  animation: successSlideIn 0.3s ease-out;
+}
+
+.successMessage::before {
+  content: '';
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23166534'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
+  width: 1.5em;
+  height: 1.5em;
+  background-size: contain;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+}
+
+@keyframes successSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Form-specific success messages */
+.formSuccess {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+}
+
+.formSuccess::before {
+  content: '✓ ';
+  color: #166534;
+  font-weight: bold;
+}
+
+/* Input success states */
+.inputSuccess {
+  border-color: #86efac !important;
+  background-color: #f0fdf4;
+}
+
+.inputSuccess:focus {
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+/* Success message in modals */
+.modalContent .successMessage {
+  margin: -0.5rem 0 1.5rem;
 }

@@ -270,7 +270,6 @@
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
-    transition: var(--transition);
   }
   
   .view-btn:hover {
@@ -347,31 +346,65 @@
   
   .modal-header h3 {
     margin: 0;
-    color: var(--primary);
+    color: white;
   }
   
   .close-btn {
-    background: transparent;
+    background:white;
+    border-radius: 50%;
+    color: rgb(0, 0, 0);
     border: none;
-    color: var(--text-light);
     font-size: 1.25rem;
     cursor: pointer;
     transition: var(--transition);
   }
   
   .close-btn:hover {
-    color: var(--text);
+    background: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
   }
   
-  .modal-content {
+  .modal-content-mng {
     padding: 1.5rem;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  
+  
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-family: "Segoe UI", sans-serif;
+    padding: 16px 0;
   }
   
-  .user-details p {
-    margin-bottom: 0.75rem;
-    font-size: 1rem;
-    line-height: 1.5;
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f8f9fa;
+    padding: 10px 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   }
+  
+  .label {
+    font-weight: 600;
+    color: #495057;
+    width: 40%;
+    text-align: left;
+  }
+  
+  .value {
+    font-weight: 500;
+    color: #212529;
+    width: 60%;
+    text-align: right;
+    word-break: break-word;
+  }
+  
   
   .modal-footer {
     padding: 1.5rem;
@@ -382,19 +415,19 @@
   }
   
   .close-modal-btn {
-    background: var(--background);
-    color: var(--text);
+    background-color: rgb(26, 16, 76);
+    color: rgb(246, 246, 246);
     border: 1px solid var(--border);
-    padding: 0.75rem 1.5rem;
     border-radius: 6px;
     font-weight: 500;
+    padding: 8px 16px;
+    font-size: 14px;
     cursor: pointer;
-    transition: var(--transition);
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
   }
   
-  .close-modal-btn:hover {
-    background: #e9ecef;
-  }
+
+  
   
   /* Criminal Database */
   .criminal-database-container {
@@ -519,3 +552,6 @@
       justify-content: space-between;
     }
   }
+
+
+  

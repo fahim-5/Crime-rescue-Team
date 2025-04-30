@@ -292,7 +292,7 @@ const Notifications = () => {
           Important alerts and community updates
         </p>
         {notifications.length > 0 && (
-          <div className={styles.headerActions}>
+          <div className={styles.markAllReadButton}>
             <button
               className={`${styles.actionButton} ${styles.secondary}`}
               onClick={markAllAsRead}

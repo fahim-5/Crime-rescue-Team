@@ -838,17 +838,7 @@ const Settings = () => {
             <div className={styles.modalContent}>
               <div className={styles.modalHeader}>
                 <h2 className={styles.modalTitle}>Edit Profile</h2>
-                <button
-                  className={styles.closeButton}
-                  onClick={() => {
-                    setShowProfileModal(false);
-                    setEditMode(false);
-                    setProfileError("");
-                    setProfileSuccess("");
-                  }}
-                >
-                  <FiX />
-                </button>
+               
               </div>
 
               <div className={styles.modalBody}>

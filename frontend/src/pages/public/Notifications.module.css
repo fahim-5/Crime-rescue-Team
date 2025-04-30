@@ -15,19 +15,23 @@
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .title {
     font-size: 1.75rem;
     font-weight: 700;
-    color: #111827;
+    color: #10207c;
     margin-bottom: 0.5rem;
 }
 
 .subtitle {
     font-size: 0.9rem;
-    color: #6b7280;
+    color: #454953;
     font-weight: 500;
+    margin-left: 30px;
 }
 
 .headerActions {
@@ -204,6 +208,38 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+   
+}
+
+.markAllReadButton {
+    --button-padding: 0.75rem 1.5rem;
+    --button-radius: 8px;
+    --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+    
+    position: relative;
+    padding: var(--button-padding);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    border-radius: var(--button-radius);
+    border: 1px solid var(--accent-300);
+    background: rgb(75, 119, 144);
+    color:rgb(48, 48, 116);
+    cursor: pointer;
+    transition: 
+        background 0.3s var(--transition-timing),
+        transform 0.2s var(--transition-timing),
+        box-shadow 0.3s var(--transition-timing);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-inline-start: auto;
+    margin-inline-end: 1.25rem;
+    margin-block-end: 0.75rem;
+    box-shadow: 
+        0 2px 6px rgba(0, 0, 0, 0.05),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 
 .primary {
