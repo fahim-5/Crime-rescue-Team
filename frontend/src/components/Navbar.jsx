@@ -86,7 +86,7 @@ const Navbar = () => {
         <>
           <li><Link to="/admin/dashboard">Dashboard</Link></li>
           <li><Link to="/admin/reports">Reports</Link></li>
-          <li><Link to="/admin/analytics">Analytics</Link></li>
+          {/* <li><Link to="/admin/analytics">Analytics</Link></li> */}
           <li><Link to="/messages">Messages</Link></li>
           <li><Link to="/admin/management">Management</Link></li>
           {/* <li><Link to="/admin/validations">Management</Link></li> */}
@@ -197,37 +197,58 @@ const Navbar = () => {
       {profileOpen && (
         <>
           <div className="profile-overlay" onClick={() => setProfileOpen(false)}></div>
-          <div className="profile-popup" ref={popupRef}>
-            <div className="profile-header">
-              <div className="profile-avatar">
+          <div className={`profile-popup ${user?.role === 'admin' ? 'admin-profile-popup' : user?.role === 'police' ? 'police-profile-popup' : ''}`} ref={popupRef}>
+            <div className={`profile-header ${user?.role === 'admin' ? 'admin-profile-header' : user?.role === 'police' ? 'police-profile-header' : ''}`}>
+              <div className={`profile-avatar ${user?.role === 'admin' ? 'admin-profile-avatar' : user?.role === 'police' ? 'police-profile-avatar' : ''}`}>
                 {user?.full_name?.charAt(0).toUpperCase() || user?.username?.charAt(0).toUpperCase() || "G"}
               </div>
               <div className="profile-info">
                 <h2 className="profile-name">{user?.full_name || user?.username || "Guest User"}</h2>
-                <span className="profile-role">{user?.role || "Public"}</span>
+                <span className={`profile-role ${user?.role === 'admin' ? 'admin-profile-role' : user?.role === 'police' ? 'police-profile-role' : ''}`}>
+                  {user?.role === 'admin' ? 'ADMIN' : user?.role === 'police' ? 'POLICE OFFICER' : user?.role || "Public"}
+                </span>
               </div>
             </div>
 
-            <div className="profile-stats">
-              <div className="stat-item">
-                <span className="stat-value">1,200</span>
-                <span className="stat-label">Points</span>
+            {user?.role === 'public' && (
+              <div className="profile-stats">
+                <div className="stat-item">
+                  <span className="stat-value">1,200</span>
+                  <span className="stat-label">Points</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-value">Gold</span>
+                  <span className="stat-label">Rank</span>
+                </div>
               </div>
-              <div className="stat-item">
-                <span className="stat-value">Gold</span>
-                <span className="stat-label">Rank</span>
-              </div>
-            </div>
+            )}
 
-            <div className="profile-actions">
+            {user?.role === 'police' && (
+              <div className="police-info">
+                <div className="police-info-item">
+                  <span className="police-info-label">Police ID</span>
+                  <span className="police-info-value">{user?.police_id || user?.badge_number || "N/A"}</span>
+                </div>
+                <div className="police-info-item">
+                  <span className="police-info-label">Rank</span>
+                  <span className="police-info-value">{user?.rank || "Officer"}</span>
+                </div>
+                <div className="police-info-item">
+                  <span className="police-info-label">Station</span>
+                  <span className="police-info-value">{user?.station || "N/A"}</span>
+                </div>
+              </div>
+            )}
+
+            <div className={`profile-actions ${user?.role === 'admin' ? 'admin-profile-actions' : user?.role === 'police' ? 'police-profile-actions' : ''}`}>
               <Link
-                to={user?.role === "admin" ? "/admin/settings" : "/public/settings"}
-                className="action-btn"
+                to={user?.role === "admin" ? "/admin/settings" : user?.role === "police" ? "/police/settings" : "/public/settings"}
+                className={`action-btn ${user?.role === 'admin' ? 'admin-action-btn' : user?.role === 'police' ? 'police-action-btn' : ''}`}
                 onClick={() => setProfileOpen(false)}
               >
                 Account Settings
               </Link>
-              <button className="logout-btn" onClick={handleLogout}>Sign Out</button>
+              <button className={`logout-btn ${user?.role === 'admin' ? 'admin-logout-btn' : user?.role === 'police' ? 'police-logout-btn' : ''}`} onClick={handleLogout}>Sign Out</button>
             </div>
           </div>
         </>

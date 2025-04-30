@@ -30,6 +30,7 @@ import Analytics from "./components/Analytics";
 import Settings from "./components/Settings";
 import Validations from "./pages/admin/Validations";
 import AdminReportDetail from "./pages/admin/AdminReportDetail";
+import DatabaseManagement from "./pages/admin/DatabaseManagement";
 
 // Police
 import PoliceDashboard from "./pages/police/PoliceDashboard";
@@ -42,7 +43,7 @@ import PendingCases from "./pages/police/PendingCases";
 import UserReports from "./components/UserReports";
 import PrivateRoute from "./components/PrivateRoute";
 import MessagesPanel from "./components/MessagesPanel";
-import Management from "./components/Management";
+import Management from "./pages/admin/Management";
 
 function App() {
   return (
@@ -143,6 +144,15 @@ function App() {
               </PrivateRoute>
             }
           />
+
+<Route
+            path="/admin/validations"
+            element={
+              <PrivateRoute allowedRole="admin">
+                <Validations />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/admin/report/:id"
             element={
@@ -152,6 +162,14 @@ function App() {
             }
           />
           <Route path="/admin/messages" element={<MessagesPanel />} />
+          <Route
+            path="/admin/database"
+            element={
+              <PrivateRoute allowedRole="admin">
+                <DatabaseManagement />
+              </PrivateRoute>
+            }
+          />
         </Routes>
         <Footer />
       </Router>

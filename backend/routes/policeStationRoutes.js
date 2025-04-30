@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
     console.log("Fetching police stations...");
 
     const [rows] = await pool.query(
-      "SELECT * FROM police_stations WHERE is_active = true ORDER BY district, thana, name"
+      "SELECT * FROM police_stations ORDER BY district, thana, name"
     );
 
     console.log(`Found ${rows.length} police stations`);
@@ -71,7 +71,7 @@ router.get("/district/:district", async (req, res) => {
     const { district } = req.params;
 
     const [rows] = await pool.query(
-      "SELECT * FROM police_stations WHERE district LIKE ? AND is_active = true ORDER BY thana, name",
+      "SELECT * FROM police_stations WHERE district LIKE ? ORDER BY thana, name",
       [`%${district}%`]
     );
 
@@ -96,7 +96,7 @@ router.get("/thana/:thana", async (req, res) => {
     const { thana } = req.params;
 
     const [rows] = await pool.query(
-      "SELECT * FROM police_stations WHERE thana LIKE ? AND is_active = true ORDER BY name",
+      "SELECT * FROM police_stations WHERE thana LIKE ? ORDER BY name",
       [`%${thana}%`]
     );
 
@@ -130,7 +130,6 @@ router.get("/search", async (req, res) => {
     const [rows] = await pool.query(
       `SELECT * FROM police_stations 
        WHERE (name LIKE ? OR district LIKE ? OR thana LIKE ?) 
-       AND is_active = true 
        ORDER BY district, thana, name`,
       [`%${query}%`, `%${query}%`, `%${query}%`]
     );
@@ -154,7 +153,7 @@ router.get("/search", async (req, res) => {
 router.get("/districts", async (req, res) => {
   try {
     const [rows] = await pool.query(
-      "SELECT DISTINCT district FROM police_stations WHERE is_active = true ORDER BY district"
+      "SELECT DISTINCT district FROM police_stations ORDER BY district"
     );
 
     return res.status(200).json({
@@ -178,7 +177,7 @@ router.get("/thanas/:district", async (req, res) => {
     const { district } = req.params;
 
     const [rows] = await pool.query(
-      "SELECT DISTINCT thana FROM police_stations WHERE district = ? AND is_active = true ORDER BY thana",
+      "SELECT DISTINCT thana FROM police_stations WHERE district = ? ORDER BY thana",
       [district]
     );
 

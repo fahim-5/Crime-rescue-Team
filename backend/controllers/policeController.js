@@ -10,15 +10,31 @@ const getDashboardStats = async (req, res) => {
     // Get dashboard statistics
     const stats = await PoliceModel.getDashboardStats(policeId);
 
-    res.status(200).json({
-      success: true,
-      data: stats,
-    });
+    res.status(200).json(stats);
   } catch (error) {
     console.error("Error fetching police dashboard stats:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch dashboard statistics",
+      error: error.message,
+    });
+  }
+};
+
+// Get recent reports for police dashboard
+const getRecentReports = async (req, res) => {
+  try {
+    const policeId = req.user.id;
+
+    // Get recent reports 
+    const reports = await PoliceModel.getRecentReports(policeId);
+
+    res.status(200).json(reports);
+  } catch (error) {
+    console.error("Error fetching recent reports:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch recent reports",
       error: error.message,
     });
   }
@@ -325,6 +341,7 @@ const getCrimeStatsByArea = async (req, res) => {
 
 module.exports = {
   getDashboardStats,
+  getRecentReports,
   getAssignedCases,
   getPendingCases,
   getResolvedCases,

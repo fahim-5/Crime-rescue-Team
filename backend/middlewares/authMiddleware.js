@@ -149,10 +149,34 @@ const isPolice = (req, res, next) => {
   next();
 };
 
+/**
+ * Middleware to authorize users based on their roles
+ * @param {Array} roles - Array of roles allowed to access the route
+ * @returns {Function} Middleware function
+ */
+const authorizeRoles = (roles) => {
+  return (req, res, next) => {
+    // Ensure user exists and has been authenticated
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    // Check if user's role is in the allowed roles array
+    if (!roles.includes(req.user.role)) {
+      return res
+        .status(403)
+        .json({ message: `Access denied. Required roles: ${roles.join(", ")}` });
+    }
+
+    next();
+  };
+};
+
 module.exports = {
   authenticateToken,
   loginMiddleware,
   logoutMiddleware,
   isAdmin,
   isPolice,
+  authorizeRoles
 };

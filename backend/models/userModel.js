@@ -474,28 +474,62 @@ class UserModel {
         ]
       );
 
-      // Insert into police table (without status)
-      await connection.query(
-        `INSERT INTO police 
-          (full_name, username, email, national_id, passport, mobile_no, 
-           password, address, police_id, station, rank, badge_number, joining_date) 
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          full_name.trim(),
-          username.trim().toLowerCase(),
-          email.trim().toLowerCase(),
-          national_id.trim(),
-          passport ? passport.trim() : null,
-          mobile_no.trim(),
-          hashedPassword,
-          address.trim(),
-          police_id.trim(),
-          station.trim(),
-          rank.trim(),
-          badge_number.trim(),
-          new Date(joining_date),
-        ]
-      );
+      // Check if police table has user_id column
+      let hasUserIdColumn = false;
+      try {
+        const [columns] = await connection.query("SHOW COLUMNS FROM police WHERE Field = 'user_id'");
+        hasUserIdColumn = columns.length > 0;
+      } catch (error) {
+        console.error("Error checking for user_id column:", error);
+      }
+
+      // Insert into police table with or without user_id
+      if (hasUserIdColumn) {
+        await connection.query(
+          `INSERT INTO police 
+            (user_id, full_name, username, email, national_id, passport, mobile_no, 
+             password, address, police_id, station, rank, badge_number, joining_date) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            userResult.insertId,
+            full_name.trim(),
+            username.trim().toLowerCase(),
+            email.trim().toLowerCase(),
+            national_id.trim(),
+            passport ? passport.trim() : null,
+            mobile_no.trim(),
+            hashedPassword,
+            address.trim(),
+            police_id.trim(),
+            station.trim(),
+            rank.trim(),
+            badge_number.trim(),
+            new Date(joining_date),
+          ]
+        );
+      } else {
+        await connection.query(
+          `INSERT INTO police 
+            (full_name, username, email, national_id, passport, mobile_no, 
+             password, address, police_id, station, rank, badge_number, joining_date) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            full_name.trim(),
+            username.trim().toLowerCase(),
+            email.trim().toLowerCase(),
+            national_id.trim(),
+            passport ? passport.trim() : null,
+            mobile_no.trim(),
+            hashedPassword,
+            address.trim(),
+            police_id.trim(),
+            station.trim(),
+            rank.trim(),
+            badge_number.trim(),
+            new Date(joining_date),
+          ]
+        );
+      }
 
       await connection.commit();
 
@@ -592,7 +626,43 @@ class UserModel {
         "SELECT * FROM users WHERE id = ?",
         [id]
       );
-      return users[0] || null;
+      
+      if (!users[0]) {
+        return null;
+      }
+      
+      const user = users[0];
+      
+      // If this is a police user, get additional police information
+      if (user.role === "police") {
+        // First check if the police table has the user_id column
+        let hasUserIdColumn = false;
+        try {
+          const [columns] = await connection.query("SHOW COLUMNS FROM police WHERE Field = 'user_id'");
+          hasUserIdColumn = columns.length > 0;
+        } catch (error) {
+          console.error("Error checking for user_id column:", error);
+        }
+        
+        let query;
+        if (hasUserIdColumn) {
+          query = "SELECT police_id, station, rank FROM police WHERE user_id = ? OR email = ?";
+        } else {
+          query = "SELECT police_id, station, rank FROM police WHERE email = ?";
+        }
+        
+        const [policeInfo] = hasUserIdColumn 
+          ? await connection.query(query, [id, user.email])
+          : await connection.query(query, [user.email]);
+        
+        if (policeInfo[0]) {
+          user.police_id = policeInfo[0].police_id;
+          user.station = policeInfo[0].station;
+          user.rank = policeInfo[0].rank;
+        }
+      }
+      
+      return user;
     } finally {
       await connection.release();
     }
@@ -825,8 +895,21 @@ class UserModel {
           );
         }
 
-        // Delete from police table
-        await connection.query("DELETE FROM police WHERE email = ?", [email]);
+        // First check if the police table has the user_id column
+        let hasUserIdColumn = false;
+        try {
+          const [columns] = await connection.query("SHOW COLUMNS FROM police WHERE Field = 'user_id'");
+          hasUserIdColumn = columns.length > 0;
+        } catch (error) {
+          console.error("Error checking for user_id column:", error);
+        }
+        
+        // Delete from police table based on available columns
+        if (hasUserIdColumn) {
+          await connection.query("DELETE FROM police WHERE user_id = ? OR email = ?", [userId, email]);
+        } else {
+          await connection.query("DELETE FROM police WHERE email = ?", [email]);
+        }
       } else if (role === "admin") {
         // Reset any admin-specific actions if reports table exists
         if (tableExists.reports) {
@@ -1275,6 +1358,62 @@ class UserModel {
       throw error;
     } finally {
       await connection.release();
+    }
+  }
+
+  static async getUsersByRole(role) {
+    const connection = await pool.getConnection();
+    try {
+      // For police users, join with the police table to get additional information
+      if (role === "police") {
+        // First check if the police table has the user_id column
+        let hasUserIdColumn = false;
+        try {
+          const [columns] = await connection.query("SHOW COLUMNS FROM police WHERE Field = 'user_id'");
+          hasUserIdColumn = columns.length > 0;
+        } catch (error) {
+          console.error("Error checking for user_id column:", error);
+        }
+        
+        // Use the appropriate query based on table structure
+        let query;
+        if (hasUserIdColumn) {
+          query = `
+            SELECT u.*, 
+                   p.police_id as policeId, 
+                   p.station as station,
+                   p.rank as rank
+            FROM users u
+            LEFT JOIN police p ON u.id = p.user_id OR u.email = p.email
+            WHERE u.role = ?
+          `;
+        } else {
+          // Fallback to just matching on email
+          query = `
+            SELECT u.*, 
+                   p.police_id as policeId, 
+                   p.station as station,
+                   p.rank as rank
+            FROM users u
+            LEFT JOIN police p ON u.email = p.email
+            WHERE u.role = ?
+          `;
+        }
+        
+        const [users] = await connection.query(query, [role]);
+        console.log(`Found ${users.length} police users`);
+        return users;
+      } else {
+        // For non-police users, just query the users table
+        const query = "SELECT * FROM users WHERE role = ?";
+        const [users] = await connection.query(query, [role]);
+        return users;
+      }
+    } catch (error) {
+      console.error("Error fetching users by role:", error);
+      throw error;
+    } finally {
+      if (connection) await connection.release();
     }
   }
 }

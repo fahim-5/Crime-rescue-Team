@@ -231,6 +231,96 @@ const CrimeAlertController = {
       console.error("Error sending area notifications:", error);
     }
   },
+
+  /**
+   * Rebuild address-based alerts for existing alerts and users
+   * This is a utility function to fix any missing address-based alerts
+   * @param {Object} req - Request object
+   * @param {Object} res - Response object
+   */
+  rebuildAddressBasedAlerts: async (req, res) => {
+    try {
+      const connection = await require("../config/db").pool.getConnection();
+      
+      try {
+        // First check if the address_based_alerts table exists
+        const [tables] = await connection.query(`
+          SELECT TABLE_NAME 
+          FROM information_schema.TABLES 
+          WHERE TABLE_SCHEMA = DATABASE() 
+          AND TABLE_NAME = 'address_based_alerts'
+        `);
+        
+        if (tables.length === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "The address_based_alerts table does not exist. Please run fix-database.sql first."
+          });
+        }
+        
+        // Get all active crime alerts
+        const [alerts] = await connection.query(`
+          SELECT ca.id, ca.location, cr.location as report_location
+          FROM crime_alerts ca
+          JOIN crime_reports cr ON ca.report_id = cr.id
+          WHERE ca.status = 'active'
+        `);
+        
+        // Get all users
+        const [users] = await connection.query(`
+          SELECT id, address 
+          FROM users 
+          WHERE status = 'approved'
+        `);
+        
+        console.log(`Found ${alerts.length} active alerts and ${users.length} users`);
+        
+        // Clear existing entries to avoid duplicates
+        await connection.query(`TRUNCATE TABLE address_based_alerts`);
+        
+        // Insert new entries
+        let insertCount = 0;
+        
+        for (const alert of alerts) {
+          const location = alert.location || alert.report_location;
+          if (!location) continue;
+          
+          for (const user of users) {
+            const userAddress = user.address;
+            if (!userAddress) continue;
+            
+            // Check if the user's address matches the alert location
+            const locationMatches = 
+              userAddress.includes(location) || 
+              location.includes(userAddress);
+            
+            if (locationMatches) {
+              await connection.query(`
+                INSERT INTO address_based_alerts (alert_id, user_id, created_at)
+                VALUES (?, ?, NOW())
+              `, [alert.id, user.id]);
+              
+              insertCount++;
+            }
+          }
+        }
+        
+        return res.status(200).json({
+          success: true,
+          message: `Successfully rebuilt address-based alerts. Created ${insertCount} alerts.`
+        });
+      } finally {
+        if (connection) await connection.release();
+      }
+    } catch (error) {
+      console.error("Error rebuilding address-based alerts:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to rebuild address-based alerts.",
+        error: error.message
+      });
+    }
+  }
 };
 
 module.exports = CrimeAlertController;
