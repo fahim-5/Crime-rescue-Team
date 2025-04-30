@@ -170,6 +170,7 @@
     padding: 2rem;
     border-radius: 12px;
     box-shadow: var(--shadow-md);
+    position: relative;
   }
   
   .user-management-container h3 {
@@ -177,10 +178,66 @@
     margin-bottom: 1.5rem;
   }
   
+  .role-selector {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .role-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background: var(--background);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .role-option.active {
+    background: var(--secondary);
+    color: white;
+  }
+  
+  .role-option input {
+    margin-right: 0.5rem;
+  }
+  
+  .search-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+  }
+  
   .user-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
   }
   
   .user-item {
@@ -195,6 +252,29 @@
   
   .user-item:hover {
     transform: translateX(4px);
+    background: rgba(74, 144, 226, 0.05);
+  }
+  
+  .user-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  .view-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .view-btn:hover {
+    opacity: 0.9;
   }
   
   .delete-btn {
@@ -212,6 +292,108 @@
   
   .delete-btn:hover {
     opacity: 0.9;
+  }
+
+  .no-results {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-light);
+    background: rgba(74, 144, 226, 0.05);
+    border-radius: 8px;
+  }
+  
+  /* User Modal */
+  .user-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .user-modal {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    animation: modal-appear 0.3s ease-out;
+  }
+  
+  @keyframes modal-appear {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .modal-header h3 {
+    margin: 0;
+    color: var(--primary);
+  }
+  
+  .close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .close-btn:hover {
+    color: var(--text);
+  }
+  
+  .modal-content {
+    padding: 1.5rem;
+  }
+  
+  .user-details p {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  .modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  
+  .close-modal-btn {
+    background: var(--background);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .close-modal-btn:hover {
+    background: #e9ecef;
   }
   
   /* Criminal Database */
@@ -248,14 +430,11 @@
     transition: var(--transition);
   }
   
-  .criminal-form button:hover {
-    opacity: 0.9;
-  }
-  
   .criminal-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
+    margin-top: 2rem;
   }
   
   .criminal-card {
@@ -263,7 +442,6 @@
     padding: 1.5rem;
     border-radius: 8px;
     position: relative;
-    box-shadow: var(--shadow-sm);
   }
   
   .criminal-card h4 {
@@ -273,26 +451,29 @@
   
   .criminal-card p {
     color: var(--text-light);
-    font-size: 0.9rem;
-    margin: 0.25rem 0;
+    margin-bottom: 0.25rem;
   }
   
   .remove-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
     background: var(--error);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    margin-top: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: var(--transition);
   }
   
   .remove-btn:hover {
-    opacity: 0.9;
+    transform: scale(1.1);
   }
   
-  /* Utility Classes */
   .bold {
     font-weight: 600;
   }
@@ -301,24 +482,40 @@
     margin-top: 2rem;
   }
   
-  /* Responsive Design */
   @media (max-width: 768px) {
     .sidebar {
-      width: 100%;
-      height: auto;
-      position: relative;
+      width: 80px;
+      overflow: hidden;
     }
-  
+    
     .main-content {
-      margin-left: 0;
-      padding: 1rem;
+      margin-left: 80px;
     }
-  
+    
     .criminal-form {
       grid-template-columns: 1fr;
     }
-  
+    
     .criminal-form button {
       grid-column: span 1;
+    }
+
+    .role-selector {
+      flex-direction: column;
+    }
+
+    .user-modal {
+      width: 95%;
+    }
+
+    .user-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .user-actions {
+      width: 100%;
+      justify-content: space-between;
     }
   }
