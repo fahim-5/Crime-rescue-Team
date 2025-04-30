@@ -12,6 +12,7 @@ import {
   FaTrash,
   FaEye,
   FaTimes,
+  FaRegFileAlt,
 } from "react-icons/fa";
 import "./Management.css";
 import api, { endpoints } from "../../utils/api";
@@ -34,12 +35,15 @@ function Management() {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [confirmationUsername, setConfirmationUsername] = useState("");
   const [deleteError, setDeleteError] = useState("");
+  const [showRegulationsModal, setShowRegulationsModal] = useState(false);
+
 
   const menuItems = [
     { name: "Account Validation", icon: <FaShieldAlt /> },
     { name: "User Management", icon: <FaUserCog /> },
     { name: "Analytics Dashboard", icon: <FaCheckCircle /> },
     { name: "Database Management", icon: <FaDatabase /> },
+    { name: "Protocol Guideline", icon: <FaRegFileAlt /> },
   ];
 
   // Fetch users when the component mounts or when selectedRole changes
@@ -228,6 +232,71 @@ function Management() {
             </ul>
           </div>
         )}
+
+{activeItem === "Protocol Guideline" && (
+  <div className="protocol-container">
+    <h3>Admin Protocol Guidelines</h3>
+    <ul className="protocol-list">
+      <li>
+        <strong> User Data Privacy:</strong> Admins must ensure no user data is misused or shared without proper authorization.
+      </li>
+      <li>
+        <strong>Officer Verification:</strong> Every police officer must be authenticated using NID and official department credentials.
+      </li>
+      <li>
+        <strong> Real-Time Monitoring:</strong> Admins should periodically monitor flagged reports and high-risk zones.
+      </li>
+      <li>
+        <strong> Deletion Protocol:</strong> Deletion of any user must go through confirmation and logging procedures.
+      </li>
+      <li>
+        <strong> Geo-Fencing Compliance:</strong> Ensure geo-alert triggers are accurately aligned with map-based coordinates.
+      </li>
+    </ul>
+
+    <button
+      className="view-regulations-btn"
+      onClick={() => setShowRegulationsModal(true)}
+    >
+      📜 All Rules and Regulations
+    </button>
+
+    {showRegulationsModal && (
+      <div className="user-modal-overlay">
+        <div className="user-modal">
+          <div className="modal-header-protocal">
+            <h2>All Rules & Regulations</h2>
+            <button
+              className="close-btn"
+              onClick={() => setShowRegulationsModal(false)}
+            >
+              <FaTimes />
+            </button>
+          </div>
+          <div className="modal-content-mng">
+            <ul className="rules-list">
+              <li>✅ Maintain system integrity and prevent unauthorized access.</li>
+              <li>✅ Regularly audit crime data reports for inconsistencies.</li>
+              <li>✅ Notify local police when user-validated alerts hit the threshold.</li>
+              <li>✅ Do not hard-delete crime records; use soft-delete for traceability.</li>
+              <li>✅ Escalate issues involving sensitive crimes to the central authority.</li>
+              <li>✅ Be fair, impartial, and data-driven in all decision-making.</li>
+            </ul>
+          </div>
+          <div className="modal-footer">
+            <button
+              className="close-modal-btn"
+              onClick={() => setShowRegulationsModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+)}
+
 
         {showDeleteConfirmation && (
           <div className="user-modal-overlay">
