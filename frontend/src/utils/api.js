@@ -79,6 +79,9 @@ export const endpoints = {
   admin: {
     dashboard: "/analytics/dashboard",
     validations: "/verification",
+    users: "/admin/users",
+    userDetail: (id) => `/admin/users/${id}`,
+    deleteUser: (id) => `/admin/users/${id}`,
   },
 
   // Notification endpoints

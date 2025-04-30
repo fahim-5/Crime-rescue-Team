@@ -14,6 +14,7 @@ const analyticsRoutes = require("./routes/analyticsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const crimeAlertRoutes = require("./routes/crimeAlertRoutes");
 const policeFilesRoutes = require("./routes/policeFilesRoutes"); // New route file
+const adminRoutes = require("./routes/adminRoutes"); // Admin routes
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const upload = require("./middlewares/upload");
 
@@ -91,6 +92,7 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/crime-alerts", crimeAlertRoutes);
 app.use("/api/police-files", policeFilesRoutes); // New police files route
+app.use("/api/admin", adminRoutes); // Admin routes
 
 // Error handling middleware
 app.use(errorMiddleware);

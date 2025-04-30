@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaShieldAlt, FaUserCog, FaFileAlt, FaSearch, FaDatabase, FaCheckCircle, FaChevronRight, FaBell, FaTrash, FaEye, FaTimes } from "react-icons/fa";
 import "./Management.css";
+import api, { endpoints } from "../../utils/api";
 
 function Management() {
   const [activeItem, setActiveItem] = useState("Account Validation");
@@ -9,13 +10,10 @@ function Management() {
   const [newCriminal, setNewCriminal] = useState({ name: "", address: "", cases: "" });
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState("public");
-  const [users, setUsers] = useState([
-    { id: 1, role: "public", username: "john_doe", email: "john@example.com", phone: "123-456-7890", address: "123 Main St" },
-    { id: 2, role: "public", username: "jane_smith", email: "jane@example.com", phone: "987-654-3210", address: "456 Oak Ave" },
-    { id: 3, role: "police", policeId: "P1001", username: "officer_brown", email: "brown@police.gov", phone: "555-123-4567", department: "Traffic" },
-    { id: 4, role: "police", policeId: "P1002", username: "detective_miller", email: "miller@police.gov", phone: "555-987-6543", department: "Criminal Investigation" }
-  ]);
+  const [users, setUsers] = useState([]);
   const [viewingUser, setViewingUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const menuItems = [
@@ -23,6 +21,39 @@ function Management() {
     { name: "User Management", icon: <FaUserCog /> },
     { name: "Analytics Dashboard", icon: <FaCheckCircle /> },
   ];
+
+  // Fetch users when the component mounts or when selectedRole changes
+  useEffect(() => {
+    fetchUsers();
+  }, [selectedRole]);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Use the admin users endpoint with role query parameter
+      const response = await api.get(`${endpoints.admin.users}?role=${selectedRole}`);
+      
+      if (response.data && response.data.success) {
+        setUsers(response.data.users);
+      } else {
+        throw new Error(response.data?.message || "Failed to fetch users");
+      }
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      setError("Failed to load users. Please try again later.");
+      // Fallback to sample data for demo purposes
+      setUsers([
+        { id: 1, role: "public", username: "john_doe", email: "john@example.com", phone: "123-456-7890", address: "123 Main St" },
+        { id: 2, role: "public", username: "jane_smith", email: "jane@example.com", phone: "987-654-3210", address: "456 Oak Ave" },
+        { id: 3, role: "police", policeId: "P1001", username: "officer_brown", email: "brown@police.gov", phone: "555-123-4567", department: "Traffic" },
+        { id: 4, role: "police", policeId: "P1002", username: "detective_miller", email: "miller@police.gov", phone: "555-987-6543", department: "Criminal Investigation" }
+      ].filter(user => user.role === selectedRole));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleNavigation = (itemName) => {
     setActiveItem(itemName);
@@ -52,20 +83,26 @@ function Management() {
     setViewingUser(null);
   };
 
-  const handleDeleteUser = (userId) => {
-    // In a real application, this would make an API call to delete the user
-    setUsers(users.filter(user => user.id !== userId));
-    setViewingUser(null);
+  const handleDeleteUser = async (userId) => {
+    try {
+      // Use the deleteUser endpoint from our endpoints object
+      const response = await api.delete(endpoints.admin.deleteUser(userId));
+      
+      if (response.data && response.data.success) {
+        // Remove the user from the state
+        setUsers(users.filter(user => user.id !== userId));
+        setViewingUser(null);
+      } else {
+        throw new Error(response.data?.message || "Failed to delete user");
+      }
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      alert("Failed to delete user. Please try again.");
+    }
   };
 
   const filteredUsers = users.filter(user => {
-    if (user.role !== selectedRole) return false;
-    
-    if (selectedRole === "public") {
-      return user.username.toLowerCase().includes(searchTerm.toLowerCase());
-    } else {
-      return user.policeId.toLowerCase().includes(searchTerm.toLowerCase());
-    }
+    return user.username.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   return (
@@ -149,10 +186,9 @@ function Management() {
             </div>
 
             <div className="search-container">
-              <FaSearch className="search-icon" />
               <input 
                 type="text" 
-                placeholder={selectedRole === 'public' ? "Search by username..." : "Search by police ID..."}
+                placeholder="Search by username..."
                 value={searchTerm}
                 onChange={handleSearch}
                 className="search-input"
@@ -160,13 +196,17 @@ function Management() {
             </div>
             
             <div className="user-list">
-              {filteredUsers.length > 0 ? (
+              {loading ? (
+                <div className="loading-indicator">Loading users...</div>
+              ) : error ? (
+                <div className="error-message">{error}</div>
+              ) : filteredUsers.length > 0 ? (
                 filteredUsers.map(user => (
                   <div className="user-item" key={user.id}>
                     <span>
                       {selectedRole === 'public' 
                         ? `${user.username} (${user.email})`
-                        : `ID: ${user.policeId} - ${user.username} (${user.email})`
+                        : `${user.username} (${user.email})${user.policeId ? ` - ID: ${user.policeId}` : ''}`
                       }
                     </span>
                     <div className="user-actions">
@@ -194,13 +234,13 @@ function Management() {
                     <div className="user-details">
                       <p><strong>Username:</strong> {viewingUser.username}</p>
                       <p><strong>Email:</strong> {viewingUser.email}</p>
-                      <p><strong>Phone:</strong> {viewingUser.phone}</p>
+                      <p><strong>Phone:</strong> {viewingUser.phone || viewingUser.mobile_no}</p>
                       {viewingUser.role === 'public' ? (
                         <p><strong>Address:</strong> {viewingUser.address}</p>
                       ) : (
                         <>
                           <p><strong>Police ID:</strong> {viewingUser.policeId}</p>
-                          <p><strong>Department:</strong> {viewingUser.department}</p>
+                          <p><strong>Department:</strong> {viewingUser.department || viewingUser.station}</p>
                         </>
                       )}
                     </div>
