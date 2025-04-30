@@ -31,6 +31,9 @@ function Management() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [confirmationUsername, setConfirmationUsername] = useState("");
+  const [deleteError, setDeleteError] = useState("");
 
   const menuItems = [
     { name: "Account Validation", icon: <FaShieldAlt /> },
@@ -135,21 +138,31 @@ function Management() {
     setViewingUser(null);
   };
 
-  const handleDeleteUser = async (userId) => {
+  const handleDeleteUser = async () => {
     try {
-      // Use the deleteUser endpoint from our endpoints object
-      const response = await api.delete(endpoints.admin.deleteUser(userId));
+      if (confirmationUsername !== viewingUser.username) {
+        setDeleteError("Username does not match");
+        return;
+      }
+
+      const response = await api.delete(
+        endpoints.admin.deleteUser(viewingUser.id)
+      );
 
       if (response.data && response.data.success) {
-        // Remove the user from the state
-        setUsers(users.filter((user) => user.id !== userId));
+        setUsers(users.filter((user) => user.id !== viewingUser.id));
         setViewingUser(null);
+        setShowDeleteConfirmation(false);
+        alert("User deleted successfully");
       } else {
         throw new Error(response.data?.message || "Failed to delete user");
       }
     } catch (err) {
       console.error("Error deleting user:", err);
       alert("Failed to delete user. Please try again.");
+    } finally {
+      setConfirmationUsername("");
+      setDeleteError("");
     }
   };
 
@@ -213,6 +226,59 @@ function Management() {
                 <FaFileAlt /> View Pending Requests
               </button>
             </ul>
+          </div>
+        )}
+
+        {showDeleteConfirmation && (
+          <div className="user-modal-overlay">
+            <div className="confirmation-modal">
+              <div className="modal-header">
+                <h3>Confirm Deletion</h3>
+                <button
+                  className="close-btn"
+                  onClick={() => setShowDeleteConfirmation(false)}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+              <div className="modal-content-mng">
+                <p className="warning-text">
+                  <FaBell className="warning-icon" />
+                  This action cannot be undone. Please type the username to
+                  confirm.
+                </p>
+                <div className="confirmation-input">
+                  <label>Username:</label>
+                  <input
+                    type="text"
+                    value={confirmationUsername}
+                    onChange={(e) => {
+                      setConfirmationUsername(e.target.value);
+                      setDeleteError("");
+                    }}
+                    placeholder="Enter username to confirm"
+                  />
+                  {deleteError && (
+                    <span className="error-text">{deleteError}</span>
+                  )}
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="confirm-delete-btn"
+                  onClick={handleDeleteUser}
+                  disabled={!confirmationUsername}
+                >
+                  <FaTrash /> Confirm Deletion
+                </button>
+                <button
+                  className="close-modal-btn"
+                  onClick={() => setShowDeleteConfirmation(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -343,7 +409,12 @@ function Management() {
                   <div className="modal-footer">
                     <button
                       className="delete-btn"
-                      onClick={() => handleDeleteUser(viewingUser.id)}
+                      onClick={() => {
+                        setViewingUser(null);
+                        setShowDeleteConfirmation(true);
+                        setConfirmationUsername("");
+                        setDeleteError("");
+                      }}
                     >
                       <FaTrash /> Delete Account
                     </button>

@@ -553,5 +553,116 @@
     }
   }
 
+  /* Add these styles to Management.css */
+
+/* Fix horizontal scroll */
+.modal-content-mng {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 1.5rem;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+.value {
+  word-break: break-word;
+  color: var(--text);
+}
+
+/* Confirmation Modal Styles */
+.confirmation-modal {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: var(--shadow-md);
+  animation: modal-appear 0.3s ease-out;
+}
+
+.warning-text {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--error);
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(245, 101, 101, 0.1);
+  border-radius: 8px;
+}
+
+.warning-icon {
+  flex-shrink: 0;
+}
+
+.confirmation-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.confirmation-input label {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.confirmation-input input {
+  padding: 0.75rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  width: 100%;
+  transition: var(--transition);
+}
+
+.confirmation-input input:focus {
+  border-color: var(--error);
+  outline: none;
+}
+
+.error-text {
+  color: var(--error);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.confirm-delete-btn {
+  background: var(--error);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+}
+
+.confirm-delete-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.confirm-delete-btn:hover:not(:disabled) {
+  background: #e53e3e;
+}
+
+/* Fix modal stacking */
+.user-modal-overlay {
+  z-index: 1000;
+}
+
+.confirmation-modal {
+  z-index: 1001;
+}
 
   
