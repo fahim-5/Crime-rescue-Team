@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/useAuth";
-import "./AdminDashboard.css"; // Importing the CSS for the page
+import styles from "./AdminDashboard.module.css";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -20,20 +20,17 @@ const AdminDashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        // Configure headers with the auth token
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         };
 
-        // Fetch dashboard stats
         const statsResponse = await axios.get(
           "http://localhost:5000/api/reports/dashboard/stats",
           config
         );
 
-        // Fetch recent reports
         const recentResponse = await axios.get(
           "http://localhost:5000/api/reports/dashboard/recent",
           config
@@ -59,70 +56,74 @@ const AdminDashboard = () => {
   }, [token]);
 
   const handleViewReport = (reportId) => {
-    console.log("Navigating to report detail page:", reportId);
     navigate(`/admin/report/${reportId}`);
   };
 
-  if (loading)
-    return <div className="loading-container">Loading dashboard data...</div>;
-  if (error) return <div className="error-container">{error}</div>;
+  if (loading) return <div className={styles.loadingContainer}>Loading dashboard data...</div>;
+  if (error) return <div className={styles.errorContainer}>{error}</div>;
 
   return (
-    <div className="main-content">
-      <header>
-        <h1>Admin Dashboard</h1>
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Admin Dashboard</h1>
       </header>
 
-      <div className="overview">
-        <div className="summary-box">
-          <h3>Total Reports</h3>
-          <p>{stats.totalReports}</p>
+      <div className={styles.grid}>
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}>Total Reports</h3>
+          <p className={styles.cardValue}>{stats.totalReports}</p>
         </div>
-        <div className="summary-box">
-          <h3>Pending Approvals</h3>
-          <p>{stats.pendingReports}</p>
+        <div className={`${styles.card} ${styles.cardPending}`}>
+          <h3 className={styles.cardTitle}>Pending Reports</h3>
+          <p className={styles.cardValue}>{stats.pendingReports}</p>
         </div>
-        <div className="summary-box">
-          <h3>Active Alerts</h3>
-          <p>{stats.activeAlerts}</p>
-          <small className="alert-note">Last 12 hours</small>
+        <div className={`${styles.card} ${styles.cardAlert}`}>
+          <h3 className={styles.cardTitle}>Active Alerts</h3>
+          <p className={styles.cardValue}>{stats.activeAlerts}</p>
+          <small className={styles.alertNote}>Last 12 hours</small>
         </div>
       </div>
 
-      <section className="recent-reports">
-        <h2>Recent Crime Reports</h2>
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Recent Crime Reports</h2>
         {recentReports.length === 0 ? (
-          <div className="no-reports">No recent reports found</div>
+          <div className={styles.emptyState}>No recent reports found</div>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Location</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentReports.map((report) => (
-                <tr key={report.id}>
-                  <td>{report.id}</td>
-                  <td>{report.location || "Unknown"}</td>
-                  <td>{new Date(report.created_at).toLocaleDateString()}</td>
-                  <td>{report.status || "Pending"}</td>
-                  <td>
-                    <button
-                      className="btn view-btn"
-                      onClick={() => handleViewReport(report.id)}
-                    >
-                      View
-                    </button>
-                  </td>
+          <div className={styles.tableContainer}>
+            <table className={styles.table}>
+              <thead className={styles.tableHeader}>
+                <tr>
+                  <th>ID</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className={styles.tableBody}>
+                {recentReports.map((report) => (
+                  <tr key={report.id} className={styles.tableRow}>
+                    <td className={styles.tableCell}>{report.id}</td>
+                    <td className={styles.tableCell}>{report.location || "Unknown"}</td>
+                    <td className={styles.tableCell}>
+                      {new Date(report.created_at).toLocaleDateString()}
+                    </td>
+                    <td className={`${styles.status} ${styles[report.status.toLowerCase()]}`}>
+                      {report.status || "Pending"}
+                    </td>
+                    <td className={styles.tableCell}>
+                      <button
+                        className={styles.button}
+                        onClick={() => handleViewReport(report.id)}
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </div>

@@ -244,7 +244,7 @@ const AdminReportDetail = () => {
 
           {(report.photos?.length > 0 || report.videos?.length > 0) && (
             <section className="report-section evidence-section">
-              <h2 className="section-title">Evidence</h2>
+              <h2 className="section-title">Media Evidence</h2>
               
               {report.photos?.length > 0 && (
                 <div className="evidence-group">
@@ -285,17 +285,17 @@ const AdminReportDetail = () => {
             <h2>Community Validation</h2>
             <div className="validation-metrics">
               <div className="metric valid">
-                <FaCheck className="metric-icon" />
+                {/* <FaCheck className="metric-icon" /> */}
                 <div>
                   <span className="metric-value">{report.valid_count || 0}</span>
-                  <span className="metric-label">Valid</span>
+                  <span className="metric-label-valid">Valid</span>
                 </div>
               </div>
               <div className="metric invalid">
-                <FaTimes className="metric-icon" />
+                {/* <FaTimes className="metric-icon" /> */}
                 <div>
                   <span className="metric-value">{report.invalid_count || 0}</span>
-                  <span className="metric-label">Invalid</span>
+                  <span className="metric-label-invalid">Invalid</span>
                 </div>
               </div>
             </div>
@@ -322,6 +322,8 @@ const AdminReportDetail = () => {
               </div>
             </div>
           </div>
+
+         
         </div>
       </div>
 

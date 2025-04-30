@@ -134,12 +134,10 @@ const ReportedCrimes = () => {
       {/* Reporter Details Modal */}
       {showModal && selectedReport && (
         <div className="modal-overlay">
-          <div className="modal-container">
-            <div className="modal-header">
+          <div className="reporter-info">
+            <div className="modal-header-h1">
               <h3>Reporter Details</h3>
-              <button className="close-modal-btn" onClick={closeModal}>
-                ×
-              </button>
+        
             </div>
             <div className="modal-body">
               <div className="report-detail">
@@ -202,7 +200,7 @@ const ReportedCrimes = () => {
               >
                 Report Details
               </button>
-              <button className="close-btn" onClick={closeModal}>
+              <button className="close-btn-b" onClick={closeModal}>
                 Close
               </button>
             </div>
