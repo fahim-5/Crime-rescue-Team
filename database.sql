@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 30, 2025 at 01:34 PM
+-- Generation Time: Apr 30, 2025 at 02:50 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,19 @@ SET time_zone = "+00:00";
 --
 -- Database: `crime_rescue_bd`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `address_based_alerts`
+--
+
+CREATE TABLE `address_based_alerts` (
+  `id` int(11) NOT NULL,
+  `alert_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -242,7 +255,8 @@ INSERT INTO `crime_reports` (`id`, `crime_id`, `location`, `time`, `crime_type`,
 (12, 'CR-2025-010', '20000', '2025-04-29 10:17:22', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:24:50', 21, 'pending', NULL),
 (13, 'CR-2025-011', '3000', '2025-04-29 10:32:43', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:32:49', 21, 'pending', NULL),
 (14, 'CR-2025-012', 'wegvmsoibm', '2025-04-29 11:51:26', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 11:51:29', 21, 'pending', NULL),
-(15, 'CR-2025-013', 'Pavel is reporting', '2025-04-30 11:20:18', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-30 11:20:28', 28, 'pending', NULL);
+(15, 'CR-2025-013', 'Pavel is reporting', '2025-04-30 11:20:18', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-30 11:20:28', 28, 'pending', NULL),
+(16, 'CR-2025-014', 'report 1 bonna', '2025-04-30 12:05:46', 'theft', 1, 'male', 'yes', '[\"photos/photos-1746014813283-929886420.png\"]', '[]', '2025-04-30 12:06:53', 30, 'pending', NULL);
 
 --
 -- Triggers `crime_reports`
@@ -352,7 +366,10 @@ CREATE TABLE `notifications` (
 
 INSERT INTO `notifications` (`id`, `user_id`, `title`, `message`, `type`, `is_read`, `related_to`, `related_id`, `created_at`, `updated_at`) VALUES
 (52, 28, 'Report Submitted', 'Your crime report #15 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 15, '2025-04-30 11:20:28', '2025-04-30 11:20:28'),
-(53, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#15) in Pavel is reporting requires immediate attention.', 'alert', 0, NULL, 15, '2025-04-30 11:20:28', '2025-04-30 11:20:28');
+(53, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#15) in Pavel is reporting requires immediate attention.', 'alert', 0, NULL, 15, '2025-04-30 11:20:28', '2025-04-30 11:20:28'),
+(54, 30, 'Report Submitted', 'Your crime report #16 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 16, '2025-04-30 12:06:53', '2025-04-30 12:06:53'),
+(55, 28, 'New Crime Report', 'A new report about theft in report 1 bonna has been submitted. Stay safe!', 'info', 0, NULL, 16, '2025-04-30 12:06:53', '2025-04-30 12:06:53'),
+(56, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#16) in report 1 bonna requires immediate attention.', 'alert', 0, NULL, 16, '2025-04-30 12:06:53', '2025-04-30 12:06:53');
 
 -- --------------------------------------------------------
 
@@ -427,7 +444,8 @@ INSERT INTO `police_alerts` (`id`, `report_id`, `police_id`, `status`, `response
 (10, 12, NULL, 'pending', NULL, '2025-04-29 10:24:50', NULL, '2025-04-29 10:24:50'),
 (11, 13, NULL, 'pending', NULL, '2025-04-29 10:32:49', NULL, '2025-04-29 10:32:49'),
 (12, 14, NULL, 'pending', NULL, '2025-04-29 11:51:29', NULL, '2025-04-29 11:51:29'),
-(13, 15, NULL, 'pending', NULL, '2025-04-30 11:20:28', NULL, '2025-04-30 11:20:28');
+(13, 15, NULL, 'pending', NULL, '2025-04-30 11:20:28', NULL, '2025-04-30 11:20:28'),
+(14, 16, NULL, 'pending', NULL, '2025-04-30 12:06:53', NULL, '2025-04-30 12:06:53');
 
 -- --------------------------------------------------------
 
@@ -589,7 +607,8 @@ INSERT INTO `public` (`id`, `full_name`, `username`, `email`, `national_id`, `pa
 (2, 'Jarin Tasnim', 'jarin', 'jarinmoni@gmail.com', '9632587410', '321654', '01775963352', '$2b$10$CxxuwZo4yV0n5FaTZ.qSu.lcrvjixAfrAiHvpwRQjsAFTrfNmPIwi', 'Dinajpur-Birol', '2025-03-28 15:56:40', '2025-03-28 15:56:40'),
 (4, 'Mr.one', 'one', 'one@gmail.com', '5555555553', '1239999', '0177345678', '$2a$10$h6fq8658j1jhI3b1PgBSauMYUJZth9NdIAobyosFjgi.YniCMEs7m', 'Dhaka-Mirpur', '2025-04-27 21:14:17', '2025-04-27 21:14:17'),
 (5, 'Mr.two', 'two', 'two@gmail.com', '5565626262', '333333', '01775692261', '$2a$10$ZvYIXk/lRR7tuLRbNRbnue0Lo/FshUYyi/U1RSA/vR59x80MAnoVG', 'Dinajpur-Birol', '2025-04-27 21:15:06', '2025-04-28 14:27:50'),
-(6, 'md:pavel', 'pavel12', 'pavel@gmail.com', '213', '42529529592', '01746467979', '$2a$10$oHnxgP147ubzoXo3drhC3ONge.yJc9W/EDdS6VvZk0STVDHnWCpli', 'dhaka-mirpur', '2025-04-30 09:16:17', '2025-04-30 09:16:17');
+(6, 'md:pavel', 'pavel12', 'pavel@gmail.com', '213', '42529529592', '01746467979', '$2a$10$oHnxgP147ubzoXo3drhC3ONge.yJc9W/EDdS6VvZk0STVDHnWCpli', 'Dhaka Mirpur', '2025-04-30 09:16:17', '2025-04-30 12:08:21'),
+(7, 'bonna', 'bonna1', 'bonna1@gmail.com', '311664615', '54643542350', '01754466112', '$2a$10$9AZ31SqoOBfC49M/7NTRCe.7ReherfNFEn6RT0gOyB8ahiF.46r/S', 'Dhaka-Mirpur', '2025-04-30 12:05:09', '2025-04-30 12:05:09');
 
 -- --------------------------------------------------------
 
@@ -662,8 +681,9 @@ INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `national_id`, `pas
 (25, 'police vai', 'plc', 'police2@gmail.com', '98989898988', '565654984', '01756565656', '$2a$10$Sbd2Cq.z4J9SCjsOwhmrm.29.RzpMKvzbxsLzvCfOB2kidqKsjHf.', 'police', 'Dhaka-Mirpur', 'approved', '8925262', 'Vatara', 'ASp', '89', '2025-04-19', '2025-04-28 18:35:34', '2025-04-28 18:55:43', NULL, NULL),
 (26, 'police-3', 'plc3', 'police3@gmail.com', '15951595159', '55555500', '017762598413', '$2a$10$CAVpF2f3u58VR2lJ5H9o4e55DK8NqRsov4aXetnzSe6/PfFXTw92S', 'police', 'Dhaka-Mirpur', 'approved', '3695', 'Mirpur', 'ADC', '56-U', '2025-04-18', '2025-04-28 18:58:16', '2025-04-28 21:14:53', NULL, NULL),
 (27, 'five', 'five', 'police5@gmail.com', '696969696969', '2598525852', '017594995959', '$2a$10$ZcVIpXO1tY2DUw4RUM9ojuSmhRqMEXF94M4a4t.JZp587kfp7ZgC6', 'police', 'Dhaka-Mirpur', 'pending', 'POI-1001', 'Vatara', 'DECS', '7989', '2025-04-19', '2025-04-29 11:09:26', '2025-04-29 11:09:26', NULL, NULL),
-(28, 'md:pavel', 'pavel12', 'pavel@gmail.com', '213', '42529529592', '01746467979', '$2a$10$oHnxgP147ubzoXo3drhC3ONge.yJc9W/EDdS6VvZk0STVDHnWCpli', 'public', 'dhaka-mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-30 09:16:17', '2025-04-30 09:16:17', NULL, NULL),
-(29, 'Fahim Faysal', 'fahim01', 'mfaysal2232@bscse.uiu.ac.bd', '5858999581', '581518181818', '01774071130', '$2a$10$WatGbgDh7I3vndEw0coecOh1NTAVJK/NoUkKaZ7lNZV2sTOEBqZRC', 'admin', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-30 10:19:47', '2025-04-30 10:19:47', NULL, NULL);
+(28, 'md:pavel', 'pavel12', 'pavel@gmail.com', '213', '42529529592', '01746467979', '$2a$10$oHnxgP147ubzoXo3drhC3ONge.yJc9W/EDdS6VvZk0STVDHnWCpli', 'public', 'Dhaka Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-30 09:16:17', '2025-04-30 12:08:21', NULL, NULL),
+(29, 'Fahim Faysal', 'fahim01', 'mfaysal2232@bscse.uiu.ac.bd', '5858999581', '581518181818', '01774071130', '$2a$10$WatGbgDh7I3vndEw0coecOh1NTAVJK/NoUkKaZ7lNZV2sTOEBqZRC', 'admin', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-30 10:19:47', '2025-04-30 10:19:47', NULL, NULL),
+(30, 'bonna', 'bonna1', 'bonna1@gmail.com', '311664615', '54643542350', '01754466112', '$2a$10$9AZ31SqoOBfC49M/7NTRCe.7ReherfNFEn6RT0gOyB8ahiF.46r/S', 'public', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-30 12:05:09', '2025-04-30 12:05:09', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -684,6 +704,15 @@ CREATE TABLE `validations` (
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `address_based_alerts`
+--
+ALTER TABLE `address_based_alerts`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_user_alert` (`alert_id`,`user_id`),
+  ADD KEY `fk_address_alert_id` (`alert_id`),
+  ADD KEY `fk_address_user_id` (`user_id`);
 
 --
 -- Indexes for table `admin`
@@ -714,6 +743,15 @@ ALTER TABLE `case_updates`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_update_case` (`case_id`),
   ADD KEY `fk_update_user` (`update_by`);
+
+--
+-- Indexes for table `crime_alerts`
+--
+ALTER TABLE `crime_alerts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_alert_report` (`report_id`),
+  ADD KEY `fk_alert_created_by` (`created_by`),
+  ADD KEY `fk_alert_assigned_to` (`assigned_to`);
 
 --
 -- Indexes for table `crime_areas`
@@ -866,6 +904,12 @@ ALTER TABLE `validations`
 --
 
 --
+-- AUTO_INCREMENT for table `address_based_alerts`
+--
+ALTER TABLE `address_based_alerts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
@@ -884,6 +928,12 @@ ALTER TABLE `case_updates`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `crime_alerts`
+--
+ALTER TABLE `crime_alerts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `crime_areas`
 --
 ALTER TABLE `crime_areas`
@@ -899,7 +949,7 @@ ALTER TABLE `crime_categories`
 -- AUTO_INCREMENT for table `crime_reports`
 --
 ALTER TABLE `crime_reports`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `emergency_contacts`
@@ -923,7 +973,7 @@ ALTER TABLE `feedback`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `police`
@@ -935,7 +985,7 @@ ALTER TABLE `police`
 -- AUTO_INCREMENT for table `police_alerts`
 --
 ALTER TABLE `police_alerts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `police_files`
@@ -953,7 +1003,7 @@ ALTER TABLE `police_stations`
 -- AUTO_INCREMENT for table `public`
 --
 ALTER TABLE `public`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `requests`
@@ -965,7 +1015,7 @@ ALTER TABLE `requests`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `validations`
@@ -976,6 +1026,12 @@ ALTER TABLE `validations`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `address_based_alerts`
+--
+ALTER TABLE `address_based_alerts`
+  ADD CONSTRAINT `fk_address_alert_id` FOREIGN KEY (`alert_id`) REFERENCES `crime_alerts` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `cases`

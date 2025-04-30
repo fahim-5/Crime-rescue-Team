@@ -4,13 +4,14 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1100;
+    z-index: 2000;
     padding: 1rem;
     animation: fadeIn 0.3s ease;
+    backdrop-filter: blur(4px);
 }
 
 @keyframes fadeIn {
@@ -25,11 +26,11 @@
 
 .police-station-content {
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 0 3px #1e40af, 0 0 20px rgba(30, 64, 175, 0.5);
     width: 100%;
     max-width: 800px;
-    max-height: 90vh;
+    max-height: 85vh;
     overflow-y: auto;
     position: relative;
     display: flex;
@@ -49,21 +50,79 @@
     }
 }
 
-.close-modal {
+.modal-controls {
     position: absolute;
     top: 1rem;
     right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.help-button,
+.close-modal {
     background: none;
     border: none;
     padding: 0.25rem;
     cursor: pointer;
     color: #6c757d;
-    transition: color 0.2s ease;
-    z-index: 10;
+    transition: color 0.2s ease, transform 0.2s ease;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-button {
+    color: #1e40af;
+}
+
+.help-button:hover {
+    color: #1e3a8a;
+    transform: scale(1.1);
 }
 
 .close-modal:hover {
-    color: #212529;
+    color: #dc3545;
+    transform: scale(1.1);
+}
+
+.help-box {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-left: 4px solid #1e40af;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 2rem 0;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.help-box h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #1e40af;
+}
+
+.help-box ol {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.help-box li {
+    margin-bottom: 0.25rem;
+    color: #495057;
+}
+
+.close-help {
+    background-color: #e9ecef;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    color: #495057;
+    cursor: pointer;
+    margin-top: 0.5rem;
 }
 
 .police-station-header {
@@ -74,8 +133,9 @@
 
 .police-station-header h2 {
     font-size: 1.75rem;
-    color: #2c3e50;
+    color: #1e40af;
     margin-bottom: 0.5rem;
+    font-weight: 700;
 }
 
 .subtitle {
@@ -94,9 +154,15 @@
     align-items: center;
     background: white;
     border: 1px solid #ced4da;
-    border-radius: 4px;
+    border-radius: 8px;
     padding: 0.5rem 1rem;
     margin-bottom: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-bar:focus-within {
+    border-color: #1e40af;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.2);
 }
 
 .search-bar svg {
@@ -145,11 +211,21 @@
     background-repeat: no-repeat;
     background-position: right 0.5rem center;
     background-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.filter-group select:focus {
+    border-color: #1e40af;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.2);
+    outline: none;
 }
 
 .filter-group select:disabled {
-    background-color: #e9ecef;
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #64748b;
     cursor: not-allowed;
+    opacity: 0.8;
 }
 
 .reset-btn {
@@ -161,13 +237,14 @@
     font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.2s;
     align-self: flex-end;
     margin-top: 1.5rem;
 }
 
 .reset-btn:hover {
     background-color: #5a6268;
+    transform: translateY(-2px);
 }
 
 .station-list {
@@ -175,8 +252,8 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    max-height: 50vh;
     overflow-y: auto;
+    max-height: calc(60vh - 180px);
 }
 
 .station-card {
@@ -185,6 +262,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid #1e40af;
 }
 
 .station-card:hover {
@@ -203,7 +281,7 @@
 .station-header h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: #1e40af;
     margin: 0;
 }
 
@@ -212,8 +290,8 @@
     font-weight: 600;
     text-transform: uppercase;
     padding: 0.25rem 0.5rem;
-    background-color: #e9ecef;
-    color: #495057;
+    background-color: rgba(30, 64, 175, 0.1);
+    color: #1e40af;
     border-radius: 4px;
 }
 
@@ -232,7 +310,7 @@
 }
 
 .detail-item svg {
-    color: #2c3e50;
+    color: #1e40af;
     margin-right: 0.5rem;
     flex-shrink: 0;
 }
@@ -255,7 +333,7 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 0.875rem;
     font-weight: 600;
     text-decoration: none;
@@ -264,23 +342,83 @@
 }
 
 .call-btn {
-    background-color: #2c3e50;
+    padding: 0.5rem 1rem;
+    background-color: #1e40af;
     color: white;
-    border: 1px solid #1a2530;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    flex: 1;
+    justify-content: center;
+    transition: background-color 0.2s, transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .call-btn:hover {
-    background-color: #1a2530;
+    background-color: #1e3a8a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.call-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.call-btn[disabled] {
+    background-color: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .map-btn {
-    background-color: white;
-    color: #2c3e50;
-    border: 1px solid #2c3e50;
+    padding: 0.5rem 1rem;
+    background-color: #f8f9fa;
+    color: #1e40af;
+    border: 1px solid #1e40af;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    flex: 1;
+    justify-content: center;
+    transition: background-color 0.2s, transform 0.2s;
 }
 
 .map-btn:hover {
-    background-color: #f8f9fa;
+    background-color: rgba(30, 64, 175, 0.1);
+    transform: translateY(-2px);
+}
+
+.map-btn svg {
+    color: #1e40af;
+}
+
+.retry-btn {
+    padding: 0.5rem 1rem;
+    background-color: #1e40af;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 1rem;
+}
+
+.retry-btn:hover {
+    background-color: #1e3a8a;
 }
 
 .loading-container,
@@ -297,9 +435,9 @@
 .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(0, 0, 0, 0.1);
+    border: 3px solid rgba(30, 64, 175, 0.1);
     border-radius: 50%;
-    border-top-color: #3498db;
+    border-top-color: #1e40af;
     animation: spin 1s ease-in-out infinite;
     margin-bottom: 1rem;
 }
@@ -310,8 +448,7 @@
     }
 }
 
-.error-container svg,
-.no-stations svg {
+.error-container svg {
     color: #dc3545;
     margin-bottom: 1rem;
 }
@@ -332,30 +469,123 @@
     margin-top: 1rem;
 }
 
+.modal-footer {
+    padding: 1.5rem 2rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    z-index: 10;
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.cancel-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+    color: #495057;
+    transform: translateY(-1px);
+}
+
+.cancel-btn:active {
+    transform: translateY(0);
+}
+
+.cancel-btn svg {
+    stroke-width: 2;
+}
+
+.modal-footer-note {
+    background-color: rgba(30, 64, 175, 0.1);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid #1e40af;
+}
+
+.modal-footer-note p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #1e3a8a;
+}
+
+.modal-footer-note strong {
+    color: #1e40af;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Improve loading states */
+select:disabled {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Mobile responsiveness enhancements */
 @media (max-width: 768px) {
     .police-station-content {
+        max-width: 95%;
+        padding-bottom: 1rem;
         max-height: 100vh;
-        border-radius: 0;
+        border-radius: 8px;
     }
-
+    
     .filter-controls {
         flex-direction: column;
+        gap: 0.75rem;
     }
-
+    
     .station-list {
         padding: 1rem;
+        max-height: 40vh;
     }
-
+    
     .station-header {
         flex-direction: column;
         align-items: flex-start;
     }
-
+    
     .station-type {
         margin-top: 0.5rem;
     }
-
+    
+    .station-card {
+        padding: 0.5rem;
+    }
+    
     .station-actions {
         flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .call-btn, .map-btn {
+        width: 100%;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
     }
 }

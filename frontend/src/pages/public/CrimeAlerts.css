@@ -305,6 +305,8 @@
   justify-content: center;
   z-index: 1000;
   padding: var(--space-md);
+  /* Don't scroll the entire modal overlay */
+  overflow: hidden;
 }
 
 .modal-content {
@@ -313,9 +315,11 @@
   box-shadow: var(--shadow-xl);
   width: 100%;
   max-width: 700px;
-  max-height: 90vh;
+  max-height: 85vh; /* Slightly reduce to ensure it fits in most viewports */
   overflow-y: auto;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .close-modal {
@@ -450,6 +454,55 @@
   border-color: var(--gray-400);
 }
 
+/* Enhanced Contact Police Button */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.contact-police-btn {
+  background-color: #1e40af !important; /* Darker blue */
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none !important;
+}
+
+.contact-police-btn:hover {
+  background-color: #1e3a8a !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.contact-police-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.contact-police-btn svg {
+  fill: none;
+  stroke: white;
+  stroke-width: 2;
+}
+
+.close-btn {
+  flex: 1;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .crime-alerts-container {
@@ -480,6 +533,18 @@
   .action-btn {
     width: 100%;
     justify-content: center;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .contact-police-btn, .close-btn {
+    width: 100%;
+  }
+
+  .police-station-modal {
+    padding: 0.5rem; /* Smaller padding on mobile */
   }
 }
 
@@ -652,4 +717,9 @@
 .validate-btn svg,
 .false-report-btn svg {
   stroke-width: 2.5;
+}
+
+/* Police Station Finder Modal Integration */
+.police-station-modal {
+  z-index: 2000; /* Ensure it's above everything else */
 }

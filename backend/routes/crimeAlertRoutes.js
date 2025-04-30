@@ -46,4 +46,16 @@ router.put(
   crimeAlertController.updateAlertStatus
 );
 
+/**
+ * @route POST /api/crime-alerts/rebuild-address-alerts
+ * @description Rebuild all address-based alerts
+ * @access Private (Admin only)
+ */
+router.post(
+  "/rebuild-address-alerts",
+  authMiddleware.authenticateToken,
+  authMiddleware.authorizeRoles(['admin']),
+  crimeAlertController.rebuildAddressBasedAlerts
+);
+
 module.exports = router;
