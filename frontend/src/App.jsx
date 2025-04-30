@@ -30,6 +30,7 @@ import Analytics from "./components/Analytics";
 import Settings from "./components/Settings";
 import Validations from "./pages/admin/Validations";
 import AdminReportDetail from "./pages/admin/AdminReportDetail";
+import DatabaseManagement from "./pages/admin/DatabaseManagement";
 
 // Police
 import PoliceDashboard from "./pages/police/PoliceDashboard";
@@ -161,6 +162,14 @@ function App() {
             }
           />
           <Route path="/admin/messages" element={<MessagesPanel />} />
+          <Route
+            path="/admin/database"
+            element={
+              <PrivateRoute allowedRole="admin">
+                <DatabaseManagement />
+              </PrivateRoute>
+            }
+          />
         </Routes>
         <Footer />
       </Router>

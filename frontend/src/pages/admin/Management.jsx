@@ -20,6 +20,7 @@ function Management() {
     { name: "Account Validation", icon: <FaShieldAlt /> },
     { name: "User Management", icon: <FaUserCog /> },
     { name: "Analytics Dashboard", icon: <FaCheckCircle /> },
+    { name: "Database Management", icon: <FaDatabase /> },
   ];
 
   // Fetch users when the component mounts or when selectedRole changes
@@ -58,6 +59,7 @@ function Management() {
   const handleNavigation = (itemName) => {
     setActiveItem(itemName);
     if(itemName === "Analytics Dashboard") navigate("/admin/analytics");
+    if(itemName === "Database Management") navigate("/admin/database");
   };
 
   const handleAddCriminal = (e) => {
