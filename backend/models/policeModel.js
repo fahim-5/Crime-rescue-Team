@@ -12,66 +12,100 @@ class PoliceModel {
       // Get case counts by status
       const [statusCounts] = await connection.query(
         `SELECT 
-          COUNT(CASE WHEN pa.status = 'pending' THEN 1 END) AS pendingCount,
+          COUNT(CASE WHEN pa.status = 'pending' THEN 1 END) AS pendingCases,
           COUNT(CASE WHEN pa.status = 'confirmed' THEN 1 END) AS confirmedCount,
           COUNT(CASE WHEN pa.status = 'responded' THEN 1 END) AS respondedCount,
-          COUNT(CASE WHEN pa.status = 'closed' THEN 1 END) AS closedCount,
+          COUNT(CASE WHEN pa.status = 'closed' THEN 1 END) AS solvedCases,
           COUNT(*) AS totalCount
         FROM police_alerts pa
         WHERE pa.police_id = ? OR pa.police_id IS NULL`,
         [policeId]
       );
 
-      // Get recent alerts that need attention
-      const [recentAlerts] = await connection.query(
-        `SELECT pa.id, pa.report_id, pa.status, pa.created_at, 
-          cr.location, cr.crime_type, cr.armed
-        FROM police_alerts pa
-        JOIN crime_reports cr ON pa.report_id = cr.id
-        WHERE (pa.police_id = ? OR pa.police_id IS NULL)
-          AND pa.status IN ('pending', 'confirmed')
-        ORDER BY pa.created_at DESC
-        LIMIT 5`,
+      // Get active investigations count
+      const [activeInvestigations] = await connection.query(
+        `SELECT COUNT(*) as activeInvestigations
+         FROM cases
+         WHERE status = 'investigating' 
+         AND assigned_to = ?`,
         [policeId]
       );
 
-      // Get crime reports in officer's area (station)
+      // Weekly trend calculations
+      const [weeklyTrends] = await connection.query(
+        `SELECT 
+          COUNT(CASE WHEN pa.status = 'pending' AND pa.created_at > DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 END) -
+          COUNT(CASE WHEN pa.status = 'pending' AND pa.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 14 DAY) AND DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 END)
+          AS pendingChange,
+          
+          COUNT(CASE WHEN pa.status = 'closed' AND pa.updated_at > DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 END) -
+          COUNT(CASE WHEN pa.status = 'closed' AND pa.updated_at BETWEEN DATE_SUB(NOW(), INTERVAL 14 DAY) AND DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 END)
+          AS solvedChange,
+          
+          COUNT(CASE WHEN pa.status IN ('confirmed','responded') AND pa.updated_at > DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 END) -
+          COUNT(CASE WHEN pa.status IN ('confirmed','responded') AND pa.updated_at BETWEEN DATE_SUB(NOW(), INTERVAL 14 DAY) AND DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 END)
+          AS activeChange
+        FROM police_alerts pa
+        WHERE pa.police_id = ? OR pa.police_id IS NULL`,
+        [policeId]
+      );
+
+      return {
+        pendingCases: statusCounts[0]?.pendingCases || 0,
+        solvedCases: statusCounts[0]?.solvedCases || 0,
+        activeInvestigations: activeInvestigations[0]?.activeInvestigations || 0,
+        trends: {
+          pendingChange: weeklyTrends[0]?.pendingChange || 0,
+          solvedChange: weeklyTrends[0]?.solvedChange || 0,
+          activeChange: weeklyTrends[0]?.activeChange || 0
+        }
+      };
+    } catch (error) {
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
+
+  /**
+   * Get recent reports for police dashboard
+   * @param {number} policeId - ID of the police officer
+   * @returns {Promise<Array>} Recent reports
+   */
+  static async getRecentReports(policeId) {
+    const connection = await pool.getConnection();
+    try {
+      // Get police station for location filtering
       const [policeInfo] = await connection.query(
         `SELECT station FROM police WHERE id = ?`,
         [policeId]
       );
+      
+      const policeStation = policeInfo[0]?.station || '';
 
-      const station = policeInfo[0]?.station;
-
-      const [areaCrimes] = await connection.query(
-        `SELECT COUNT(*) as areaCount
-        FROM crime_reports
-        WHERE location LIKE ?`,
-        [`%${station}%`]
-      );
-
-      // Get validation counts
-      const [validationCounts] = await connection.query(
+      // Get recent reports from the area or assigned to this police officer
+      const [reports] = await connection.query(
         `SELECT 
-          COUNT(*) AS totalValidations,
-          SUM(CASE WHEN is_valid = true THEN 1 ELSE 0 END) AS validCount,
-          SUM(CASE WHEN is_valid = false THEN 1 ELSE 0 END) AS invalidCount
-        FROM validations v
-        JOIN crime_reports cr ON v.report_id = cr.id
-        WHERE cr.location LIKE ?`,
-        [`%${station}%`]
+          cr.id,
+          cr.crime_id,
+          cr.crime_type as type,
+          cr.location,
+          cr.created_at as reportedAt,
+          CASE 
+            WHEN pa.status IS NOT NULL THEN pa.status
+            ELSE cr.status
+          END as status
+        FROM crime_reports cr
+        LEFT JOIN police_alerts pa ON cr.id = pa.report_id
+        WHERE 
+          (cr.location LIKE ? OR pa.police_id = ?)
+          AND cr.created_at > DATE_SUB(NOW(), INTERVAL 30 DAY)
+        ORDER BY cr.created_at DESC
+        LIMIT 10`,
+        [`%${policeStation}%`, policeId]
       );
 
-      return {
-        caseCounts: statusCounts[0],
-        recentAlerts,
-        areaCrimes: areaCrimes[0]?.areaCount || 0,
-        validationCounts: validationCounts[0] || {
-          totalValidations: 0,
-          validCount: 0,
-          invalidCount: 0,
-        },
-      };
+      return reports;
     } catch (error) {
       throw error;
     } finally {

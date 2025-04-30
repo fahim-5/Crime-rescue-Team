@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 29, 2025 at 08:11 AM
+-- Generation Time: Apr 30, 2025 at 01:34 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,7 +47,8 @@ CREATE TABLE `admin` (
 
 INSERT INTO `admin` (`id`, `full_name`, `username`, `email`, `national_id`, `passport`, `mobile_no`, `password`, `address`, `created_at`, `updated_at`) VALUES
 (2, 'Fahim Faysal', 'fahim', 'fahimbafu@gmail.com', '9631478952', NULL, '01774071130', '$2b$10$XkooQEfw8HJgPoyqdQeKnevblEPSUWsFW0uzG5jasfC7AxLdRLgpe', 'Dhaka-Mirpur', '2025-03-28 15:59:48', '2025-03-28 15:59:48'),
-(3, 'admin1', 'admin', 'mfaysal223224@bscse.uiu.ac.bd', '6395959595', '1212121', '0174646464', '$2a$10$zJnE3Wpv9GHrQw/IligOGevRMvzIxYMsOp00qxqX8uaNcOYCm802C', 'Dhaka-Mirpur', '2025-04-28 11:58:04', '2025-04-28 11:58:04');
+(3, 'admin1', 'admin', 'mfaysal223224@bscse.uiu.ac.bd', '6395959595', '1212121', '0174646464', '$2a$10$zJnE3Wpv9GHrQw/IligOGevRMvzIxYMsOp00qxqX8uaNcOYCm802C', 'Dhaka-Mirpur', '2025-04-28 11:58:04', '2025-04-28 11:58:04'),
+(4, 'Fahim Faysal', 'fahim01', 'mfaysal2232@bscse.uiu.ac.bd', '5858999581', '581518181818', '01774071130', '$2a$10$WatGbgDh7I3vndEw0coecOh1NTAVJK/NoUkKaZ7lNZV2sTOEBqZRC', 'Dhaka-Mirpur', '2025-04-30 10:19:47', '2025-04-30 10:19:47');
 
 -- --------------------------------------------------------
 
@@ -235,7 +236,13 @@ INSERT INTO `crime_reports` (`id`, `crime_id`, `location`, `time`, `crime_type`,
 (6, NULL, 'one to two', '2025-04-28 14:24:06', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:24:18', 21, 'pending', NULL),
 (7, NULL, 'one to three', '2025-04-28 14:24:18', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:24:28', 21, 'pending', NULL),
 (8, NULL, 'report from two to one', '2025-04-28 14:26:33', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:26:41', 22, 'pending', NULL),
-(9, NULL, 'two to two', '2025-04-28 14:26:41', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:26:49', 22, 'pending', NULL);
+(9, NULL, 'two to two', '2025-04-28 14:26:41', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:26:49', 22, 'pending', NULL),
+(10, 'CR-2025-008', 'Adb is reproting', '2025-04-29 10:14:38', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:14:52', 21, 'pending', NULL),
+(11, 'CR-2025-009', '10000', '2025-04-29 10:17:10', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:17:22', 21, 'pending', NULL),
+(12, 'CR-2025-010', '20000', '2025-04-29 10:17:22', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:24:50', 21, 'pending', NULL),
+(13, 'CR-2025-011', '3000', '2025-04-29 10:32:43', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:32:49', 21, 'pending', NULL),
+(14, 'CR-2025-012', 'wegvmsoibm', '2025-04-29 11:51:26', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 11:51:29', 21, 'pending', NULL),
+(15, 'CR-2025-013', 'Pavel is reporting', '2025-04-30 11:20:18', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-30 11:20:28', 28, 'pending', NULL);
 
 --
 -- Triggers `crime_reports`
@@ -344,32 +351,8 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`id`, `user_id`, `title`, `message`, `type`, `is_read`, `related_to`, `related_id`, `created_at`, `updated_at`) VALUES
-(4, 20, 'Report Submitted', 'Your crime report #3 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 3, '2025-04-27 21:15:50', '2025-04-27 21:26:59'),
-(5, 21, 'New Crime Report', 'A new report about theft in Fahim Reporting has been submitted. Stay safe!', 'info', 0, NULL, 3, '2025-04-27 21:15:50', '2025-04-27 21:15:50'),
-(6, 22, 'New Crime Report', 'A new report about theft in Fahim Reporting has been submitted. Stay safe!', 'info', 0, NULL, 3, '2025-04-27 21:15:50', '2025-04-27 21:15:50'),
-(7, 21, 'Report Submitted', 'Your crime report #4 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 4, '2025-04-28 08:53:08', '2025-04-28 08:53:08'),
-(8, 20, 'New Crime Report', 'A new report about theft in Fahim 3 has been submitted. Stay safe!', 'info', 0, NULL, 4, '2025-04-28 08:53:08', '2025-04-28 08:53:08'),
-(9, 22, 'New Crime Report', 'A new report about theft in Fahim 3 has been submitted. Stay safe!', 'info', 0, NULL, 4, '2025-04-28 08:53:08', '2025-04-28 08:53:08'),
-(10, 24, 'New Crime Report Submitted', 'A new theft has been reported in one to one. Report ID: 5', 'alert', 1, NULL, 5, '2025-04-28 14:24:05', '2025-04-28 14:31:55'),
-(11, 21, 'Report Submitted', 'Your crime report #5 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 5, '2025-04-28 14:24:06', '2025-04-28 14:24:06'),
-(12, 20, 'New Crime Report', 'A new report about theft in one to one has been submitted. Stay safe!', 'info', 0, NULL, 5, '2025-04-28 14:24:06', '2025-04-28 14:24:06'),
-(13, 22, 'New Crime Report', 'A new report about theft in one to one has been submitted. Stay safe!', 'info', 0, NULL, 5, '2025-04-28 14:24:06', '2025-04-28 14:24:06'),
-(14, 24, 'New Crime Report Submitted', 'A new theft has been reported in one to two. Report ID: 6', 'alert', 1, NULL, 6, '2025-04-28 14:24:18', '2025-04-28 14:31:55'),
-(15, 21, 'Report Submitted', 'Your crime report #6 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 6, '2025-04-28 14:24:18', '2025-04-28 14:24:18'),
-(16, 20, 'New Crime Report', 'A new report about theft in one to two has been submitted. Stay safe!', 'info', 0, NULL, 6, '2025-04-28 14:24:18', '2025-04-28 14:24:18'),
-(17, 22, 'New Crime Report', 'A new report about theft in one to two has been submitted. Stay safe!', 'info', 0, NULL, 6, '2025-04-28 14:24:18', '2025-04-28 14:24:18'),
-(18, 24, 'New Crime Report Submitted', 'A new theft has been reported in one to three. Report ID: 7', 'alert', 1, NULL, 7, '2025-04-28 14:24:28', '2025-04-28 14:25:17'),
-(19, 21, 'Report Submitted', 'Your crime report #7 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 7, '2025-04-28 14:24:28', '2025-04-28 14:24:28'),
-(20, 20, 'New Crime Report', 'A new report about theft in one to three has been submitted. Stay safe!', 'info', 0, NULL, 7, '2025-04-28 14:24:28', '2025-04-28 14:24:28'),
-(21, 22, 'New Crime Report', 'A new report about theft in one to three has been submitted. Stay safe!', 'info', 0, NULL, 7, '2025-04-28 14:24:28', '2025-04-28 14:24:28'),
-(22, 24, 'New Crime Report Submitted', 'A new theft has been reported in report from two to one. Report ID: 8', 'alert', 1, NULL, 8, '2025-04-28 14:26:41', '2025-04-28 14:31:55'),
-(23, 22, 'Report Submitted', 'Your crime report #8 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 8, '2025-04-28 14:26:41', '2025-04-28 14:26:41'),
-(24, 20, 'New Crime Report', 'A new report about theft in report from two to one has been submitted. Stay safe!', 'info', 0, NULL, 8, '2025-04-28 14:26:41', '2025-04-28 14:26:41'),
-(25, 21, 'New Crime Report', 'A new report about theft in report from two to one has been submitted. Stay safe!', 'info', 0, NULL, 8, '2025-04-28 14:26:41', '2025-04-28 14:26:41'),
-(26, 24, 'New Crime Report Submitted', 'A new theft has been reported in two to two. Report ID: 9', 'alert', 1, NULL, 9, '2025-04-28 14:26:49', '2025-04-28 14:31:55'),
-(27, 22, 'Report Submitted', 'Your crime report #9 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 9, '2025-04-28 14:26:49', '2025-04-28 14:26:49'),
-(28, 20, 'New Crime Report', 'A new report about theft in two to two has been submitted. Stay safe!', 'info', 0, NULL, 9, '2025-04-28 14:26:49', '2025-04-28 14:26:49'),
-(29, 21, 'New Crime Report', 'A new report about theft in two to two has been submitted. Stay safe!', 'info', 0, NULL, 9, '2025-04-28 14:26:49', '2025-04-28 14:26:49');
+(52, 28, 'Report Submitted', 'Your crime report #15 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 15, '2025-04-30 11:20:28', '2025-04-30 11:20:28'),
+(53, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#15) in Pavel is reporting requires immediate attention.', 'alert', 0, NULL, 15, '2025-04-30 11:20:28', '2025-04-30 11:20:28');
 
 -- --------------------------------------------------------
 
@@ -407,7 +390,8 @@ INSERT INTO `police` (`id`, `full_name`, `username`, `email`, `national_id`, `pa
 (5, 'Md Abdullah', 'abdullah', 'abdulllah@gmail.com', '569981659465', NULL, '01456986251', '$2b$10$RuqMTxpDUGJ1hl421HGZ2ueHi1pirXGfhPWPMthvxI/Jo3aj9qR2K', 'Dhaka-Mirpur', '96', 'Misrup', 'SI', '02', '2025-04-08', '2025-04-18 09:48:55', '2025-04-18 09:48:55', 3),
 (6, 'rakin', 'rakib', 'rakib@gmail.com', '4569332154', NULL, '01774071126', '$2b$10$T/owIsT.zn8mofsylmgTXOy8wad2.Ysugad8mhIRRGx4KwOjk9Fk6', 'dhaka-bangladesh', '78', 'cazcxzcvcx', 'acas', 'fg', '2025-04-26', '2025-04-21 16:15:22', '2025-04-21 16:15:22', 4),
 (8, 'police vai', 'plc', 'police2@gmail.com', '98989898988', '565654984', '01756565656', '$2a$10$Sbd2Cq.z4J9SCjsOwhmrm.29.RzpMKvzbxsLzvCfOB2kidqKsjHf.', 'Dhaka-Mirpur', '8925262', 'Vatara', 'ASp', '89', '2025-04-19', '2025-04-28 18:35:34', '2025-04-28 18:35:34', NULL),
-(9, 'police-3', 'plc3', 'police3@gmail.com', '15951595159', '55555500', '017762598413', '$2a$10$CAVpF2f3u58VR2lJ5H9o4e55DK8NqRsov4aXetnzSe6/PfFXTw92S', 'Dhaka-Mirpur', '3695', 'Mirpur', 'ADC', '56-U', '2025-04-18', '2025-04-28 18:58:16', '2025-04-28 18:58:16', NULL);
+(9, 'police-3', 'plc3', 'police3@gmail.com', '15951595159', '55555500', '017762598413', '$2a$10$CAVpF2f3u58VR2lJ5H9o4e55DK8NqRsov4aXetnzSe6/PfFXTw92S', 'Dhaka-Mirpur', '3695', 'Mirpur', 'ADC', '56-U', '2025-04-18', '2025-04-28 18:58:16', '2025-04-28 18:58:16', NULL),
+(10, 'five', 'five', 'police5@gmail.com', '696969696969', '2598525852', '017594995959', '$2a$10$ZcVIpXO1tY2DUw4RUM9ojuSmhRqMEXF94M4a4t.JZp587kfp7ZgC6', 'Dhaka-Mirpur', 'POI-1001', 'Vatara', 'DECS', '7989', '2025-04-19', '2025-04-29 11:09:26', '2025-04-29 11:09:26', NULL);
 
 -- --------------------------------------------------------
 
@@ -437,7 +421,13 @@ INSERT INTO `police_alerts` (`id`, `report_id`, `police_id`, `status`, `response
 (4, 6, NULL, 'pending', NULL, '2025-04-28 14:24:18', NULL, '2025-04-28 14:24:18'),
 (5, 7, NULL, 'pending', NULL, '2025-04-28 14:24:28', NULL, '2025-04-28 14:24:28'),
 (6, 8, NULL, 'pending', NULL, '2025-04-28 14:26:41', NULL, '2025-04-28 14:26:41'),
-(7, 9, NULL, 'pending', NULL, '2025-04-28 14:26:49', NULL, '2025-04-28 14:26:49');
+(7, 9, NULL, 'pending', NULL, '2025-04-28 14:26:49', NULL, '2025-04-28 14:26:49'),
+(8, 10, NULL, 'pending', NULL, '2025-04-29 10:14:52', NULL, '2025-04-29 10:14:52'),
+(9, 11, NULL, 'pending', NULL, '2025-04-29 10:17:22', NULL, '2025-04-29 10:17:22'),
+(10, 12, NULL, 'pending', NULL, '2025-04-29 10:24:50', NULL, '2025-04-29 10:24:50'),
+(11, 13, NULL, 'pending', NULL, '2025-04-29 10:32:49', NULL, '2025-04-29 10:32:49'),
+(12, 14, NULL, 'pending', NULL, '2025-04-29 11:51:29', NULL, '2025-04-29 11:51:29'),
+(13, 15, NULL, 'pending', NULL, '2025-04-30 11:20:28', NULL, '2025-04-30 11:20:28');
 
 -- --------------------------------------------------------
 
@@ -597,9 +587,9 @@ CREATE TABLE `public` (
 
 INSERT INTO `public` (`id`, `full_name`, `username`, `email`, `national_id`, `passport`, `mobile_no`, `password`, `address`, `created_at`, `updated_at`) VALUES
 (2, 'Jarin Tasnim', 'jarin', 'jarinmoni@gmail.com', '9632587410', '321654', '01775963352', '$2b$10$CxxuwZo4yV0n5FaTZ.qSu.lcrvjixAfrAiHvpwRQjsAFTrfNmPIwi', 'Dinajpur-Birol', '2025-03-28 15:56:40', '2025-03-28 15:56:40'),
-(3, 'Fahim Faysal', 'bafu', 'fahimbafu@gmail.com', '333333333', '111111', '017740711130', '$2a$10$c95S1aEnxcNDjoUbc8Y2OOv5Qu8e9oivyyTEPdJfDz4CggsneVtfW', 'Dhaka-Mirpur', '2025-04-27 21:11:49', '2025-04-27 21:11:49'),
 (4, 'Mr.one', 'one', 'one@gmail.com', '5555555553', '1239999', '0177345678', '$2a$10$h6fq8658j1jhI3b1PgBSauMYUJZth9NdIAobyosFjgi.YniCMEs7m', 'Dhaka-Mirpur', '2025-04-27 21:14:17', '2025-04-27 21:14:17'),
-(5, 'Mr.two', 'two', 'two@gmail.com', '5565626262', '333333', '01775692261', '$2a$10$ZvYIXk/lRR7tuLRbNRbnue0Lo/FshUYyi/U1RSA/vR59x80MAnoVG', 'Dinajpur-Birol', '2025-04-27 21:15:06', '2025-04-28 14:27:50');
+(5, 'Mr.two', 'two', 'two@gmail.com', '5565626262', '333333', '01775692261', '$2a$10$ZvYIXk/lRR7tuLRbNRbnue0Lo/FshUYyi/U1RSA/vR59x80MAnoVG', 'Dinajpur-Birol', '2025-04-27 21:15:06', '2025-04-28 14:27:50'),
+(6, 'md:pavel', 'pavel12', 'pavel@gmail.com', '213', '42529529592', '01746467979', '$2a$10$oHnxgP147ubzoXo3drhC3ONge.yJc9W/EDdS6VvZk0STVDHnWCpli', 'dhaka-mirpur', '2025-04-30 09:16:17', '2025-04-30 09:16:17');
 
 -- --------------------------------------------------------
 
@@ -669,12 +659,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `national_id`, `passport`, `mobile_no`, `password`, `role`, `address`, `status`, `police_id`, `station`, `rank`, `badge_number`, `joining_date`, `created_at`, `updated_at`, `reset_code`, `reset_code_expires`) VALUES
-(20, 'Fahim Faysal', 'bafu', 'fahimbafu@gmail.com', '333333333', '111111', '017740711130', '$2a$10$EJdx.IbHjkAUFUbWuE9wJ.WY.wRYFe9lLenh3I6X2lKw4hzrHEFkS', 'public', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-27 21:11:49', '2025-04-27 21:12:49', NULL, NULL),
-(21, 'Mr.one', 'one', 'one@gmail.com', '5555555553', '1239999', '0177345678', '$2a$10$h6fq8658j1jhI3b1PgBSauMYUJZth9NdIAobyosFjgi.YniCMEs7m', 'public', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-27 21:14:17', '2025-04-27 21:14:17', NULL, NULL),
-(22, 'Mr.two', 'two', 'two@gmail.com', '5565626262', '333333', '01775692261', '$2a$10$ZvYIXk/lRR7tuLRbNRbnue0Lo/FshUYyi/U1RSA/vR59x80MAnoVG', 'public', 'Dinajpur-Birol', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-27 21:15:06', '2025-04-28 14:27:50', NULL, NULL),
-(24, 'admin1', 'admin', 'mfaysal223224@bscse.uiu.ac.bd', '6395959595', '1212121', '0174646464', '$2a$10$zJnE3Wpv9GHrQw/IligOGevRMvzIxYMsOp00qxqX8uaNcOYCm802C', 'admin', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-28 11:58:04', '2025-04-28 11:58:04', NULL, NULL),
 (25, 'police vai', 'plc', 'police2@gmail.com', '98989898988', '565654984', '01756565656', '$2a$10$Sbd2Cq.z4J9SCjsOwhmrm.29.RzpMKvzbxsLzvCfOB2kidqKsjHf.', 'police', 'Dhaka-Mirpur', 'approved', '8925262', 'Vatara', 'ASp', '89', '2025-04-19', '2025-04-28 18:35:34', '2025-04-28 18:55:43', NULL, NULL),
-(26, 'police-3', 'plc3', 'police3@gmail.com', '15951595159', '55555500', '017762598413', '$2a$10$CAVpF2f3u58VR2lJ5H9o4e55DK8NqRsov4aXetnzSe6/PfFXTw92S', 'police', 'Dhaka-Mirpur', 'approved', '3695', 'Mirpur', 'ADC', '56-U', '2025-04-18', '2025-04-28 18:58:16', '2025-04-28 21:14:53', NULL, NULL);
+(26, 'police-3', 'plc3', 'police3@gmail.com', '15951595159', '55555500', '017762598413', '$2a$10$CAVpF2f3u58VR2lJ5H9o4e55DK8NqRsov4aXetnzSe6/PfFXTw92S', 'police', 'Dhaka-Mirpur', 'approved', '3695', 'Mirpur', 'ADC', '56-U', '2025-04-18', '2025-04-28 18:58:16', '2025-04-28 21:14:53', NULL, NULL),
+(27, 'five', 'five', 'police5@gmail.com', '696969696969', '2598525852', '017594995959', '$2a$10$ZcVIpXO1tY2DUw4RUM9ojuSmhRqMEXF94M4a4t.JZp587kfp7ZgC6', 'police', 'Dhaka-Mirpur', 'pending', 'POI-1001', 'Vatara', 'DECS', '7989', '2025-04-19', '2025-04-29 11:09:26', '2025-04-29 11:09:26', NULL, NULL),
+(28, 'md:pavel', 'pavel12', 'pavel@gmail.com', '213', '42529529592', '01746467979', '$2a$10$oHnxgP147ubzoXo3drhC3ONge.yJc9W/EDdS6VvZk0STVDHnWCpli', 'public', 'dhaka-mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-30 09:16:17', '2025-04-30 09:16:17', NULL, NULL),
+(29, 'Fahim Faysal', 'fahim01', 'mfaysal2232@bscse.uiu.ac.bd', '5858999581', '581518181818', '01774071130', '$2a$10$WatGbgDh7I3vndEw0coecOh1NTAVJK/NoUkKaZ7lNZV2sTOEBqZRC', 'admin', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-30 10:19:47', '2025-04-30 10:19:47', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -880,7 +869,7 @@ ALTER TABLE `validations`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `cases`
@@ -910,7 +899,7 @@ ALTER TABLE `crime_categories`
 -- AUTO_INCREMENT for table `crime_reports`
 --
 ALTER TABLE `crime_reports`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `emergency_contacts`
@@ -934,19 +923,19 @@ ALTER TABLE `feedback`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `police`
 --
 ALTER TABLE `police`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `police_alerts`
 --
 ALTER TABLE `police_alerts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `police_files`
@@ -964,7 +953,7 @@ ALTER TABLE `police_stations`
 -- AUTO_INCREMENT for table `public`
 --
 ALTER TABLE `public`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `requests`
@@ -976,7 +965,7 @@ ALTER TABLE `requests`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `validations`
@@ -1053,5 +1042,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-

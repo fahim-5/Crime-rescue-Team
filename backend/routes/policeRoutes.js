@@ -7,6 +7,12 @@ const authMiddleware = require("../middlewares/authMiddleware");
 router.use(authMiddleware.authenticateToken, authMiddleware.isPolice);
 
 // Dashboard statistics for police
+router.get("/stats", policeController.getDashboardStats);
+
+// Get recent reports for dashboard
+router.get("/recent-reports", policeController.getRecentReports);
+
+// Dashboard statistics for police (legacy endpoint)
 router.get("/dashboard", policeController.getDashboardStats);
 
 // Get cases assigned to the police officer

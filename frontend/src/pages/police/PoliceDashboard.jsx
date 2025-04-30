@@ -34,15 +34,24 @@ const PoliceDashboard = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const getAuthToken = () => {
+    return localStorage.getItem('authToken');
+  };
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
         setError(null);
         
+        const token = getAuthToken();
+        const config = {
+          headers: { Authorization: `Bearer ${token}` }
+        };
+        
         const [statsResponse, reportsResponse] = await Promise.all([
-          axios.get('/api/police/stats'),
-          axios.get('/api/police/recent-reports')
+          axios.get('/api/police/stats', config),
+          axios.get('/api/police/recent-reports', config)
         ]);
 
         // Calculate clearance rate
@@ -61,6 +70,7 @@ const PoliceDashboard = () => {
           recentReports: Array.isArray(reportsResponse.data) 
             ? reportsResponse.data.map(report => ({
                 id: report.id || 0,
+                crime_id: report.crime_id || '',
                 type: report.type || 'Unknown',
                 location: report.location || 'Unknown',
                 status: report.status || 'pending',
@@ -68,14 +78,19 @@ const PoliceDashboard = () => {
               }))
             : [],
           trends: {
-            pendingChange: 2,  // Mock data - would normally come from API
-            solvedChange: 5,   // Mock data
-            activeChange: 0    // Mock data
+            pendingChange: Number(statsResponse.data.trends?.pendingChange) || 0,
+            solvedChange: Number(statsResponse.data.trends?.solvedChange) || 0,
+            activeChange: Number(statsResponse.data.trends?.activeChange) || 0
           }
         });
       } catch (err) {
         console.error('Dashboard data error:', err);
         setError('Failed to load dashboard data. Please try again later.');
+        
+        // If unauthorized, redirect to login
+        if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+          navigate('/login');
+        }
       } finally {
         setLoading(false);
       }
@@ -86,7 +101,7 @@ const PoliceDashboard = () => {
     // Set up polling every 30 seconds
     const intervalId = setInterval(fetchDashboardData, 30000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [navigate]);
 
   const handleReportClick = (reportId) => {
     navigate(`/police/reports/${reportId}`);
@@ -247,7 +262,7 @@ const PoliceDashboard = () => {
                 {dashboardData.recentReports.length > 0 ? (
                   dashboardData.recentReports.map(report => (
                     <tr key={report.id}>
-                      <td className="case-id">CR-{report.id.toString().padStart(4, '0')}</td>
+                      <td className="case-id">{report.crime_id || `CR-${report.id.toString().padStart(4, '0')}`}</td>
                       <td className="case-type">{report.type}</td>
                       <td className="case-location">
                         <FiMapPin className="location-icon" /> {report.location}
