@@ -656,7 +656,7 @@ class UserModel {
           : await connection.query(query, [user.email]);
         
         if (policeInfo[0]) {
-          user.policeId = policeInfo[0].police_id;
+          user.police_id = policeInfo[0].police_id;
           user.station = policeInfo[0].station;
           user.rank = policeInfo[0].rank;
         }

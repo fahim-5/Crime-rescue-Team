@@ -354,6 +354,8 @@ const loginUser = async (req, res) => {
       ...(user.role === "police" && {
         police_id: user.police_id,
         badge_number: user.badge_number,
+        rank: user.rank,
+        station: user.station,
       }),
     };
 
