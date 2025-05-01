@@ -46,13 +46,14 @@ body {
 }
 
 /* Main Container */
-.crime-report-container {
+.crimeReportContainer {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
-.crime-report-wrapper {
+.crimeReportWrapper {
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
@@ -60,14 +61,14 @@ body {
 }
 
 /* Header */
-.crime-report-header {
+.crimeReportHeader {
   text-align: center;
   margin-bottom: var(--space-xxl);
   padding-bottom: var(--space-lg);
   border-bottom: 1px solid var(--medium-gray);
 }
 
-.crime-report-header h1 {
+.crimeReportHeader h1 {
   font-size: var(--font-size-xxl);
   color: var(--primary-color);
   margin-bottom: var(--space-xs);
@@ -78,23 +79,23 @@ body {
   font-weight: 700;
 }
 
-.crime-report-header p {
+.crimeReportHeader p {
   font-size: var(--font-size-lg);
   color: var(--dark-gray);
 }
 
-.header-icon {
+.headerIcon {
   font-size: var(--font-size-xxl);
 }
 
 /* Content Layout */
-.crime-report-content {
+.crimeReportContent {
   display: grid;
   grid-template-columns: 1fr 350px;
   gap: var(--space-xxl);
 }
 
-.report-form-container {
+.reportFormContainer {
   background: white;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-md);
@@ -102,18 +103,18 @@ body {
   transition: box-shadow var(--transition-normal);
 }
 
-.report-form-container:hover {
+.reportFormContainer:hover {
   box-shadow: var(--shadow-lg);
 }
 
 /* Form Sections */
-.elegant-form {
+.elegantForm {
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
 }
 
-.form-section {
+.formSection {
   padding: var(--space-lg);
   border-radius: var(--border-radius-md);
   background: var(--light-gray);
@@ -121,12 +122,12 @@ body {
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.form-section:hover {
+.formSection:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
 
-.section-title {
+.sectionTitle {
   font-size: var(--font-size-xl);
   color: var(--secondary-color);
   margin-bottom: var(--space-lg);
@@ -136,7 +137,7 @@ body {
   font-weight: 600;
 }
 
-.title-icon {
+.titleIcon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -150,22 +151,22 @@ body {
 }
 
 /* Form Groups */
-.form-group {
+.formGroup {
   margin-bottom: var(--space-lg);
   position: relative;
 }
 
-.form-group:last-child {
+.formGroup:last-child {
   margin-bottom: 0;
 }
 
-.form-row {
+.formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-lg);
 }
 
-.form-label {
+.formLabel {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
@@ -175,13 +176,13 @@ body {
   font-size: var(--font-size-md);
 }
 
-.input-icon {
+.inputIcon {
   color: var(--primary-color);
   font-size: 1rem;
 }
 
 /* Input Fields - Enhanced for better UX */
-.form-input {
+.formInput {
   width: 100%;
   padding: var(--space-sm) var(--space-md);
   border: 2px solid var(--medium-gray);
@@ -192,36 +193,36 @@ body {
   height: 46px;
 }
 
-.form-input::placeholder {
+.formInput::placeholder {
   color: #aaa;
   opacity: 0.8;
 }
 
-.form-input:hover {
+.formInput:hover {
   border-color: #bbb;
 }
 
-.form-input:focus {
+.formInput:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px var(--primary-transparent);
   outline: none;
 }
 
 /* Location Input */
-.location-input-container {
+.locationInputContainer {
   position: relative;
   display: flex;
 }
 
 /* Radio Buttons - Improved for better accessibility */
-.radio-group {
+.radioGroup {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-md);
   margin-top: var(--space-xs);
 }
 
-.radio-label {
+.radioLabel {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
@@ -232,16 +233,16 @@ body {
   transition: background-color var(--transition-fast);
 }
 
-.radio-label:hover {
+.radioLabel:hover {
   background-color: var(--light-gray);
 }
 
-.radio-label input {
+.radioLabel input {
   position: absolute;
   opacity: 0;
 }
 
-.radio-custom {
+.radioCustom {
   width: 18px;
   height: 18px;
   border: 2px solid var(--medium-gray);
@@ -251,12 +252,12 @@ body {
   transition: all var(--transition-fast);
 }
 
-.radio-label input:checked+.radio-custom {
+.radioLabel input:checked+.radioCustom {
   border-color: var(--primary-color);
   background-color: var(--primary-color);
 }
 
-.radio-label input:checked+.radio-custom::after {
+.radioLabel input:checked+.radioCustom::after {
   content: '';
   position: absolute;
   width: 8px;
@@ -268,12 +269,12 @@ body {
   transform: translate(-50%, -50%);
 }
 
-.radio-label:focus-within .radio-custom {
+.radioLabel:focus-within .radioCustom {
   box-shadow: 0 0 0 3px var(--primary-transparent);
 }
 
 /* File Uploads - Improved for better visual feedback */
-.file-upload-label {
+.fileUploadLabel {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -288,44 +289,44 @@ body {
   margin-bottom: var(--space-xs);
 }
 
-.file-upload-label:hover {
+.fileUploadLabel:hover {
   border-color: var(--primary-color);
   background-color: var(--primary-transparent);
 }
 
-.file-upload-label:focus-within {
+.fileUploadLabel:focus-within {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px var(--primary-transparent);
 }
 
-.upload-icon {
+.uploadIcon {
   font-size: 1.5rem;
   color: var(--primary-color);
   transition: transform var(--transition-fast);
 }
 
-.file-upload-label:hover .upload-icon {
+.fileUploadLabel:hover .uploadIcon {
   transform: translateY(-3px);
 }
 
-.file-upload-hint {
+.fileUploadHint {
   font-size: var(--font-size-sm);
   color: var(--dark-gray);
 }
 
-.file-input {
+.fileInput {
   display: none;
 }
 
 /* Preview Container - Improved layout */
-.preview-container {
+.previewContainer {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-md);
   margin-top: var(--space-md);
 }
 
-.preview-item {
+.previewItem {
   position: relative;
   width: 120px;
   height: 120px;
@@ -335,19 +336,19 @@ body {
   transition: transform var(--transition-fast);
 }
 
-.preview-item:hover {
+.previewItem:hover {
   transform: scale(1.05);
   box-shadow: var(--shadow-md);
 }
 
-.preview-image,
-.preview-video {
+.previewImage,
+.previewVideo {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.remove-btn {
+.removeBtn {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
@@ -366,30 +367,30 @@ body {
   opacity: 0.8;
 }
 
-.preview-item:hover .remove-btn {
+.previewItem:hover .removeBtn {
   opacity: 1;
 }
 
-.remove-btn:hover {
+.removeBtn:hover {
   background: var(--primary-light);
   transform: scale(1.1);
 }
 
-.remove-btn:focus {
+.removeBtn:focus {
   outline: none;
   box-shadow: 0 0 0 3px white;
 }
 
 /* Form Actions - Improved button design */
-.form-actions {
+.formActions {
   display: flex;
   justify-content: flex-end;
   gap: var(--space-md);
   margin-top: var(--space-lg);
 }
 
-.reset-btn,
-.submit-btn {
+.resetBtn,
+.submitBtn {
   padding: var(--space-sm) var(--space-lg);
   border-radius: var(--border-radius-sm);
   font-weight: 600;
@@ -403,46 +404,46 @@ body {
   min-width: 120px;
 }
 
-.reset-btn {
+.resetBtn {
   background: white;
   color: var(--primary-color);
   border: 2px solid var(--primary-color);
 }
 
-.reset-btn:hover {
+.resetBtn:hover {
   background: var(--primary-transparent);
   transform: translateY(-2px);
 }
 
-.reset-btn:focus {
+.resetBtn:focus {
   outline: none;
   box-shadow: 0 0 0 3px var(--primary-transparent);
 }
 
-.submit-btn {
+.submitBtn {
   background: var(--primary-color);
   color: white;
   border: none;
   box-shadow: 0 2px 8px rgba(158, 25, 45, 0.3);
 }
 
-.submit-btn:hover {
+.submitBtn:hover {
   background: var(--primary-light);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(158, 25, 45, 0.4);
 }
 
-.submit-btn:focus {
+.submitBtn:focus {
   outline: none;
   box-shadow: 0 0 0 3px var(--primary-transparent), 0 4px 12px rgba(158, 25, 45, 0.4);
 }
 
-.submit-btn:active {
+.submitBtn:active {
   transform: translateY(0);
 }
 
 /* Guidelines Section - Improved layout and readability */
-.report-guidelines {
+.reportGuidelines {
   background: white;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-md);
@@ -453,12 +454,12 @@ body {
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.report-guidelines:hover {
+.reportGuidelines:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
-.report-guidelines h3 {
+.reportGuidelines h3 {
   font-size: var(--font-size-lg);
   color: var(--primary-color);
   margin-bottom: var(--space-lg);
@@ -468,19 +469,19 @@ body {
   font-weight: 700;
 }
 
-.guideline-header-icon {
+.guidelineHeaderIcon {
   color: var(--primary-color);
 }
 
-.guideline-section {
+.guidelineSection {
   margin-bottom: var(--space-lg);
 }
 
-.guideline-section:last-child {
+.guidelineSection:last-child {
   margin-bottom: 0;
 }
 
-.guideline-section h4 {
+.guidelineSection h4 {
   font-size: var(--font-size-lg);
   color: var(--secondary-color);
   margin-bottom: var(--space-sm);
@@ -488,18 +489,18 @@ body {
   border-bottom: 1px solid var(--medium-gray);
 }
 
-.guideline-section ul {
+.guidelineSection ul {
   list-style-type: none;
 }
 
-.guideline-section li {
+.guidelineSection li {
   margin-bottom: var(--space-sm);
   padding-left: 1.5rem;
   position: relative;
   font-size: var(--font-size-md);
 }
 
-.guideline-section li::before {
+.guidelineSection li::before {
   content: '•';
   color: var(--primary-color);
   font-weight: bold;
@@ -507,7 +508,7 @@ body {
   left: 0;
 }
 
-.input-guideline {
+.inputGuideline {
   display: flex;
   align-items: flex-start;
   gap: var(--space-xs);
@@ -517,19 +518,19 @@ body {
   line-height: 1.5;
 }
 
-.guideline-icon {
+.guidelineIcon {
   color: var(--primary-color);
   font-size: 0.9rem;
   margin-top: 0.15rem;
 }
 
-.confidentiality-notice {
+.confidentialityNotice {
   margin-top: var(--space-xl);
   padding-top: var(--space-lg);
   border-top: 1px solid var(--medium-gray);
 }
 
-.confidentiality-notice h4 {
+.confidentialityNotice h4 {
   font-size: var(--font-size-lg);
   color: var(--secondary-color);
   margin-bottom: var(--space-sm);
@@ -538,16 +539,16 @@ body {
   gap: var(--space-xs);
 }
 
-.privacy-icon {
+.privacyIcon {
   color: var(--primary-color);
 }
 
-.confidentiality-notice p {
+.confidentialityNotice p {
   font-size: var(--font-size-sm);
   margin-bottom: var(--space-sm);
 }
 
-.emergency-note {
+.emergencyNote {
   font-weight: 600;
   color: var(--primary-color);
   padding: var(--space-xs) var(--space-sm);
@@ -557,8 +558,8 @@ body {
   display: inline-block;
 }
 
-/* Alerts - Centered with no backdrop blur */
-.alert-container {
+/* Alerts - Fixed to center with proper backdrop */
+.alertContainer {
   position: fixed;
   top: 0;
   left: 0;
@@ -568,19 +569,18 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  pointer-events: none;
-  /* Allow clicking through the container */
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 0 var(--space-md);
 }
 
-.alert-box {
+.alertBox {
   padding: var(--space-lg) var(--space-xl);
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-lg);
   min-width: 300px;
   max-width: 500px;
   animation: fadeInScale 0.3s ease-out;
-  pointer-events: auto;
-  /* Make the alert box clickable */
+  margin: 0 auto;
 }
 
 @keyframes fadeInScale {
@@ -595,59 +595,59 @@ body {
   }
 }
 
-.alert-success {
+.alertSuccess {
   background: var(--success-color);
   color: white;
 }
 
-.alert-error {
+.alertError {
   background: var(--error-color);
   color: white;
 }
 
-.alert-content {
+.alertContent {
   display: flex;
   align-items: center;
   gap: var(--space-md);
 }
 
-.alert-success-content {
+.alertSuccessContent {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
 }
 
-.alert-message-row {
+.alertMessageRow {
   display: flex;
   align-items: center;
   gap: var(--space-md);
 }
 
-.alert-buttons-row {
+.alertButtonsRow {
   display: flex;
   justify-content: center;
   gap: var(--space-md);
-  margin-top: var(--space-sm);
+  margin-top: var(--space-md);
 }
 
-.alert-icon {
+.alertIcon {
   font-size: 1.5rem;
   flex-shrink: 0;
 }
 
-.alert-message {
+.alertMessage {
   flex: 1;
   font-weight: 500;
   font-size: var(--font-size-lg);
 }
 
-.alert-buttons {
+.alertButtons {
   display: flex;
   gap: var(--space-md);
   margin-left: var(--space-md);
 }
 
-.alert-btn {
+.alertBtn {
   padding: var(--space-sm) var(--space-lg);
   border-radius: var(--border-radius-sm);
   font-weight: 600;
@@ -656,28 +656,29 @@ body {
   transition: all var(--transition-fast);
   border: none;
   min-width: 120px;
+  text-align: center;
 }
 
-.alert-btn-cancel {
+.alertBtnCancel {
   background-color: rgba(255, 255, 255, 0.3);
   color: white;
 }
 
-.alert-btn-cancel:hover {
+.alertBtnCancel:hover {
   background-color: rgba(255, 255, 255, 0.4);
 }
 
-.alert-btn-view {
+.alertBtnView {
   background-color: white;
   color: var(--success-color);
 }
 
-.alert-btn-view:hover {
+.alertBtnView:hover {
   background-color: rgba(255, 255, 255, 0.9);
   transform: translateY(-2px);
 }
 
-.alert-close {
+.alertClose {
   background: none;
   border: none;
   color: white;
@@ -690,18 +691,18 @@ body {
   line-height: 1;
 }
 
-.alert-close:hover {
+.alertClose:hover {
   opacity: 1;
   transform: scale(1.1);
 }
 
-.alert-close:focus {
+.alertClose:focus {
   outline: none;
   opacity: 1;
 }
 
 /* Location Input Button - Improved visibility and accessibility */
-.map-button {
+.mapButton {
   position: absolute;
   right: 0.75rem;
   top: 50%;
@@ -719,44 +720,44 @@ body {
   border-radius: 50%;
 }
 
-.map-button:not(:disabled) {
+.mapButton:not(:disabled) {
   color: var(--primary-color);
   cursor: pointer;
 }
 
-.map-button:disabled {
+.mapButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.map-button:not(:disabled):hover {
+.mapButton:not(:disabled):hover {
   color: var(--primary-light);
   transform: translateY(-50%) scale(1.1);
   background: var(--primary-transparent);
 }
 
-.map-button:not(:disabled):focus {
+.mapButton:not(:disabled):focus {
   outline: none;
   box-shadow: 0 0 0 3px var(--primary-transparent);
   background: var(--primary-transparent);
 }
 
 /* DatePicker Custom Styling */
-.datepicker-container .react-datepicker-wrapper {
+.datepickerContainer .react-datepicker-wrapper {
   width: 100%;
 }
 
-.datepicker-input {
+.datepickerInput {
   cursor: pointer;
 }
 
 /* Responsive Design - Optimized for all devices */
 @media (max-width: 1200px) {
-  .crime-report-content {
+  .crimeReportContent {
     grid-template-columns: 1fr;
   }
 
-  .report-guidelines {
+  .reportGuidelines {
     position: static;
     margin-top: var(--space-xl);
   }
@@ -769,72 +770,84 @@ body {
     --space-xl: 1.5rem;
   }
 
-  .crime-report-wrapper {
+  .crimeReportWrapper {
     padding: var(--space-md);
   }
 
-  .form-row {
+  .formRow {
     grid-template-columns: 1fr;
     gap: var(--space-md);
   }
 
-  .form-section {
+  .formSection {
     padding: var(--space-md);
   }
 
-  .radio-group {
+  .radioGroup {
     flex-direction: column;
     gap: var(--space-xs);
   }
 
   /* Update the responsive alert styles for centered alerts */
-  .alert-box {
+  .alertBox {
     margin: 0 var(--space-md);
     padding: var(--space-md);
+    width: calc(100% - 2rem);
+    max-width: 400px;
   }
 
-  .alert-message {
+  .alertMessage {
     font-size: var(--font-size-md);
+  }
+  
+  .alertButtonsRow {
+    flex-direction: column;
+    gap: var(--space-sm);
+    width: 100%;
+  }
+  
+  .alertBtn {
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .crime-report-header h1 {
+  .crimeReportHeader h1 {
     font-size: 1.5rem;
     flex-direction: column;
   }
 
-  .form-actions {
+  .formActions {
     flex-direction: column;
     gap: var(--space-sm);
   }
 
-  .reset-btn,
-  .submit-btn {
+  .resetBtn,
+  .submitBtn {
     width: 100%;
   }
 
-  .report-form-container,
-  .report-guidelines {
+  .reportFormContainer,
+  .reportGuidelines {
     padding: var(--space-md);
   }
 
-  .preview-container {
+  .previewContainer {
     justify-content: center;
   }
 
-  .section-title {
+  .sectionTitle {
     font-size: 1.1rem;
   }
 }
 
 /* Form Validation Styles */
-.form-input-error {
+.formInputError {
   border-color: var(--error-color) !important;
   background-color: rgba(229, 62, 62, 0.05) !important;
 }
 
-.error-message {
+.errorMessage {
   color: var(--error-color);
   font-size: var(--font-size-sm);
   margin-top: 4px;
@@ -843,7 +856,7 @@ body {
   gap: 6px;
 }
 
-.error-message::before {
+.errorMessage::before {
   content: "!";
   display: inline-flex;
   justify-content: center;
@@ -858,7 +871,7 @@ body {
 }
 
 /* Loading Spinner */
-.spinner-icon {
+.spinnerIcon {
   animation: spin 1s linear infinite;
   margin-right: 8px;
 }
@@ -873,7 +886,7 @@ body {
   }
 }
 
-.submit-btn:disabled {
+.submitBtn:disabled {
   background-color: var(--medium-gray);
   color: var(--dark-gray);
   cursor: not-allowed;
@@ -881,8 +894,8 @@ body {
   box-shadow: none;
 }
 
-.submit-btn:disabled:hover {
+.submitBtn:disabled:hover {
   background-color: var(--medium-gray);
   border-color: var(--medium-gray);
   transform: none;
-}
+} 

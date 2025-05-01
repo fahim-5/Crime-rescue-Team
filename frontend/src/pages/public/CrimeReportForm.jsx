@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/useAuth";
 import { useNavigate } from "react-router-dom";
-import "./CrimeReportForm.css";
+import styles from "./CrimeReportForm.module.css";
 import {
   FaMapMarkerAlt,
   FaTimes,
@@ -137,9 +137,10 @@ const CrimeReportForm = () => {
         "Submitting report with user:",
         user ? `ID: ${user.id}` : "No user"
       );
+      
       console.log(
         "Submitting report with token:",
-        token ? token.substring(0, 15) + "..." : "No token"
+        token ? `${token.substring(0, 15)}...` : "No token"
       );
 
       // For debugging - show all form data
@@ -212,38 +213,38 @@ const CrimeReportForm = () => {
   };
 
   return (
-    <div className="crime-report-container">
+    <div className={styles.crimeReportContainer}>
       {alert && (
-        <div className="alert-container">
-          <div className={`alert-box alert-${alert.type}`}>
+        <div className={styles.alertContainer}>
+          <div className={`${styles.alertBox} ${styles[`alert${alert.type.charAt(0).toUpperCase() + alert.type.slice(1)}`]}`}>
             {alert.type === "success" ? (
-              <div className="alert-success-content">
-                <div className="alert-message-row">
-                  <FaCheck className="alert-icon" />
-                  <span className="alert-message">{alert.message}</span>
+              <div className={styles.alertSuccessContent}>
+                <div className={styles.alertMessageRow}>
+                  <FaCheck className={styles.alertIcon} />
+                  <span className={styles.alertMessage}>{alert.message}</span>
                 </div>
-                <div className="alert-buttons-row">
+                <div className={styles.alertButtonsRow}>
                   <button
                     onClick={() => setAlert(null)}
-                    className="alert-btn alert-btn-cancel"
+                    className={`${styles.alertBtn} ${styles.alertBtnCancel}`}
                   >
                     Close
                   </button>
                   <button
                     onClick={() => navigate("/reports")}
-                    className="alert-btn alert-btn-view"
+                    className={`${styles.alertBtn} ${styles.alertBtnView}`}
                   >
                     View Reports
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="alert-content">
-                <FaTimes className="alert-icon" />
-                <span className="alert-message">{alert.message}</span>
+              <div className={styles.alertContent}>
+                <FaTimes className={styles.alertIcon} />
+                <span className={styles.alertMessage}>{alert.message}</span>
                 <button
                   onClick={() => setAlert(null)}
-                  className="alert-close"
+                  className={styles.alertClose}
                   aria-label="Close alert"
                 >
                   &times;
@@ -254,29 +255,29 @@ const CrimeReportForm = () => {
         </div>
       )}
 
-      <div className="crime-report-wrapper">
-        <div className="crime-report-header">
+      <div className={styles.crimeReportWrapper}>
+        <div className={styles.crimeReportHeader}>
           <h1>
-            <FaUserShield className="header-icon" /> Crime Report Portal
+            <FaUserShield className={styles.headerIcon} /> Crime Report Portal
           </h1>
           <p>Help make your community safer by reporting crimes</p>
         </div>
 
-        <div className="crime-report-content">
-          <div className="report-form-container">
-            <form onSubmit={handleSubmit} className="elegant-form">
-              <div className="form-section">
-                <h3 className="section-title">
-                  <span className="title-icon">1</span>
+        <div className={styles.crimeReportContent}>
+          <div className={styles.reportFormContainer}>
+            <form onSubmit={handleSubmit} className={styles.elegantForm}>
+              <div className={styles.formSection}>
+                <h3 className={styles.sectionTitle}>
+                  <span className={styles.titleIcon}>1</span>
                   Incident Details
                 </h3>
 
-                <div className="form-group">
-                  <label htmlFor="location" className="form-label">
-                    <FaMapMarkerAlt className="input-icon" />
+                <div className={styles.formGroup}>
+                  <label htmlFor="location" className={styles.formLabel}>
+                    <FaMapMarkerAlt className={styles.inputIcon} />
                     Crime Location
                   </label>
-                  <div className="location-input-container">
+                  <div className={styles.locationInputContainer}>
                     <input
                       type="text"
                       id="location"
@@ -285,13 +286,13 @@ const CrimeReportForm = () => {
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
                       required
-                      className={`form-input ${
-                        errors.location ? "form-input-error" : ""
+                      className={`${styles.formInput} ${
+                        errors.location ? styles.formInputError : ""
                       }`}
                     />
                     <button
                       type="button"
-                      className="map-button"
+                      className={styles.mapButton}
                       onClick={handleMapButtonClick}
                       disabled={!location.trim()}
                     >
@@ -299,10 +300,10 @@ const CrimeReportForm = () => {
                     </button>
                   </div>
                   {errors.location && (
-                    <div className="error-message">{errors.location}</div>
+                    <div className={styles.errorMessage}>{errors.location}</div>
                   )}
-                  <div className="input-guideline">
-                    <FaInfoCircle className="guideline-icon" />
+                  <div className={styles.inputGuideline}>
+                    <FaInfoCircle className={styles.guidelineIcon} />
                     <span>
                       Be as specific as possible (e.g., 'Near the fountain at
                       Central Park')
@@ -310,19 +311,19 @@ const CrimeReportForm = () => {
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="time" className="form-label">
-                    <FaCalendarAlt className="input-icon" />
+                <div className={styles.formGroup}>
+                  <label htmlFor="time" className={styles.formLabel}>
+                    <FaCalendarAlt className={styles.inputIcon} />
                     Time of Crime
                   </label>
-                  <div className="datepicker-container">
+                  <div className={styles.datepickerContainer}>
                     <DatePicker
                       selected={time}
                       onChange={(date) => setTime(date)}
                       showTimeSelect
                       dateFormat="Pp"
-                      className={`form-input datepicker-input ${
-                        errors.time ? "form-input-error" : ""
+                      className={`${styles.formInput} ${styles.datepickerInput} ${
+                        errors.time ? styles.formInputError : ""
                       }`}
                       required
                       placeholderText="Select date and time"
@@ -330,10 +331,10 @@ const CrimeReportForm = () => {
                     />
                   </div>
                   {errors.time && (
-                    <div className="error-message">{errors.time}</div>
+                    <div className={styles.errorMessage}>{errors.time}</div>
                   )}
-                  <div className="input-guideline">
-                    <FaInfoCircle className="guideline-icon" />
+                  <div className={styles.inputGuideline}>
+                    <FaInfoCircle className={styles.guidelineIcon} />
                     <span>
                       If exact time is unknown, provide your best estimate
                     </span>
@@ -341,15 +342,15 @@ const CrimeReportForm = () => {
                 </div>
               </div>
 
-              <div className="form-section">
-                <h3 className="section-title">
-                  <span className="title-icon">2</span>
+              <div className={styles.formSection}>
+                <h3 className={styles.sectionTitle}>
+                  <span className={styles.titleIcon}>2</span>
                   Crime Information
                 </h3>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="crime-type" className="form-label">
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="crime-type" className={styles.formLabel}>
                       Type of Crime
                     </label>
                     <select
@@ -358,7 +359,7 @@ const CrimeReportForm = () => {
                       value={crimeType}
                       onChange={(e) => setCrimeType(e.target.value)}
                       required
-                      className="form-input"
+                      className={styles.formInput}
                     >
                       <option value="theft">Theft</option>
                       <option value="assault">Assault</option>
@@ -371,16 +372,16 @@ const CrimeReportForm = () => {
                       <option value="drug">Drug-related</option>
                       <option value="other">Other</option>
                     </select>
-                    <div className="input-guideline">
-                      <FaInfoCircle className="guideline-icon" />
+                    <div className={styles.inputGuideline}>
+                      <FaInfoCircle className={styles.guidelineIcon} />
                       <span>
                         Select the category that best describes the incident
                       </span>
                     </div>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="num-criminals" className="form-label">
+                  <div className={styles.formGroup}>
+                    <label htmlFor="num-criminals" className={styles.formLabel}>
                       Number of Criminals
                     </label>
                     <input
@@ -392,23 +393,23 @@ const CrimeReportForm = () => {
                       onChange={(e) => setNumCriminals(e.target.value)}
                       placeholder="Enter number"
                       required
-                      className={`form-input ${
-                        errors.numCriminals ? "form-input-error" : ""
+                      className={`${styles.formInput} ${
+                        errors.numCriminals ? styles.formInputError : ""
                       }`}
                     />
                     {errors.numCriminals && (
-                      <div className="error-message">{errors.numCriminals}</div>
+                      <div className={styles.errorMessage}>{errors.numCriminals}</div>
                     )}
-                    <div className="input-guideline">
-                      <FaInfoCircle className="guideline-icon" />
+                    <div className={styles.inputGuideline}>
+                      <FaInfoCircle className={styles.guidelineIcon} />
                       <span>Estimate if exact number is unknown</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="victim-gender" className="form-label">
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="victim-gender" className={styles.formLabel}>
                       Victim's Gender
                     </label>
                     <select
@@ -417,26 +418,26 @@ const CrimeReportForm = () => {
                       value={victimGender}
                       onChange={(e) => setVictimGender(e.target.value)}
                       required
-                      className="form-input"
+                      className={styles.formInput}
                     >
                       <option value="male">Male</option>
                       <option value="female">Female</option>
                       <option value="other">Other</option>
                       <option value="unknown">Prefer not to say</option>
                     </select>
-                    <div className="input-guideline">
-                      <FaInfoCircle className="guideline-icon" />
+                    <div className={styles.inputGuideline}>
+                      <FaInfoCircle className={styles.guidelineIcon} />
                       <span>Helps authorities identify potential patterns</span>
                     </div>
                   </div>
 
-                  <div className="form-group">
-                    <label className="form-label">
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>
                       Are the criminals armed?
                     </label>
-                    <div className="radio-group">
+                    <div className={styles.radioGroup}>
                       {["yes", "no", "unknown"].map((value) => (
-                        <label key={value} className="radio-label">
+                        <label key={value} className={styles.radioLabel}>
                           <input
                             type="radio"
                             name="armed"
@@ -445,13 +446,13 @@ const CrimeReportForm = () => {
                             onChange={() => setArmed(value)}
                             required
                           />
-                          <span className="radio-custom"></span>
+                          <span className={styles.radioCustom}></span>
                           {value.charAt(0).toUpperCase() + value.slice(1)}
                         </label>
                       ))}
                     </div>
-                    <div className="input-guideline">
-                      <FaInfoCircle className="guideline-icon" />
+                    <div className={styles.inputGuideline}>
+                      <FaInfoCircle className={styles.guidelineIcon} />
                       <span>
                         Select 'unknown' if weapon status wasn't visible
                       </span>
@@ -460,17 +461,17 @@ const CrimeReportForm = () => {
                 </div>
               </div>
 
-              <div className="form-section">
-                <h3 className="section-title">
-                  <span className="title-icon">3</span>
+              <div className={styles.formSection}>
+                <h3 className={styles.sectionTitle}>
+                  <span className={styles.titleIcon}>3</span>
                   Media Evidence
                 </h3>
 
-                <div className="form-group">
-                  <label htmlFor="crime-photos" className="file-upload-label">
-                    <FaUpload className="upload-icon" />
+                <div className={styles.formGroup}>
+                  <label htmlFor="crime-photos" className={styles.fileUploadLabel}>
+                    <FaUpload className={styles.uploadIcon} />
                     Upload Photos (Optional)
-                    <span className="file-upload-hint">
+                    <span className={styles.fileUploadHint}>
                       JPEG, PNG (Max 5MB each)
                     </span>
                   </label>
@@ -482,27 +483,27 @@ const CrimeReportForm = () => {
                     multiple
                     onChange={handlePhotoChange}
                     ref={photoInputRef}
-                    className="file-input"
+                    className={styles.fileInput}
                   />
-                  <div className="input-guideline">
-                    <FaInfoCircle className="guideline-icon" />
+                  <div className={styles.inputGuideline}>
+                    <FaInfoCircle className={styles.guidelineIcon} />
                     <span>
                       Upload clear images showing suspects, vehicles, or crime
                       scene
                     </span>
                   </div>
-                  <div className="preview-container">
+                  <div className={styles.previewContainer}>
                     {photos.map((photo, index) => (
-                      <div key={index} className="preview-item">
+                      <div key={index} className={styles.previewItem}>
                         <img
                           src={URL.createObjectURL(photo)}
                           alt="Crime Scene"
-                          className="preview-image"
+                          className={styles.previewImage}
                         />
                         <button
                           type="button"
                           onClick={() => removePhoto(index)}
-                          className="remove-btn"
+                          className={styles.removeBtn}
                           title="Remove photo"
                         >
                           &times;
@@ -512,11 +513,11 @@ const CrimeReportForm = () => {
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="crime-video" className="file-upload-label">
-                    <FaUpload className="upload-icon" />
+                <div className={styles.formGroup}>
+                  <label htmlFor="crime-video" className={styles.fileUploadLabel}>
+                    <FaUpload className={styles.uploadIcon} />
                     Upload Video (Optional)
-                    <span className="file-upload-hint">
+                    <span className={styles.fileUploadHint}>
                       MP4, MOV (Max 25MB)
                     </span>
                   </label>
@@ -528,18 +529,18 @@ const CrimeReportForm = () => {
                     multiple
                     onChange={handleVideoChange}
                     ref={videoInputRef}
-                    className="file-input"
+                    className={styles.fileInput}
                   />
-                  <div className="input-guideline">
-                    <FaInfoCircle className="guideline-icon" />
+                  <div className={styles.inputGuideline}>
+                    <FaInfoCircle className={styles.guidelineIcon} />
                     <span>
                       Short clips showing suspect activity are most helpful
                     </span>
                   </div>
-                  <div className="preview-container">
+                  <div className={styles.previewContainer}>
                     {videos.map((video, index) => (
-                      <div key={index} className="preview-item">
-                        <video controls className="preview-video">
+                      <div key={index} className={styles.previewItem}>
+                        <video controls className={styles.previewVideo}>
                           <source
                             src={URL.createObjectURL(video)}
                             type={video.type}
@@ -548,7 +549,7 @@ const CrimeReportForm = () => {
                         <button
                           type="button"
                           onClick={() => removeVideo(index)}
-                          className="remove-btn"
+                          className={styles.removeBtn}
                           title="Remove video"
                         >
                           &times;
@@ -559,18 +560,18 @@ const CrimeReportForm = () => {
                 </div>
               </div>
 
-              <div className="form-actions">
-                <button type="button" className="reset-btn" onClick={resetForm}>
+              <div className={styles.formActions}>
+                <button type="button" className={styles.resetBtn} onClick={resetForm}>
                   Clear Form
                 </button>
                 <button
                   type="submit"
-                  className="submit-btn"
+                  className={styles.submitBtn}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
                     <>
-                      <FaSpinner className="spinner-icon" /> Submitting...
+                      <FaSpinner className={styles.spinnerIcon} /> Submitting...
                     </>
                   ) : (
                     "Submit Report"
@@ -580,12 +581,12 @@ const CrimeReportForm = () => {
             </form>
           </div>
 
-          <div className="report-guidelines">
+          <div className={styles.reportGuidelines}>
             <h3>
-              <FaInfoCircle className="guideline-header-icon" /> Reporting
+              <FaInfoCircle className={styles.guidelineHeaderIcon} /> Reporting
               Guidelines
             </h3>
-            <div className="guideline-section">
+            <div className={styles.guidelineSection}>
               <h4>General Information</h4>
               <ul>
                 <li>
@@ -601,7 +602,7 @@ const CrimeReportForm = () => {
               </ul>
             </div>
 
-            <div className="guideline-section">
+            <div className={styles.guidelineSection}>
               <h4>Location Details</h4>
               <ul>
                 <li>
@@ -616,7 +617,7 @@ const CrimeReportForm = () => {
               </ul>
             </div>
 
-            <div className="guideline-section">
+            <div className={styles.guidelineSection}>
               <h4>Suspect Information</h4>
               <ul>
                 <li>
@@ -634,7 +635,7 @@ const CrimeReportForm = () => {
               </ul>
             </div>
 
-            <div className="guideline-section">
+            <div className={styles.guidelineSection}>
               <h4>Media Evidence</h4>
               <ul>
                 <li>Ensure photos/videos are clear and well-lit</li>
@@ -644,16 +645,16 @@ const CrimeReportForm = () => {
               </ul>
             </div>
 
-            <div className="confidentiality-notice">
+            <div className={styles.confidentialityNotice}>
               <h4>
-                <FaUserShield className="privacy-icon" /> Confidentiality Notice
+                <FaUserShield className={styles.privacyIcon} /> Confidentiality Notice
               </h4>
               <p>
                 Your report and personal information are protected under our
                 strict privacy policy. All data is encrypted and shared only
                 with authorized law enforcement personnel.
               </p>
-              <p className="emergency-note">
+              <p className={styles.emergencyNote}>
                 If this is an emergency situation requiring immediate police
                 response, please call your local emergency number.
               </p>
@@ -665,4 +666,4 @@ const CrimeReportForm = () => {
   );
 };
 
-export default CrimeReportForm;
+export default CrimeReportForm; 
