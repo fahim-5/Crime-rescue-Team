@@ -1,40 +1,50 @@
 import React from 'react';
-import { FaShieldAlt, FaCheckCircle, FaBell, FaUserShield, FaMapMarkerAlt, FaUsers } from 'react-icons/fa';
-import './About.css';
+import { 
+  FaShieldAlt, 
+  FaCheckCircle, 
+  FaBell, 
+  FaUserShield, 
+  FaMapMarkerAlt, 
+  FaUsers,
+  FaLock,
+  FaChartLine,
+  FaDatabase
+} from 'react-icons/fa';
+import styles from './About.module.css';
 
 const About = () => {
   return (
-    <div className="about-container">
+    <div className={styles.container}>
       {/* Hero Section */}
-      <section className="about-hero">
-        <div className="hero-content">
-          <h1>Empowering Communities Through Collaborative Safety</h1>
-          <p className="hero-subtitle">
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>Empowering Communities Through Collaborative Safety</h1>
+          <p className={styles.subtitle}>
             Our advanced crime reporting platform bridges the gap between citizens and law enforcement,
             creating safer neighborhoods through real-time collaboration and verified incident reporting.
           </p>
-          <div className="hero-stats">
-            <div className="stat-item">
-              <span className="stat-number">10,000+</span>
-              <span className="stat-label">Crimes Prevented</span>
+          <div className={styles.stats}>
+            <div className={styles.statItem}>
+              <span className={styles.statNumber}>10K+</span>
+              <span className={styles.statLabel}>Crimes Prevented</span>
             </div>
-            <div className="stat-item">
-              <span className="stat-number">500,000+</span>
-              <span className="stat-label">Active Users</span>
+            <div className={styles.statItem}>
+              <span className={styles.statNumber}>500K+</span>
+              <span className={styles.statLabel}>Active Users</span>
             </div>
-            <div className="stat-item">
-              <span className="stat-number">95%</span>
-              <span className="stat-label">Response Rate</span>
+            <div className={styles.statItem}>
+              <span className={styles.statNumber}>95%</span>
+              <span className={styles.statLabel}>Response Rate</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Mission Statement */}
-      <section className="mission-section">
-        <div className="mission-content">
-          <h2>Our Mission</h2>
-          <p className="mission-statement">
+      {/* Mission Section */}
+      <section className={styles.mission}>
+        <div className={styles.missionContent}>
+          <h2 className={styles.missionTitle}>Our Mission</h2>
+          <p className={styles.missionStatement}>
             To create the most effective, community-driven crime prevention network that leverages
             technology to validate incidents in real-time, ensuring rapid response from authorities
             while maintaining complete transparency and accountability.
@@ -42,140 +52,71 @@ const About = () => {
         </div>
       </section>
 
-      {/* Core Features */}
-      <section className="features-section">
-        <h2 className="section-title">Advanced Safety Features</h2>
-        <p className="section-subtitle">
-          Our platform combines cutting-edge technology with community power to deliver unmatched safety solutions
-        </p>
-        
-        <div className="features-grid">
-          <div className="feature-card">
-            <div className="feature-icon">
-              <FaShieldAlt />
-            </div>
+      {/* Features Section */}
+      <section className={styles.features}>
+        <div className={styles.grid}>
+          <div className={styles.card}>
+            <div className={styles.icon}><FaShieldAlt /></div>
             <h3>Verified Incident Reporting</h3>
-            <p>
-              Every report undergoes multi-level verification from nearby users before being escalated to authorities,
-              ensuring only credible incidents receive immediate attention.
-            </p>
+            <p>Multi-level verification system ensures only credible incidents receive immediate attention.</p>
           </div>
           
-          <div className="feature-card">
-            <div className="feature-icon">
-              <FaCheckCircle />
-            </div>
+          <div className={styles.card}>
+            <div className={styles.icon}><FaCheckCircle /></div>
             <h3>AI-Powered Validation</h3>
-            <p>
-              Our proprietary algorithm analyzes multiple data points including location accuracy, reporter history,
-              and incident patterns to assign credibility scores to each report.
-            </p>
+            <p>Advanced algorithms analyze location accuracy and historical patterns for credibility scoring.</p>
           </div>
           
-          <div className="feature-card">
-            <div className="feature-icon">
-              <FaBell />
-            </div>
+          <div className={styles.card}>
+            <div className={styles.icon}><FaBell /></div>
             <h3>Smart Alert System</h3>
-            <p>
-              Receive hyper-localized alerts about verified incidents in your immediate vicinity,
-              with threat level assessments and recommended safety actions.
-            </p>
+            <p>Hyper-localized threat alerts with recommended safety actions and evacuation routes.</p>
           </div>
           
-          <div className="feature-card">
-            <div className="feature-icon">
-              <FaUserShield />
-            </div>
+          <div className={styles.card}>
+            <div className={styles.icon}><FaUserShield /></div>
             <h3>Identity Verification</h3>
-            <p>
-              All users undergo secure identity confirmation to maintain platform integrity,
-              with different verification levels for civilians, law enforcement, and officials.
-            </p>
-          </div>
-          
-          <div className="feature-card">
-            <div className="feature-icon">
-              <FaMapMarkerAlt />
-            </div>
-            <h3>Precision Geolocation</h3>
-            <p>
-              Advanced geofencing technology ensures accurate incident mapping and automatically
-              notifies the most relevant responders based on jurisdiction and proximity.
-            </p>
-          </div>
-          
-          <div className="feature-card">
-            <div className="feature-icon">
-              <FaUsers />
-            </div>
-            <h3>Community Watch</h3>
-            <p>
-              Join neighborhood safety networks where verified users can collaborate on preventing crime
-              and sharing safety tips specific to your local area.
-            </p>
+            <p>Multi-tier verification system for civilians, law enforcement, and government officials.</p>
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="workflow-section">
-        <h2 className="section-title">Our Verification Process</h2>
-        <p className="section-subtitle">
-          The most rigorous incident validation system in public safety technology
-        </p>
-        
-        <div className="workflow-steps">
-          <div className="workflow-card">
-            <div className="step-number">1</div>
+      {/* Workflow Section */}
+      <section className={styles.workflow}>
+        <div className={styles.steps}>
+          <div className={styles.step} data-step="1">
             <h3>Incident Report</h3>
-            <p>
-              User submits detailed report with photos/video, location data, and incident description.
-              Our system automatically logs metadata including device information and location history.
-            </p>
+            <p>Detailed reporting with media uploads and automatic metadata collection.</p>
           </div>
           
-          <div className="workflow-card">
-            <div className="step-number">2</div>
+          <div className={styles.step} data-step="2">
             <h3>Community Validation</h3>
-            <p>
-              Nearby verified users receive anonymous notification to confirm or deny the incident.
-              Multiple independent confirmations trigger elevated priority status.
-            </p>
+            <p>Real-time anonymous verification from nearby trusted users.</p>
           </div>
           
-          <div className="workflow-card">
-            <div className="step-number">3</div>
+          <div className={styles.step} data-step="3">
             <h3>AI Analysis</h3>
-            <p>
-              Our system cross-references the report with historical data, crime patterns, and
-              sensor inputs to assess credibility and assign threat level.
-            </p>
+            <p>Cross-referencing with historical data and crime pattern recognition.</p>
           </div>
           
-          <div className="workflow-card">
-            <div className="step-number">4</div>
-            <h3>Law Enforcement Dispatch</h3>
-            <p>
-              Verified high-confidence incidents are automatically routed to the appropriate
-              response teams with all relevant data packaged for immediate action.
-            </p>
+          <div className={styles.step} data-step="4">
+            <h3>Dispatch</h3>
+            <p>Automated routing to appropriate response teams with all necessary data.</p>
           </div>
         </div>
       </section>
 
-      {/* Security Assurance */}
-      <section className="security-section">
-        <div className="security-content">
-          <h2>Enterprise-Grade Security</h2>
-          <p>
-            We implement military-grade encryption, regular third-party audits, and strict data access protocols
-            to ensure all user information and incident reports remain completely secure and anonymous when required.
+      {/* Security Section */}
+      <section className={styles.security}>
+        <div className={styles.missionContent}>
+          <h2 className={styles.missionTitle}>Military-Grade Security</h2>
+          <p className={styles.missionStatement}>
+            We implement the highest security standards to protect user data and maintain trust.
           </p>
-          <div className="security-badges">
-            <div className="badge">GDPR Compliant</div>
-            <div className="badge">256-bit Encryption</div>
-            <div className="badge">SOC 2 Certified</div>
+          <div className={styles.badges}>
+            <div className={styles.badge}><FaLock /> AES-256 Encryption</div>
+            <div className={styles.badge}><FaChartLine /> SOC 2 Certified</div>
+            <div className={styles.badge}><FaDatabase /> GDPR Compliant</div>
           </div>
         </div>
       </section>

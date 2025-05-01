@@ -44,7 +44,7 @@ import UserReports from "./components/UserReports";
 import PrivateRoute from "./components/PrivateRoute";
 import MessagesPanel from "./components/MessagesPanel";
 import Management from "./pages/admin/Management";
-
+import FAQ from "./components/FAQ";
 function App() {
   return (
     <AuthProvider>
@@ -54,7 +54,8 @@ function App() {
           {/* Starting Routes */}
           <Route path="/start" element={<Start />} />
           <Route path="/instructions" element={<Instructions />} />
-
+          <Route path="/faq" element={<FAQ />} />
+          
           {/* Auth Routes */}
           <Route path="/" element={<LoginForm />} />
           <Route path="/login" element={<LoginForm />} />

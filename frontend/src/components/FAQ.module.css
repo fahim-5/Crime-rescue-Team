@@ -1,0 +1,431 @@
+/* FAQ.module.css */
+.faqContainer {
+    max-width: 100%;
+   
+    margin: 0 auto;
+    padding: 0 20px;
+
+  }
+
+
+
+  /* Chat Modal Styles */
+  .chatModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .chatContent {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    height: 70vh;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chatHeader {
+    padding: 1.5rem;
+    background: #2c3e50;
+    color: white;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .closeButton {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 0.5rem;
+  }
+  
+  .messagesContainer {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background: #f8f9fa;
+  }
+  
+  .messageBubble {
+    background: white;
+    padding: 1rem;
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    max-width: 80%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .userMessage {
+    background: #4a90e2;
+    color: white;
+    margin-left: auto;
+  }
+  
+  .inputContainer {
+    display: flex;
+    padding: 1rem;
+    border-top: 1px solid #eee;
+  }
+  
+  .inputContainer input {
+    flex: 1;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    margin-right: 1rem;
+    font-size: 1rem;
+  }
+  
+  .sendButton {
+    background: #4a90e2;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .sendButton:hover {
+    background: #357abd;
+  }
+  
+  /* Scrollbar Styling */
+  .messagesContainer::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .messagesContainer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .messagesContainer::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+  
+  .messagesContainer::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+
+
+  .noResultsText {
+    text-align: center;
+    color: #888;
+    font-size: 1rem;
+    font-style: italic;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  
+  .heroSection {
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    padding: 4rem 0;
+    border-radius: 40px;
+    margin-bottom: 3rem;
+    margin-top: 50px;
+  }
+  
+  .heroContent {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    color: white;
+  }
+  
+  .heroTitle {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+  
+  .heroSubtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+  }
+  
+  .searchBar {
+    display: flex;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .searchBar input {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+  }
+  
+  .searchButton {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 50px;
+    background: #e74c3c;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .searchButton:hover {
+    background: #c0392b;
+  }
+  
+  .categorySection {
+    margin-bottom: 3rem;
+    background: #f8f9fa;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .categoryHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .categoryIcon {
+    font-size: 2rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .categoryTitle {
+    font-size: 1.8rem;
+    color: #2c3e50;
+  }
+  
+  .accordion {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .accordionItem {
+    margin-bottom: 1rem;
+    background: white;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .accordionItem.active {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  .accordionButton {
+    width: 100%;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+  }
+  
+  .questionMark {
+    background: #e74c3c;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .questionText {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    margin: 0;
+    flex: 1;
+  }
+  
+  .accordionArrow {
+    width: 12px;
+    height: 12px;
+    border: solid #2c3e50;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    transition: transform 0.3s ease;
+  }
+  
+  .accordionItem.active .accordionArrow {
+    transform: rotate(-135deg);
+  }
+  
+  .accordionContent {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    padding: 0 1.5rem;
+  }
+  
+  .accordionItem.active .accordionContent {
+    max-height: 500px;
+    padding: 0 1.5rem 1.5rem;
+  }
+  
+  .answerText {
+    color: #4a5568; /* More readable dark gray */
+    font-size: 1.05rem; /* Slightly larger base size */
+    line-height: 1.65; /* Optimal for readability */
+    margin: 0 0 1rem 0;
+    padding: 0.5rem 0;
+    max-width: 72ch; /* Optimal line length for reading */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
+  }
+  
+  /* Add paragraph spacing within answers */
+  .answerText p {
+    margin-bottom: 1.25em;
+    word-spacing: 0.05em;
+    letter-spacing: 0.01em;
+  }
+  
+  /* Add subtle animation when answer appears */
+  .accordionItem.active .answerText {
+    animation: fadeIn 0.3s ease-in;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Add responsive adjustments */
+  @media (max-width: 768px) {
+    .answerText {
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 100%;
+    }
+  }
+  
+  /* Optional: Add subtle hover effect on answer text */
+  .accordionContent:hover .answerText {
+    color: #2d3748;
+    transition: color 0.2s ease;
+  }
+
+  .contactSection {
+    margin: 4rem 0;
+  }
+  
+  .contactCard {
+    background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+    border-radius: 30px;
+    padding: 3rem;
+    color: white;
+    text-align: center;
+  }
+  
+  .contactTitle {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .contactSubtitle {
+    margin-bottom: 2rem;
+    opacity: 0.9;
+  }
+  
+  .contactGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .contactMethod {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .methodIcon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .contactMethod h3 {
+    margin: 1rem 0;
+  }
+  
+  .contactMethod a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    margin: 0.5rem 0;
+  }
+  
+  .chatButton {
+    background: white;
+    color: #2c3e50;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    margin: 1rem 0;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .chatButton:hover {
+    transform: translateY(-2px);
+  }
+  
+  @media (max-width: 768px) {
+    .heroTitle {
+      font-size: 2rem;
+    }
+  
+    .searchBar {
+      flex-direction: column;
+    }
+  
+    .searchButton {
+      width: 100%;
+    }
+  
+    .categorySection {
+      padding: 1.5rem;
+    }
+  
+    .contactCard {
+      padding: 2rem 1rem;
+    }
+  }

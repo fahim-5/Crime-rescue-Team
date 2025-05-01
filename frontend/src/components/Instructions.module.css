@@ -1,288 +1,262 @@
 .instructionsContainer {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: #333;
   
-  .sectionTitle {
-    color: #2c3e50;
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-    border-bottom: 2px solid #ecf0f1;
-    padding-bottom: 0.5rem;
-  }
-  
-  .instructionGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
-  }
-  
-  .instructionCard {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease;
-  }
-  
-  .instructionCard:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .cardTitle {
-    color: #3498db;
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-    font-weight: 500;
-  }
-  
-  .instructionList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .listItem {
-    padding: 0.5rem 0;
-    display: flex;
-    align-items: flex-start;
-    line-height: 1.5;
-    color: #34495e;
-  }
-  
-  .checkIcon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    background-color: #2ecc71;
-    color: white;
-    border-radius: 50%;
-    margin-right: 0.75rem;
-    font-size: 0.8rem;
-    flex-shrink: 0;
-  }
-  
-  @media (max-width: 768px) {
-    .instructionGrid {
-      grid-template-columns: 1fr;
-    }
-    
-    .sectionTitle {
-      font-size: 1.5rem;
-    }
-  }
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.mainTitle {
+  font-size: 2.5rem;
+  color: #9f192d;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  margin-top: 50px;
 
 
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.sectionTitle {
+  color: #9f192d;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: #9f192d;
+}
+
+.instructionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.instructionCard {
+  background: white;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #f0f0f0;
+}
+
+.instructionCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.cardTitle {
+  color: #9f192d;
+  font-size: 1.4rem;
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+}
+
+.cardIntro {
+  color: #555;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.instructionList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.listItem {
+  padding: 0.75rem 0;
+  display: flex;
+  align-items: flex-start;
+  line-height: 1.6;
+  color: #444;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.listItem:last-child {
+  border-bottom: none;
+}
+
+.checkIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: #2ecc71;
+  color: white;
+  border-radius: 50%;
+  margin-right: 1rem;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.helpCard {
+  background-color: #f9f9f9;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.contactLink {
+  color: #9f192d;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.contactButton {
+  background-color: #9f192d;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  margin: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chatButton {
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  margin: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chatModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.chatContent {
+  background: white;
+  width: 90%;
+  max-width: 500px;
+  height: 70vh;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatHeader {
+  padding: 1.5rem;
+  background: #2c3e50;
+  color: white;
+  border-radius: 15px 15px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.messagesContainer {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background: #f8f9fa;
+}
+
+.messageBubble {
+  background: white;
+  padding: 1rem;
+  border-radius: 15px;
+  margin-bottom: 1rem;
+  max-width: 80%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.userMessage {
+  background: #4a90e2;
+  color: white;
+  margin-left: auto;
+}
+
+.inputContainer {
+  display: flex;
+  padding: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.inputContainer input {
+  flex: 1;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  margin-right: 1rem;
+}
+
+.sendButton {
+  background: #4a90e2;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
   .instructionsContainer {
-    max-width: 1200px;
-    margin: 4rem auto;
-    padding: 0 2rem;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    color: #333;
-  }
-  
-  .pageHeader {
-    text-align: center;
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid #eaeaea;
+      padding: 0 1.5rem;
   }
   
   .mainTitle {
-    font-size: 2.5rem;
-    color: rgb(159, 25, 45);
-    margin-bottom: 1rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-  }
-  
-  .subtitle {
-    font-size: 1.2rem;
-    color: #555;
-    max-width: 700px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-  
-  .section {
-    margin-bottom: 3rem;
-  }
-  
-  .sectionTitle {
-    color: rgb(159, 25, 45);
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-    position: relative;
-    padding-bottom: 0.75rem;
-  }
-  
-  .sectionTitle::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 60px;
-    height: 3px;
-    background-color: rgb(159, 25, 45);
+      font-size: 2rem;
   }
   
   .instructionGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
-    margin-top: 1.5rem;
-  }
-  
-  .instructionCard {
-    background: white;
-    border-radius: 10px;
-    padding: 2rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid #f0f0f0;
-  }
-  
-  .instructionCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  }
-  
-  .cardTitle {
-    color: rgb(159, 25, 45);
-    font-size: 1.4rem;
-    margin-bottom: 1.25rem;
-    font-weight: 600;
-  }
-  
-  .cardIntro {
-    color: #555;
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
-  }
-  
-  .instructionList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .listItem {
-    padding: 0.75rem 0;
-    display: flex;
-    align-items: flex-start;
-    line-height: 1.6;
-    color: #444;
-    border-bottom: 1px solid #f5f5f5;
-  }
-  
-  .listItem:last-child {
-    border-bottom: none;
-  }
-  
-  .listItem strong {
-    color: #222;
-    margin-right: 0.5rem;
-  }
-  
-  .checkIcon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    background-color: #2ecc71;
-    color: white;
-    border-radius: 50%;
-    margin-right: 1rem;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-    box-shadow: 0 2px 4px rgba(46, 204, 113, 0.3);
-  }
-  
-  .note {
-    background-color: #f8f9fa;
-    border-left: 4px solid #3498db;
-    padding: 0.75rem 1rem;
-    margin-top: 1.5rem;
-    border-radius: 0 4px 4px 0;
-    font-size: 0.9rem;
-    color: #555;
-  }
-  
-  .featureHighlight {
-    background-color: rgba(159, 25, 45, 0.05);
-    padding: 0.75rem 1rem;
-    margin-top: 1.5rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    color: rgb(159, 25, 45);
-    border: 1px dashed rgba(159, 25, 45, 0.2);
-  }
-  
-  .helpCard {
-    background-color: #f9f9f9;
-    padding: 2rem;
-    border-radius: 10px;
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .contactLink {
-    color: rgb(159, 25, 45);
-    font-weight: 500;
-    text-decoration: none;
-  }
-  
-  .contactButton {
-    background-color: rgb(159, 25, 45);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    font-weight: 500;
-    margin-top: 1.5rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .contactButton:hover {
-    background-color: rgba(159, 25, 45, 0.9);
-  }
-  
-  @media (max-width: 768px) {
-    .instructionsContainer {
-      padding: 0 1.5rem;
-      margin: 2rem auto;
-    }
-    
-    .mainTitle {
-      font-size: 2rem;
-    }
-    
-    .sectionTitle {
-      font-size: 1.5rem;
-    }
-    
-    .instructionGrid {
       grid-template-columns: 1fr;
-    }
   }
-  
-  @media (max-width: 480px) {
-    .instructionCard {
-      padding: 1.5rem;
-    }
-    
-    .mainTitle {
-      font-size: 1.8rem;
-    }
-  }
+}
