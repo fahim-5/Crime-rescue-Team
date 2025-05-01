@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
-import "./ReportDetail.css";
+import styles from "./ReportDetail.module.css";
 import {
   FaMapMarkerAlt,
   FaCalendarAlt,
@@ -19,6 +19,10 @@ import {
   FaGenderless,
   FaFolder,
   FaInfoCircle,
+  FaEye,
+  FaCommentAlt,
+  FaTag,
+  FaClipboardCheck
 } from "react-icons/fa";
 import { formatDistanceToNow, format } from "date-fns";
 
@@ -71,30 +75,30 @@ const ReportDetail = () => {
   const getGenderIcon = (gender) => {
     switch (gender.toLowerCase()) {
       case "male":
-        return <FaMars className="gender-icon male" />;
+        return <FaMars className={styles.genderIconMale} />;
       case "female":
-        return <FaVenus className="gender-icon female" />;
+        return <FaVenus className={styles.genderIconFemale} />;
       default:
-        return <FaGenderless className="gender-icon other" />;
+        return <FaGenderless className={styles.genderIconOther} />;
     }
   };
 
   const getStatusBadge = (report) => {
     if (report.valid_count >= 3) {
       return (
-        <span className="status-badge confirmed">
+        <span className={styles.statusBadgeConfirmed}>
           <FaCheck /> Confirmed
         </span>
       );
     } else if (report.total_validations > 0) {
       return (
-        <span className="status-badge pending">
+        <span className={styles.statusBadgePending}>
           <FaInfoCircle /> Under Review
         </span>
       );
     } else {
       return (
-        <span className="status-badge new">
+        <span className={styles.statusBadgeNew}>
           <FaFolder /> New
         </span>
       );
@@ -103,8 +107,8 @@ const ReportDetail = () => {
 
   if (loading) {
     return (
-      <div className="report-detail-container loading">
-        <FaSpinner className="spinner" />
+      <div className={styles.loadingContainer}>
+        <FaSpinner className={styles.spinner} />
         <p>Loading report details...</p>
       </div>
     );
@@ -112,20 +116,22 @@ const ReportDetail = () => {
 
   if (error) {
     return (
-      <div className="report-detail-container error">
-        <FaExclamationTriangle className="error-icon" />
-        <h2>Something went wrong</h2>
-        <p>{error}</p>
-        <div className="action-buttons">
-          <button onClick={() => navigate("/reports")} className="back-button">
-            <FaArrowLeft /> Back to Reports
-          </button>
-          <button
-            onClick={() => window.location.reload()}
-            className="retry-button"
-          >
-            Try Again
-          </button>
+      <div className={styles.errorContainer}>
+        <div className={styles.errorCard}>
+          <FaExclamationTriangle className={styles.errorIcon} />
+          <h2>Something went wrong</h2>
+          <p>{error}</p>
+          <div className={styles.actionButtons}>
+            <button onClick={() => navigate("/reports")} className={styles.backButton}>
+              <FaArrowLeft /> Back to Reports
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className={styles.retryButton}
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -133,279 +139,297 @@ const ReportDetail = () => {
 
   if (!report) {
     return (
-      <div className="report-detail-container error">
-        <FaExclamationTriangle className="error-icon" />
-        <h2>Report Not Found</h2>
-        <p>The report you're looking for doesn't exist or has been removed.</p>
-        <button onClick={() => navigate("/reports")} className="back-button">
-          <FaArrowLeft /> Back to Reports
-        </button>
+      <div className={styles.errorContainer}>
+        <div className={styles.errorCard}>
+          <FaExclamationTriangle className={styles.errorIcon} />
+          <h2>Report Not Found</h2>
+          <p>The report you're looking for doesn't exist or has been removed.</p>
+          <button onClick={() => navigate("/reports")} className={styles.backButton}>
+            <FaArrowLeft /> Back to Reports
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="report-detail-container">
-      <div className="report-detail-header">
-        <button onClick={() => navigate("/reports")} className="back-button">
-          <FaArrowLeft /> Back to Reports
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <button onClick={() => navigate("/reports")} className={styles.backButton}>
+          <FaArrowLeft /> <span>Back to Reports</span>
         </button>
-        <h1>
-          {report.crime_type.charAt(0).toUpperCase() +
-            report.crime_type.slice(1)}{" "}
-          Report
-        </h1>
-        {getStatusBadge(report)}
+        <div className={styles.headerContent}>
+          <h1>
+            {report.crime_type.charAt(0).toUpperCase() +
+              report.crime_type.slice(1)}{" "}
+            Report <span className={styles.idTag}>#{id.substring(0, 8)}</span>
+          </h1>
+          {getStatusBadge(report)}
+        </div>
       </div>
 
-      <div className="report-detail-card">
-        <div className="report-section">
-          <h2>Incident Details</h2>
-
-          <div className="detail-group">
-            <div className="detail-item">
-              <FaMapMarkerAlt className="detail-icon" />
-              <div className="detail-content">
-                <span className="detail-label">Location</span>
-                <span className="detail-value">{report.location}</span>
-              </div>
+      <div className={styles.contentWrapper}>
+        <div className={styles.mainContent}>
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <FaTag className={styles.cardHeaderIcon} />
+              <h2>Incident Details</h2>
             </div>
 
-            <div className="detail-item">
-              <FaCalendarAlt className="detail-icon" />
-              <div className="detail-content">
-                <span className="detail-label">Date & Time</span>
-                <span className="detail-value">
-                  {format(new Date(report.time), "PPP")} at{" "}
-                  {format(new Date(report.time), "p")}
-                  <small className="time-ago">
-                    (
-                    {formatDistanceToNow(new Date(report.time), {
-                      addSuffix: true,
-                    })}
-                    )
-                  </small>
-                </span>
-              </div>
-            </div>
-
-            <div className="detail-item">
-              <FaRegClock className="detail-icon" />
-              <div className="detail-content">
-                <span className="detail-label">Reported</span>
-                <span className="detail-value">
-                  {format(new Date(report.created_at), "PPP")}
-                  <small className="time-ago">
-                    (
-                    {formatDistanceToNow(new Date(report.created_at), {
-                      addSuffix: true,
-                    })}
-                    )
-                  </small>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="report-section">
-          <h2>Suspects & Victim Information</h2>
-
-          <div className="detail-group">
-            <div className="detail-item">
-              <FaUsers className="detail-icon" />
-              <div className="detail-content">
-                <span className="detail-label">Number of Suspects</span>
-                <span className="detail-value">{report.num_criminals}</span>
-              </div>
-            </div>
-
-            <div className="detail-item">
-              <div className="detail-icon">
-                {getGenderIcon(report.victim_gender)}
-              </div>
-              <div className="detail-content">
-                <span className="detail-label">Victim Gender</span>
-                <span className="detail-value">
-                  {report.victim_gender.charAt(0).toUpperCase() +
-                    report.victim_gender.slice(1)}
-                </span>
-              </div>
-            </div>
-
-            <div className="detail-item">
-              <FaExclamationTriangle className="detail-icon" />
-              <div className="detail-content">
-                <span className="detail-label">Armed Suspects</span>
-                <span className="detail-value">
-                  {report.armed === "yes"
-                    ? "Yes (Armed)"
-                    : report.armed === "no"
-                    ? "No (Unarmed)"
-                    : "Unknown"}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {(report.photos && report.photos.length > 0) ||
-        (report.videos && report.videos.length > 0) ? (
-          <div className="report-section">
-            <h2>Evidence</h2>
-
-            {report.photos && report.photos.length > 0 && (
-              <div className="evidence-group">
-                <h3>Photos ({report.photos.length})</h3>
-                <div className="photo-gallery">
-                  {report.photos.map((photo, index) => (
-                    <div key={`photo-${index}`} className="gallery-item">
-                      <img src={photo.url} alt={`Evidence ${index + 1}`} />
-                    </div>
-                  ))}
+            <div className={styles.detailGrid}>
+              <div className={styles.detailItem}>
+                <FaMapMarkerAlt className={styles.detailIcon} />
+                <div className={styles.detailContent}>
+                  <span className={styles.detailLabel}>Location</span>
+                  <span className={styles.detailValue}>{report.location}</span>
                 </div>
               </div>
-            )}
 
-            {report.videos && report.videos.length > 0 && (
-              <div className="evidence-group">
-                <h3>Videos ({report.videos.length})</h3>
-                <div className="video-gallery">
-                  {report.videos.map((video, index) => (
-                    <div key={`video-${index}`} className="gallery-item">
-                      <video controls>
-                        <source src={video.url} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ) : null}
-
-        <div className="report-section">
-          <h2>Verification Status</h2>
-
-          <div className="verification-stats">
-            <div className="verification-stat">
-              <FaCheck className="valid-icon" />
-              <div className="stat-content">
-                <span className="stat-value">{report.valid_count || 0}</span>
-                <span className="stat-label">Confirmed</span>
-              </div>
-            </div>
-
-            <div className="verification-stat">
-              <FaTimes className="invalid-icon" />
-              <div className="stat-content">
-                <span className="stat-value">{report.invalid_count || 0}</span>
-                <span className="stat-label">Disputed</span>
-              </div>
-            </div>
-
-            <div className="verification-stat">
-              <FaUserCircle className="total-icon" />
-              <div className="stat-content">
-                <span className="stat-value">
-                  {report.total_validations || 0}
-                </span>
-                <span className="stat-label">Total Validations</span>
-              </div>
-            </div>
-          </div>
-
-          {report.validations && report.validations.length > 0 ? (
-            <div className="validations-list">
-              <h3>Recent Validations</h3>
-              {report.validations.slice(0, 3).map((validation, index) => (
-                <div key={`validation-${index}`} className="validation-item">
-                  <div
-                    className={`validation-status ${
-                      validation.is_valid ? "valid" : "invalid"
-                    }`}
-                  >
-                    {validation.is_valid ? <FaCheck /> : <FaTimes />}
-                  </div>
-                  <div className="validation-details">
-                    <div className="validation-user">
-                      <FaUserCircle className="user-icon" />
-                      <span>{validation.full_name || validation.username}</span>
-                    </div>
-                    <div className="validation-time">
-                      {formatDistanceToNow(new Date(validation.created_at), {
+              <div className={styles.detailItem}>
+                <FaCalendarAlt className={styles.detailIcon} />
+                <div className={styles.detailContent}>
+                  <span className={styles.detailLabel}>Date & Time</span>
+                  <span className={styles.detailValue}>
+                    {format(new Date(report.time), "PPP")} at{" "}
+                    {format(new Date(report.time), "p")}
+                    <div className={styles.timeAgo}>
+                      {formatDistanceToNow(new Date(report.time), {
                         addSuffix: true,
                       })}
                     </div>
-                    {validation.comment && (
-                      <div className="validation-comment">
-                        {validation.comment}
-                      </div>
-                    )}
-                  </div>
+                  </span>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="no-validations">No validations yet</p>
-          )}
-        </div>
+              </div>
 
-        {report.alerts && report.alerts.length > 0 && (
-          <div className="report-section">
-            <h2>Police Response</h2>
-
-            <div className="alerts-list">
-              {report.alerts.map((alert, index) => (
-                <div
-                  key={`alert-${index}`}
-                  className={`alert-item ${alert.status}`}
-                >
-                  <div className="alert-icon">
-                    <FaShieldAlt />
-                  </div>
-                  <div className="alert-details">
-                    <div className="alert-header">
-                      <span className="alert-status">
-                        {alert.status.charAt(0).toUpperCase() +
-                          alert.status.slice(1)}
-                      </span>
-                      <span className="alert-time">
-                        {formatDistanceToNow(new Date(alert.created_at), {
-                          addSuffix: true,
-                        })}
-                      </span>
+              <div className={styles.detailItem}>
+                <FaRegClock className={styles.detailIcon} />
+                <div className={styles.detailContent}>
+                  <span className={styles.detailLabel}>Reported</span>
+                  <span className={styles.detailValue}>
+                    {format(new Date(report.created_at), "PPP")}
+                    <div className={styles.timeAgo}>
+                      {formatDistanceToNow(new Date(report.created_at), {
+                        addSuffix: true,
+                      })}
                     </div>
-
-                    {alert.police_name && (
-                      <div className="alert-officer">
-                        <FaUserCircle className="officer-icon" />
-                        <span>{alert.police_name}</span>
-                        {alert.badge_number && (
-                          <span className="badge-number">
-                            #{alert.badge_number}
-                          </span>
-                        )}
-                        {alert.station && (
-                          <span className="station-name">
-                            {alert.station} Station
-                          </span>
-                        )}
-                      </div>
-                    )}
-
-                    {alert.response_details && (
-                      <div className="response-details">
-                        {alert.response_details}
-                      </div>
-                    )}
-                  </div>
+                  </span>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
-        )}
+
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <FaUsers className={styles.cardHeaderIcon} />
+              <h2>Suspects & Victim Information</h2>
+            </div>
+
+            <div className={styles.detailGrid}>
+              <div className={styles.detailItem}>
+                <FaUsers className={styles.detailIcon} />
+                <div className={styles.detailContent}>
+                  <span className={styles.detailLabel}>Number of Suspects</span>
+                  <span className={styles.detailValue}>{report.num_criminals}</span>
+                </div>
+              </div>
+
+              <div className={styles.detailItem}>
+                <div className={styles.detailIcon}>
+                  {getGenderIcon(report.victim_gender)}
+                </div>
+                <div className={styles.detailContent}>
+                  <span className={styles.detailLabel}>Victim Gender</span>
+                  <span className={styles.detailValue}>
+                    {report.victim_gender.charAt(0).toUpperCase() +
+                      report.victim_gender.slice(1)}
+                  </span>
+                </div>
+              </div>
+
+              <div className={styles.detailItem}>
+                <FaExclamationTriangle className={styles.detailIcon} />
+                <div className={styles.detailContent}>
+                  <span className={styles.detailLabel}>Armed Suspects</span>
+                  <span className={styles.detailValue}>
+                    {report.armed === "yes"
+                      ? "Yes (Armed)"
+                      : report.armed === "no"
+                      ? "No (Unarmed)"
+                      : "Unknown"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {(report.photos && report.photos.length > 0) ||
+          (report.videos && report.videos.length > 0) ? (
+            <div className={styles.card}>
+              <div className={styles.cardHeader}>
+                <FaEye className={styles.cardHeaderIcon} />
+                <h2>Evidence</h2>
+              </div>
+
+              {report.photos && report.photos.length > 0 && (
+                <div className={styles.evidenceSection}>
+                  <h3>Photos ({report.photos.length})</h3>
+                  <div className={styles.photoGallery}>
+                    {report.photos.map((photo, index) => (
+                      <div key={`photo-${index}`} className={styles.galleryItem}>
+                        <img src={photo.url} alt={`Evidence ${index + 1}`} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {report.videos && report.videos.length > 0 && (
+                <div className={styles.evidenceSection}>
+                  <h3>Videos ({report.videos.length})</h3>
+                  <div className={styles.videoGallery}>
+                    {report.videos.map((video, index) => (
+                      <div key={`video-${index}`} className={styles.galleryItem}>
+                        <video controls>
+                          <source src={video.url} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : null}
+
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <FaClipboardCheck className={styles.cardHeaderIcon} />
+              <h2>Verification Status</h2>
+            </div>
+
+            <div className={styles.verificationStats}>
+              <div className={styles.statCard}>
+                <FaCheck className={styles.validIcon} />
+                <div className={styles.statContent}>
+                  <span className={styles.statValue}>{report.valid_count || 0}</span>
+                  <span className={styles.statLabel}>Confirmed</span>
+                </div>
+              </div>
+
+              <div className={styles.statCard}>
+                <FaTimes className={styles.invalidIcon} />
+                <div className={styles.statContent}>
+                  <span className={styles.statValue}>{report.invalid_count || 0}</span>
+                  <span className={styles.statLabel}>Disputed</span>
+                </div>
+              </div>
+
+              <div className={styles.statCard}>
+                <FaUserCircle className={styles.totalIcon} />
+                <div className={styles.statContent}>
+                  <span className={styles.statValue}>
+                    {report.total_validations || 0}
+                  </span>
+                  <span className={styles.statLabel}>Total Validations</span>
+                </div>
+              </div>
+            </div>
+
+            {report.validations && report.validations.length > 0 ? (
+              <div className={styles.validationsList}>
+                <h3>Recent Validations</h3>
+                {report.validations.slice(0, 3).map((validation, index) => (
+                  <div key={`validation-${index}`} className={styles.validationItem}>
+                    <div
+                      className={`${styles.validationStatus} ${
+                        validation.is_valid ? styles.valid : styles.invalid
+                      }`}
+                    >
+                      {validation.is_valid ? <FaCheck /> : <FaTimes />}
+                    </div>
+                    <div className={styles.validationDetails}>
+                      <div className={styles.validationUser}>
+                        <FaUserCircle className={styles.userIcon} />
+                        <span>{validation.full_name || validation.username}</span>
+                      </div>
+                      <div className={styles.validationTime}>
+                        {formatDistanceToNow(new Date(validation.created_at), {
+                          addSuffix: true,
+                        })}
+                      </div>
+                      {validation.comment && (
+                        <div className={styles.validationComment}>
+                          <FaCommentAlt className={styles.commentIcon} />
+                          {validation.comment}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.noValidations}>No validations yet</p>
+            )}
+          </div>
+
+          {report.alerts && report.alerts.length > 0 && (
+            <div className={styles.card}>
+              <div className={styles.cardHeader}>
+                <FaShieldAlt className={styles.cardHeaderIcon} />
+                <h2>Police Response</h2>
+              </div>
+
+              <div className={styles.alertsList}>
+                {report.alerts.map((alert, index) => (
+                  <div
+                    key={`alert-${index}`}
+                    className={`${styles.alertItem} ${styles[alert.status]}`}
+                  >
+                    <div className={styles.alertIcon}>
+                      <FaShieldAlt />
+                    </div>
+                    <div className={styles.alertDetails}>
+                      <div className={styles.alertHeader}>
+                        <span className={styles.alertStatus}>
+                          {alert.status.charAt(0).toUpperCase() +
+                            alert.status.slice(1)}
+                        </span>
+                        <span className={styles.alertTime}>
+                          {formatDistanceToNow(new Date(alert.created_at), {
+                            addSuffix: true,
+                          })}
+                        </span>
+                      </div>
+
+                      {alert.police_name && (
+                        <div className={styles.alertOfficer}>
+                          <FaUserCircle className={styles.officerIcon} />
+                          <span>{alert.police_name}</span>
+                          {alert.badge_number && (
+                            <span className={styles.badgeNumber}>
+                              #{alert.badge_number}
+                            </span>
+                          )}
+                          {alert.station && (
+                            <span className={styles.stationName}>
+                              {alert.station} Station
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {alert.response_details && (
+                        <div className={styles.responseDetails}>
+                          {alert.response_details}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
