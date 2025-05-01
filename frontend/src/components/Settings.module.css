@@ -88,7 +88,7 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #9e192d 0%, #c0392b 100%);
+  background: linear-gradient(135deg, #4d4042 0%, #c14f431d 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -180,7 +180,7 @@
 }
 
 .primaryButton {
-  background: linear-gradient(135deg, #9e192d 0%, #c0392b 100%);
+  background: linear-gradient(135deg, #13183b 0%, #052522 100%);
   color: white;
   margin-top: 10px;
 }
@@ -192,7 +192,7 @@
 }
 
 .secondaryButton {
-  background: linear-gradient(135deg, #061123 0%, #200f5e 100%);
+  background: linear-gradient(135deg, #061123 0%, #13063f 100%);
   color: white;
   margin-top: 10px;
 }
@@ -266,6 +266,16 @@
 .modalTitle {
   font-size: 1.5rem;
   font-weight: 600;
+}
+
+.modalTitleDelete {
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: #c51d1d;
+  display: flex;
+  justify-content: center;
+  margin-left: 170px;
+  
 }
 
 .closeButton {

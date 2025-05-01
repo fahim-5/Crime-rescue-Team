@@ -1006,16 +1006,8 @@ const Settings = () => {
           <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
               <div className={styles.modalHeader}>
-                <h2 className={styles.modalTitle}>Delete Account</h2>
-                <button
-                  className={styles.closeButton}
-                  onClick={() => {
-                    setShowDeleteConfirmation(false);
-                    setDeleteConfirmText("");
-                  }}
-                >
-                  <FiX />
-                </button>
+                <h2 className={styles.modalTitleDelete}>Delete Account</h2>
+                
               </div>
 
               <div className={styles.modalBody}>
@@ -1043,6 +1035,14 @@ const Settings = () => {
               </div>
 
               <div className={styles.modalFooter}>
+
+                <button
+                  className={`${styles.button} ${styles.dangerButton}`}
+                  onClick={handleDeleteAccount}
+                  disabled={isLoading || deleteConfirmText !== "DELETE"}
+                >
+                  {isLoading ? "Deleting..." : "Delete Account"}
+                </button>
                 <button
                   className={`${styles.button} ${styles.secondaryButton}`}
                   onClick={() => {
@@ -1053,13 +1053,7 @@ const Settings = () => {
                 >
                   Cancel
                 </button>
-                <button
-                  className={`${styles.button} ${styles.dangerButton}`}
-                  onClick={handleDeleteAccount}
-                  disabled={isLoading || deleteConfirmText !== "DELETE"}
-                >
-                  {isLoading ? "Deleting..." : "Delete Account"}
-                </button>
+                
               </div>
             </div>
           </div>

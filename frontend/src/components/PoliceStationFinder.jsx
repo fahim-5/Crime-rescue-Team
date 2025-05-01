@@ -26,11 +26,11 @@ const PoliceStationFinder = ({ onClose, location }) => {
       setLoading(false);
       return;
     }
-    
+
     try {
       setLoading(true);
       const apiUrl = `${API_URL}/api/police-stations`;
-      
+
       const controller = new AbortController();
       const signal = controller.signal;
 
@@ -60,7 +60,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
         // Request was cancelled, don't update state
         return;
       }
-      
+
       if (err.response) {
         setError(
           `Failed to load police stations: Server returned ${err.response.status}`
@@ -78,19 +78,22 @@ const PoliceStationFinder = ({ onClose, location }) => {
   // Memoize the fetchThanas function
   const fetchThanasByDistrict = useCallback(async (district) => {
     if (!district) return;
-    
+
     const controller = new AbortController();
-    
+
     try {
       setLoadingThanas(true);
-      const response = await axios.get(`${API_URL}/api/police-stations/thanas/${district}`, {
-        timeout: 5000,
-        signal: controller.signal
-      });
-      
+      const response = await axios.get(
+        `${API_URL}/api/police-stations/thanas/${district}`,
+        {
+          timeout: 5000,
+          signal: controller.signal,
+        }
+      );
+
       if (response && response.data && response.data.success) {
         setThanas(response.data.data);
-        
+
         // If we only have one thana, auto-select it
         if (response.data.data.length === 1) {
           setSelectedThana(response.data.data[0]);
@@ -104,27 +107,27 @@ const PoliceStationFinder = ({ onClose, location }) => {
     } finally {
       setLoadingThanas(false);
     }
-    
+
     return () => controller.abort();
   }, []);
 
   // Initial data fetch and setup click handler
   useEffect(() => {
     const controller = new AbortController();
-    
+
     fetchPoliceStations();
-    
+
     // Add backdrop click handler
     const handleBackdropClick = (e) => {
-      if (e.target.classList.contains('police-station-modal')) {
+      if (e.target.classList.contains("police-station-modal")) {
         onClose();
       }
     };
-    
-    document.addEventListener('click', handleBackdropClick);
-    
+
+    document.addEventListener("click", handleBackdropClick);
+
     return () => {
-      document.removeEventListener('click', handleBackdropClick);
+      document.removeEventListener("click", handleBackdropClick);
       controller.abort(); // Cancel any in-flight requests
     };
   }, [onClose, fetchPoliceStations]);
@@ -134,15 +137,20 @@ const PoliceStationFinder = ({ onClose, location }) => {
     // Extract location info from the passed location string
     if (location && districts.length > 0) {
       // Split by comma, dash or space for flexible matching
-      const locationParts = location.split(/[,\-\s]+/).map(part => part.trim().toLowerCase()).filter(Boolean);
-      
+      const locationParts = location
+        .split(/[,\-\s]+/)
+        .map((part) => part.trim().toLowerCase())
+        .filter(Boolean);
+
       // Try to identify district match
-      const districtMatch = districts.find(district => 
-        locationParts.some(part => 
-          district.toLowerCase().includes(part) || part.includes(district.toLowerCase())
+      const districtMatch = districts.find((district) =>
+        locationParts.some(
+          (part) =>
+            district.toLowerCase().includes(part) ||
+            part.includes(district.toLowerCase())
         )
       );
-      
+
       if (districtMatch) {
         setSelectedDistrict(districtMatch);
         fetchThanasByDistrict(districtMatch);
@@ -179,7 +187,9 @@ const PoliceStationFinder = ({ onClose, location }) => {
         (station) =>
           station.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           station.address?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          station.officer_in_charge?.toLowerCase().includes(searchTerm.toLowerCase())
+          station.officer_in_charge
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase())
       );
     }
 
@@ -190,7 +200,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
     const district = e.target.value;
     setSelectedDistrict(district);
     setSelectedThana(""); // Reset thana when district changes
-    
+
     if (district) {
       fetchThanasByDistrict(district);
     } else {
@@ -218,54 +228,62 @@ const PoliceStationFinder = ({ onClose, location }) => {
   };
 
   return (
-    <div className={styles["police-station-modal"]} data-testid="police-station-modal">
+    <div
+      className={styles["police-station-modal"]}
+      data-testid="police-station-modal"
+    >
       <div className={styles["police-station-content"]}>
-        <div className={styles["modal-controls"]}>
-          <button className={styles["help-button"]} title="Show Help" onClick={toggleHelp}>
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-          </button>
-          <button className={styles["close-modal"]} onClick={onClose}>
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path d="M18 6L6 18M6 6l12 12"></path>
-            </svg>
+        <div className={styles["modal-header"]}>
+          <h2>Find Nearby Police Stations</h2>
+          <p className={styles.subtitle}>
+            Contact the nearest police station for assistance
+          </p>
+          <button
+            className={styles["help-button"]}
+            title="Need Assistance?"
+            onClick={toggleHelp}
+          >
+            Help?
           </button>
         </div>
 
         {showHelp && (
           <div className={styles["help-box"]}>
+            <button
+              className={styles["help-close-button"]}
+              onClick={toggleHelp}
+            >
+              ×
+            </button>
             <h4>How to use this finder:</h4>
             <ol>
               <li>Select a district to narrow down police stations</li>
               <li>Further filter by selecting a specific thana</li>
-              <li>Use the search box to find stations by name or address</li>
-              <li>Press the phone number to call the police station directly</li>
+              <li>
+                Press the phone number to call the police station directly
+              </li>
+              <li>
+                Click the station name to view detailed information such as
+                address and officer-in-charge
+              </li>
+              <li>
+                Use the search bar for quick access to a specific police station
+              </li>
+              <li>
+                Check the map icon (if available) to get directions via Google
+                Maps
+              </li>
+              <li>
+                Ensure location permission is enabled for better proximity-based
+                results
+              </li>
+              <li>
+                Use the “Report Incident” button if you need to submit a
+                complaint immediately
+              </li>
             </ol>
           </div>
         )}
-
-        <div className={styles["modal-header"]}>
-          <h2>Find Nearby Police Stations</h2>
-          <p className={styles.subtitle}>Contact the nearest police station for assistance</p>
-        </div>
 
         <div className={styles["filter-section"]}>
           <div className={styles["filter-row"]}>
@@ -299,38 +317,10 @@ const PoliceStationFinder = ({ onClose, location }) => {
                   </option>
                 ))}
               </select>
-              {loadingThanas && <span className={styles["loading-indicator"]}>Loading...</span>}
+              {loadingThanas && (
+                <span className={styles["loading-indicator"]}>Loading...</span>
+              )}
             </div>
-          </div>
-
-          <div className={styles["filter-row"]}>
-            <div className={styles["search-group"]}>
-              <input
-                type="text"
-                placeholder="Search by station name, address or officer..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                disabled={loading}
-              />
-              <button
-                className={styles["search-button"]}
-                disabled={loading}
-                onClick={filterStations}
-                aria-label="Search"
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-              </button>
-            </div>
-
             <button
               className={styles["reset-filters-btn"]}
               onClick={resetFilters}
@@ -362,7 +352,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
               </svg>
               <h3>Error</h3>
               <p>{error}</p>
-              <button 
+              <button
                 className={styles["retry-btn"]}
                 onClick={() => {
                   setError(null);
@@ -394,7 +384,8 @@ const PoliceStationFinder = ({ onClose, location }) => {
                       <circle cx="12" cy="10" r="3"></circle>
                     </svg>
                     <span>
-                      {station.address || `${station.district}, ${station.thana}`}
+                      {station.address ||
+                        `${station.district}, ${station.thana}`}
                     </span>
                   </div>
                   <div className={styles["detail-item"]}>
@@ -407,7 +398,9 @@ const PoliceStationFinder = ({ onClose, location }) => {
                     >
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                     </svg>
-                    <span>{station.phone || station.phone_number || "N/A"}</span>
+                    <span>
+                      {station.phone || station.phone_number || "N/A"}
+                    </span>
                   </div>
                   {station.officer_in_charge && (
                     <div className={styles["detail-item"]}>
@@ -488,6 +481,12 @@ const PoliceStationFinder = ({ onClose, location }) => {
         </div>
 
         <div className={styles["modal-footer"]}>
+          <div className={styles["modal-footer-note"]}>
+            <p>
+              For emergencies, always call the national emergency number:{" "}
+              <strong>999</strong>
+            </p>
+          </div>
           <button className={styles["cancel-btn"]} onClick={onClose}>
             <svg
               width="16"
@@ -501,11 +500,8 @@ const PoliceStationFinder = ({ onClose, location }) => {
             >
               <path d="M18 6L6 18M6 6l12 12"></path>
             </svg>
-            Cancel & Close
+            Close
           </button>
-          <div className={styles["modal-footer-note"]}>
-            <p>For emergencies, always call the national emergency number: <strong>999</strong></p>
-          </div>
         </div>
       </div>
     </div>

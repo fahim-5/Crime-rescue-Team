@@ -240,13 +240,6 @@ const ForgotPassword = () => {
                     Log In
                   </Link>
                 </p>
-                {mode === "change" && (
-                  <p>
-                    <Link to="/settings" className="pwd-recovery-link">
-                      Back to Settings
-                    </Link>
-                  </p>
-                )}
               </div>
             </form>
           ) : !isCodeVerified ? (

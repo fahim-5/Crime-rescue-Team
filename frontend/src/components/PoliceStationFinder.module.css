@@ -15,6 +15,28 @@
     /* backdrop-filter: blur(8px); */
 }
 
+.help-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 8px 16px;
+    background-color: rgba(30, 58, 138, 0.8);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease-in-out;
+    z-index: 10;
+}
+  
+.help-button:hover {
+    background-color: rgba(30, 58, 138, 1);
+    transform: scale(1.05);
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -55,45 +77,7 @@
 }
 
 .modal-controls {
-    position: absolute;
-    top: 1.25rem;
-    right: 1.25rem;
-    display: flex;
-    gap: 0.75rem;
-    z-index: 10;
-}
-
-.help-button,
-.close-modal {
-    background: rgba(255, 255, 255, 0.15);
-    border: none;
-    padding: 0.5rem;
-    cursor: pointer;
-    color: #6c757d;
-    transition: all 0.2s ease;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* backdrop-filter: blur(2px); */
-}
-
-.help-button {
-    color: #1e40af;
-}
-
-.help-button:hover {
-    color: #1e3a8a;
-    transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 0 8px rgba(30, 64, 175, 0.3);
-}
-
-.close-modal:hover {
-    color: #dc3545;
-    transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 0 8px rgba(220, 53, 69, 0.3);
+    display: none;
 }
 
 .help-box {
@@ -102,9 +86,12 @@
     border-left: 4px solid #1e40af;
     border-radius: 12px;
     padding: 1.25rem;
-    margin: 1.25rem 2rem 0;
+    margin: 0 2rem;
     position: relative;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 10px;
+    margin-top: 10px;
+    animation: fadeIn 0.2s ease-in-out;
 }
 
 .help-box h4 {
@@ -126,6 +113,24 @@
     line-height: 1.5;
 }
 
+.help-close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    color: #64748b;
+    transition: color 0.2s ease;
+    z-index: 5;
+}
+
+.help-close-button:hover {
+    color: #1e3a8a;
+}
+
 .close-help {
     background-color: #e9ecef;
     border: none;
@@ -144,6 +149,7 @@
     background: linear-gradient(to right, #1e3a8a, #2563eb);
     color: white;
     border-radius: 16px 16px 0 0;
+    position: relative;
 }
 
 .modal-header h2 {
@@ -547,12 +553,12 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
+    padding: 0.75rem 2rem;
     font-size: 1rem;
     font-weight: 600;
-    background-color: #f1f5f9;
+    background-color: #ccd7e1;
     color: #475569;
-    border: 1px solid #cbd5e1;
+    border: 1px solid #728397;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -578,7 +584,7 @@
     background-color: rgba(30, 64, 175, 0.08);
     border-radius: 8px;
     padding: 0.75rem 1.25rem;
-    border-left: 3px solid #1e40af;
+    border-left: 3px solid #283b78;
 }
 
 .modal-footer-note p {
@@ -642,6 +648,7 @@
     
     .station-details {
         padding: 1rem;
+       
     }
     
     .station-actions {
@@ -712,4 +719,37 @@
 
 .station-list::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
+}
+
+.reset-filters-btn {
+    padding: 0.75rem 1.25rem;
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    height: 45px;
+    margin-top: 30px;
+}
+
+.reset-filters-btn:hover {
+    background-color: #e2e8f0;
+    color: #1e293b;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.reset-filters-btn:active {
+    transform: translateY(1px);
+    box-shadow: none;
+    background-color: #cbd5e1;
+    color: #334155;
 }

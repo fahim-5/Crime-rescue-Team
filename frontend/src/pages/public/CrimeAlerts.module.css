@@ -71,7 +71,7 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   min-height: calc(100vh - 4rem);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  max-width: 1200px;
+  max-width: 100;
   min-height: 80%;
   border: 1px solid var(--gray-200);
 }
