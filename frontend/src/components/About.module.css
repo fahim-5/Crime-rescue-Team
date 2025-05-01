@@ -126,14 +126,21 @@
 
 .missionTitle {
   font-size: 2.5rem;
-  color: var(--primary);
+  color: white;
   margin-bottom: 2rem;
 }
+
+.missionTitlet1{
+  font-size: 2.5rem;
+  color:var(--primary);
+  margin-bottom: 2rem;
+}
+
 
 .missionStatement {
   font-size: 1.2rem;
   line-height: 1.8;
-  color: var(--text);
+  color:whitesmoke;
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
@@ -141,6 +148,32 @@
   background: rgba(var(--secondary), 0.05);
   position: relative;
 }
+
+.missionStatement1 {
+  font-size: 1.125rem; /* 18px for optimal readability */
+  line-height: 1.75; /* Consistent vertical rhythm */
+  color: var(--primary);
+  max-width: 1000px; /* Optimal line length for readability */
+  margin-inline: auto;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: rgba(var(--secondary-rgb), 0.06);
+  border: 1px solid var(--primary);
+  position: relative;
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.08);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: all 0.3s ease-in-out;
+  word-break: break-word;
+}
+
+/* Optional Hover Enhancement (Professional Touch) */
+.missionStatement1:hover {
+  border-color: var(--accent);
+  background-color: rgba(var(--secondary-rgb), 0.1);
+  box-shadow: 0 6px 18px rgba(var(--primary-rgb), 0.12);
+}
+
 
 .missionStatement::before {
   content: '';
@@ -200,6 +233,7 @@
 .workflow {
   padding: 6rem 1.5rem;
   background: var(--surface);
+ 
 }
 
 .steps {
