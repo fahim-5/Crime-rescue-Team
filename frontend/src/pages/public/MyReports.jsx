@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/useAuth";
-import "./MyReports.css";
+import { formatDistanceToNow } from "date-fns";
+import styles from './MyReports.module.css';
+
 import {
   FaMapMarkerAlt,
   FaCalendarAlt,
@@ -15,8 +17,12 @@ import {
   FaRedo,
   FaSignInAlt,
   FaPlus,
+  FaUserAlt,
+  FaClipboardCheck,
+  FaExclamationCircle,
+  FaFolderOpen,
+  FaImage,
 } from "react-icons/fa";
-import { formatDistanceToNow } from "date-fns";
 
 const MyReports = () => {
   const [reports, setReports] = useState([]);
@@ -99,25 +105,25 @@ const MyReports = () => {
       case "responded":
         return (
           <span className="response-badge responded">
-            <FaShieldAlt /> Police Responded
+             Police Responded
           </span>
         );
       case "confirmed":
         return (
           <span className="response-badge confirmed">
-            <FaCheck /> Confirmed by Police
+             Confirmed by Police
           </span>
         );
       case "pending":
         return (
           <span className="response-badge pending">
-            <FaSpinner /> Awaiting Response
+             Awaiting Response
           </span>
         );
       case "closed":
         return (
           <span className="response-badge closed">
-            <FaTimes /> Case Closed
+             Case Closed
           </span>
         );
       default:
@@ -125,59 +131,80 @@ const MyReports = () => {
     }
   };
 
+  // Format relative time (e.g., "2 days ago")
+  const getTimeAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    
+    if (diffInSeconds < 60) return 'just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    return `${Math.floor(diffInSeconds / 86400)} days ago`;
+  };
+
   if (loading) {
     return (
-      <div className="reports-container loading">
-        <FaSpinner className="spinner" />
-        <p>Loading your reports...</p>
+      <div className={styles.reportsContainer}>
+        <div className={styles.loadingContainer}>
+          <FaSpinner className={styles.spinner} />
+          <p>Loading your reports...</p>
+        </div>
       </div>
     );
   }
 
   if (error && !user) {
     return (
-      <div className="reports-container error">
-        <FaExclamationTriangle className="error-icon" />
-        <h2>Authentication Required</h2>
-        <p className="error-message">{error}</p>
-        <a href="/login" className="login-button">
-          <FaSignInAlt /> Log In
-        </a>
+      <div className={styles.reportsContainer}>
+        <div className={styles.errorContainer}>
+          <FaExclamationCircle className={styles.errorIcon} />
+          <h2 className={styles.errorTitle}>Authentication Required</h2>
+          <p className={styles.errorMessage}>{error}</p>
+          <a href="/login" className={styles.loginButton}>
+            <FaSignInAlt /> Log In
+          </a>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="reports-container error">
-        <FaExclamationTriangle className="error-icon" />
-        <h2>Something Went Wrong</h2>
-        <p className="error-message">{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="retry-button"
-        >
-          <FaRedo /> Try Again
-        </button>
+      <div className={styles.reportsContainer}>
+        <div className={styles.errorContainer}>
+          <FaExclamationCircle className={styles.errorIcon} />
+          <h2 className={styles.errorTitle}>Something Went Wrong</h2>
+          <p className={styles.errorMessage}>{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className={styles.retryButton}
+          >
+            <FaRedo /> Try Again
+          </button>
+        </div>
       </div>
     );
   }
 
   if (reports.length === 0) {
     return (
-      <div className="reports-container empty">
-        <h2>My Reports</h2>
-        <p className="reports-subtitle">
-          Track the status of your crime reports and view responses from
-          authorities
-        </p>
-        <div className="empty-state">
-          <FaExclamationTriangle className="empty-icon" />
-          <p>
+      <div className={`${styles.reportsContainer} ${styles.emptyContainer}`}>
+        <div className={styles.reportsHeader}>
+          <h2 className={styles.reportsTitle}>My Reports</h2>
+          <p className={styles.reportsSubtitle}>
+            Track the status of your crime reports and view responses from
+            authorities
+          </p>
+        </div>
+        
+        <div className={styles.emptyState}>
+          <FaFolderOpen className={styles.emptyIcon} />
+          <p className={styles.emptyText}>
             You haven't submitted any reports yet. Start by submitting your
             first crime report to help keep your community safe.
           </p>
-          <a href="/report" className="report-button">
+          <a href="/report" className={styles.reportButton}>
             <FaPlus /> Submit a Report
           </a>
         </div>
@@ -186,50 +213,46 @@ const MyReports = () => {
   }
 
   return (
-    <div className="reports-container">
-      <div className="reports-header">
-        <h2>My Reports</h2>
-        <p className="reports-subtitle">
+    <div className={styles.reportsContainer}>
+      <div className={styles.reportsHeader}>
+        <h2 className={styles.reportsTitle}>My Reports</h2>
+        <p className={styles.reportsSubtitle}>
           Track the status of your crime reports and view responses from the
           authorities
         </p>
       </div>
 
-      <div className="reports-list">
+      <div className={styles.reportsList}>
         {reports.map((report) => (
-          <div key={report.id} className="report-card">
-            <div className="report-header">
-              <h3>
+          <div key={report.id} className={styles.reportCard}>
+            <div className={styles.reportHeader}>
+              <h3 className={styles.reportTitle}>
                 {report.crime_type.charAt(0).toUpperCase() +
                   report.crime_type.slice(1)}
               </h3>
               {getStatusBadge(report)}
             </div>
 
-            <div className="report-details">
-              <div className="detail-item">
-                <FaMapMarkerAlt className="detail-icon" />
+            <div className={styles.reportDetails}>
+              <div className={styles.detailItem}>
+                <FaMapMarkerAlt className={styles.detailIcon} />
                 <span>{report.location}</span>
               </div>
 
-              <div className="detail-item">
-                <FaCalendarAlt className="detail-icon" />
+              <div className={styles.detailItem}>
+                <FaCalendarAlt className={styles.detailIcon} />
                 <span>
                   {new Date(report.time).toLocaleDateString()} at{" "}
                   {new Date(report.time).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
-                  <small className="time-ago">
-                    {formatDistanceToNow(new Date(report.time), {
-                      addSuffix: true,
-                    })}
-                  </small>
+                  <span className={styles.timeAgo}>{getTimeAgo(report.time)}</span>
                 </span>
               </div>
 
-              <div className="detail-item">
-                <FaUsers className="detail-icon" />
+              <div className={styles.detailItem}>
+                <FaUsers className={styles.detailIcon} />
                 <span>
                   {report.num_criminals} suspect
                   {report.num_criminals !== 1 ? "s" : ""}
@@ -237,31 +260,29 @@ const MyReports = () => {
               </div>
             </div>
 
-            <div className="report-status">
-              <div className="validation-status">
-                <div className="validation-count">
-                  <div className="validation-header">
-                    <FaShieldAlt className="validation-icon" />
-                    <span className="validation-label">
-                      Community Validation
+            <div className={styles.reportStatus}>
+              <div className={styles.validationStatus}>
+                <div className={styles.validationHeader}>
+                  <FaClipboardCheck className={styles.validationIcon} />
+                  <span className={styles.validationLabel}>
+                    Validation
+                  </span>
+                </div>
+                <div className={styles.validationStats}>
+                  <div className={`${styles.statItem} ${styles.statValid}`}>
+                    <FaCheck className={styles.statIcon} />
+                    <span className={styles.statValue}>
+                      {report.valid_count || 0}
                     </span>
+                    <span className={styles.statLabelValid}>Valid</span>
                   </div>
-                  <div className="validation-stats">
-                    <div className="stat-item valid">
-                      <FaCheck className="stat-icon" />
-                      <span className="stat-value">
-                        {report.valid_count || 0}
-                      </span>
-                      <span className="stat-label">Valid</span>
-                    </div>
-                    <div className="divider"></div>
-                    <div className="stat-item invalid">
-                      <FaTimes className="stat-icon" />
-                      <span className="stat-value">
-                        {report.invalid_count || 0}
-                      </span>
-                      <span className="stat-label">Invalid</span>
-                    </div>
+                  <div className={styles.divider}></div>
+                  <div className={`${styles.statItem} ${styles.statInvalid}`}>
+                    <FaTimes className={styles.statIcon} />
+                    <span className={styles.statValue}>
+                      {report.invalid_count || 0}
+                    </span>
+                    <span className={styles.statLabelInvalid}>Invalid</span>
                   </div>
                 </div>
               </div>
@@ -269,19 +290,9 @@ const MyReports = () => {
               {getPoliceResponseBadge(report)}
             </div>
 
-            {report.photos && report.photos.length > 0 && (
-              <div className="media-preview">
-                <div className="photo-count">
-                  {report.photos.length} photo
-                  {report.photos.length !== 1 ? "s" : ""} attached
-                </div>
-                <div className="thumbnail">
-                  <img src={report.photos[0].url} alt="Crime scene evidence" />
-                </div>
-              </div>
-            )}
+            
 
-            <a href={`/report/${report.id}`} className="view-details-button">
+            <a href={`/report/${report.id}`} className={styles.viewDetailsButton}>
               View Full Details
             </a>
           </div>
