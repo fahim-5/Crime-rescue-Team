@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import "./PoliceStationFinder.css";
+import styles from "./PoliceStationFinder.module.css";
 
 const API_URL = "http://localhost:5000";
 
@@ -218,10 +218,10 @@ const PoliceStationFinder = ({ onClose, location }) => {
   };
 
   return (
-    <div className="police-station-modal" data-testid="police-station-modal">
-      <div className="police-station-content">
-        <div className="modal-controls">
-          <button className="help-button" title="Show Help" onClick={toggleHelp}>
+    <div className={styles["police-station-modal"]} data-testid="police-station-modal">
+      <div className={styles["police-station-content"]}>
+        <div className={styles["modal-controls"]}>
+          <button className={styles["help-button"]} title="Show Help" onClick={toggleHelp}>
             <svg
               width="24"
               height="24"
@@ -237,7 +237,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
               <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
           </button>
-          <button className="close-modal" onClick={onClose}>
+          <button className={styles["close-modal"]} onClick={onClose}>
             <svg
               width="24"
               height="24"
@@ -251,7 +251,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
         </div>
 
         {showHelp && (
-          <div className="help-box">
+          <div className={styles["help-box"]}>
             <h4>How to use this finder:</h4>
             <ol>
               <li>Select a district to narrow down police stations</li>
@@ -262,14 +262,14 @@ const PoliceStationFinder = ({ onClose, location }) => {
           </div>
         )}
 
-        <div className="modal-header">
+        <div className={styles["modal-header"]}>
           <h2>Find Nearby Police Stations</h2>
-          <p className="subtitle">Contact the nearest police station for assistance</p>
+          <p className={styles.subtitle}>Contact the nearest police station for assistance</p>
         </div>
 
-        <div className="filter-section">
-          <div className="filter-row">
-            <div className="filter-group">
+        <div className={styles["filter-section"]}>
+          <div className={styles["filter-row"]}>
+            <div className={styles["filter-group"]}>
               <label>District:</label>
               <select
                 value={selectedDistrict}
@@ -285,7 +285,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
               </select>
             </div>
 
-            <div className="filter-group">
+            <div className={styles["filter-group"]}>
               <label>Thana/Upazila:</label>
               <select
                 value={selectedThana}
@@ -299,12 +299,12 @@ const PoliceStationFinder = ({ onClose, location }) => {
                   </option>
                 ))}
               </select>
-              {loadingThanas && <span className="loading-indicator">Loading...</span>}
+              {loadingThanas && <span className={styles["loading-indicator"]}>Loading...</span>}
             </div>
           </div>
 
-          <div className="filter-row">
-            <div className="search-group">
+          <div className={styles["filter-row"]}>
+            <div className={styles["search-group"]}>
               <input
                 type="text"
                 placeholder="Search by station name, address or officer..."
@@ -313,7 +313,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
                 disabled={loading}
               />
               <button
-                className="search-button"
+                className={styles["search-button"]}
                 disabled={loading}
                 onClick={filterStations}
                 aria-label="Search"
@@ -332,7 +332,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
             </div>
 
             <button
-              className="reset-filters-btn"
+              className={styles["reset-filters-btn"]}
               onClick={resetFilters}
               disabled={loading}
             >
@@ -341,14 +341,14 @@ const PoliceStationFinder = ({ onClose, location }) => {
           </div>
         </div>
 
-        <div className="station-list">
+        <div className={styles["station-list"]}>
           {loading ? (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
+            <div className={styles["loading-container"]}>
+              <div className={styles["loading-spinner"]}></div>
               <p>Loading police stations...</p>
             </div>
           ) : error ? (
-            <div className="error-container">
+            <div className={styles["error-container"]}>
               <svg
                 width="48"
                 height="48"
@@ -363,7 +363,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
               <h3>Error</h3>
               <p>{error}</p>
               <button 
-                className="retry-btn"
+                className={styles["retry-btn"]}
                 onClick={() => {
                   setError(null);
                   fetchPoliceStations();
@@ -374,15 +374,15 @@ const PoliceStationFinder = ({ onClose, location }) => {
             </div>
           ) : filteredStations.length > 0 ? (
             filteredStations.map((station, index) => (
-              <div key={index} className="station-card">
-                <div className="station-header">
+              <div key={index} className={styles["station-card"]}>
+                <div className={styles["station-header"]}>
                   <h3>{station.name}</h3>
-                  <span className="station-type">
+                  <span className={styles["station-type"]}>
                     {station.type || "Police Station"}
                   </span>
                 </div>
-                <div className="station-details">
-                  <div className="detail-item">
+                <div className={styles["station-details"]}>
+                  <div className={styles["detail-item"]}>
                     <svg
                       width="16"
                       height="16"
@@ -397,7 +397,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
                       {station.address || `${station.district}, ${station.thana}`}
                     </span>
                   </div>
-                  <div className="detail-item">
+                  <div className={styles["detail-item"]}>
                     <svg
                       width="16"
                       height="16"
@@ -410,7 +410,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
                     <span>{station.phone || station.phone_number || "N/A"}</span>
                   </div>
                   {station.officer_in_charge && (
-                    <div className="detail-item">
+                    <div className={styles["detail-item"]}>
                       <svg
                         width="16"
                         height="16"
@@ -425,10 +425,10 @@ const PoliceStationFinder = ({ onClose, location }) => {
                     </div>
                   )}
                 </div>
-                <div className="station-actions">
+                <div className={styles["station-actions"]}>
                   <a
                     href={`tel:${station.phone || station.phone_number}`}
-                    className="call-btn"
+                    className={styles["call-btn"]}
                     disabled={!station.phone && !station.phone_number}
                   >
                     <svg
@@ -448,7 +448,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="map-btn"
+                    className={styles["map-btn"]}
                   >
                     <svg
                       width="16"
@@ -467,7 +467,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
               </div>
             ))
           ) : (
-            <div className="no-stations">
+            <div className={styles["no-stations"]}>
               <svg
                 width="48"
                 height="48"
@@ -480,15 +480,15 @@ const PoliceStationFinder = ({ onClose, location }) => {
               </svg>
               <h3>No police stations found</h3>
               <p>Try adjusting your filters or search criteria</p>
-              <button className="reset-btn" onClick={resetFilters}>
+              <button className={styles["reset-btn"]} onClick={resetFilters}>
                 Reset Filters
               </button>
             </div>
           )}
         </div>
 
-        <div className="modal-footer">
-          <button className="cancel-btn" onClick={onClose}>
+        <div className={styles["modal-footer"]}>
+          <button className={styles["cancel-btn"]} onClick={onClose}>
             <svg
               width="16"
               height="16"
@@ -503,7 +503,7 @@ const PoliceStationFinder = ({ onClose, location }) => {
             </svg>
             Cancel & Close
           </button>
-          <div className="modal-footer-note">
+          <div className={styles["modal-footer-note"]}>
             <p>For emergencies, always call the national emergency number: <strong>999</strong></p>
           </div>
         </div>
