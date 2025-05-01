@@ -251,7 +251,6 @@
   }
   
   .user-item:hover {
-    transform: translateX(4px);
     background: rgba(74, 144, 226, 0.05);
   }
   
