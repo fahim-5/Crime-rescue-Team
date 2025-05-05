@@ -10,6 +10,7 @@ const ALERT_VISIBILITY_HOURS = 12; // Alerts will be visible for 12 hours
 const CrimeAlerts = () => {
   const [activeAlert, setActiveAlert] = useState(null);
   const [alerts, setAlerts] = useState([]);
+  const [allReports, setAllReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [countdowns, setCountdowns] = useState({});
@@ -25,6 +26,14 @@ const CrimeAlerts = () => {
     fetchUserProfile();
     fetchAllReports();
   }, [user, token]);
+
+  // Apply address-based filtering whenever userProfile or allReports change
+  useEffect(() => {
+    if (userProfile && allReports.length > 0) {
+      console.log("Auto-filtering reports based on user profile change");
+      filterReportsByUserAddress(allReports);
+    }
+  }, [userProfile, allReports]);
 
   // Fetch user profile to get the address
   const fetchUserProfile = async () => {
@@ -76,8 +85,14 @@ const CrimeAlerts = () => {
           });
         }
 
-        // Now filter the reports based on user address
-        filterReportsByUserAddress(response.data.data);
+        // Store all reports in state
+        setAllReports(response.data.data);
+
+        // If userProfile is already available, filter reports now
+        // Otherwise, the useEffect will handle filtering when userProfile changes
+        if (userProfile) {
+          filterReportsByUserAddress(response.data.data);
+        }
       } else {
         setError("Failed to load reports");
         console.error("API returned error:", response.data);
@@ -352,7 +367,12 @@ const CrimeAlerts = () => {
             </div>
           )}
 
-         
+          <button
+            className={styles["refresh-button"]}
+            onClick={fetchAllReports}
+          >
+            Refresh Reports
+          </button>
         </header>
 
         <div className={styles["alerts-list"]}>
