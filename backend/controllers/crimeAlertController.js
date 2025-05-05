@@ -1,6 +1,7 @@
 const CrimeAlertModel = require("../models/crimeAlertModel");
 const NotificationModel = require("../models/notificationModel");
 const UserModel = require("../models/userModel");
+const { pool } = require("../config/db");
 
 /**
  * Crime Alert Controller
@@ -207,26 +208,44 @@ const CrimeAlertController = {
    */
   notifyUsersInArea: async (alert) => {
     try {
-      // Get the location from the alert (format: District-Thana)
-      const location = alert.location;
+      const connection = await pool.getConnection();
 
-      // Find all users in that location
-      const usersInArea = await UserModel.getUsersByLocation(location);
+      try {
+        // Get the reporter's address from the crime report
+        const [reportResults] = await connection.query(
+          `SELECT reporter_address FROM crime_reports WHERE id = ?`,
+          [alert.report_id]
+        );
 
-      // Create notification for each user
-      for (const user of usersInArea) {
-        await NotificationModel.createNotification({
-          user_id: user.id,
-          type: "crime_alert",
-          title: `Crime Alert: ${alert.type} in your area`,
-          message: alert.description,
-          related_id: alert.id,
-        });
+        if (!reportResults.length || !reportResults[0].reporter_address) {
+          console.log(
+            `No reporter address found for report ID ${alert.report_id}`
+          );
+          return;
+        }
+
+        const reporterAddress = reportResults[0].reporter_address;
+
+        // Find all users in that location based on reporter's address
+        const usersInArea = await UserModel.getUsersByLocation(reporterAddress);
+
+        // Create notification for each user
+        for (const user of usersInArea) {
+          await NotificationModel.createNotification({
+            user_id: user.id,
+            type: "crime_alert",
+            title: `Crime Alert: ${alert.type} in your area`,
+            message: alert.description,
+            related_id: alert.id,
+          });
+        }
+
+        console.log(
+          `Notified ${usersInArea.length} users about crime alert based on reporter address: ${reporterAddress}`
+        );
+      } finally {
+        connection.release();
       }
-
-      console.log(
-        `Notified ${usersInArea.length} users about crime alert in ${location}`
-      );
     } catch (error) {
       console.error("Error sending area notifications:", error);
     }
@@ -241,7 +260,7 @@ const CrimeAlertController = {
   rebuildAddressBasedAlerts: async (req, res) => {
     try {
       const connection = await require("../config/db").pool.getConnection();
-      
+
       try {
         // First check if the address_based_alerts table exists
         const [tables] = await connection.query(`
@@ -250,14 +269,15 @@ const CrimeAlertController = {
           WHERE TABLE_SCHEMA = DATABASE() 
           AND TABLE_NAME = 'address_based_alerts'
         `);
-        
+
         if (tables.length === 0) {
           return res.status(404).json({
             success: false,
-            message: "The address_based_alerts table does not exist. Please run fix-database.sql first."
+            message:
+              "The address_based_alerts table does not exist. Please run fix-database.sql first.",
           });
         }
-        
+
         // Get all active crime alerts
         const [alerts] = await connection.query(`
           SELECT ca.id, ca.location, cr.location as report_location
@@ -265,49 +285,53 @@ const CrimeAlertController = {
           JOIN crime_reports cr ON ca.report_id = cr.id
           WHERE ca.status = 'active'
         `);
-        
+
         // Get all users
         const [users] = await connection.query(`
           SELECT id, address 
           FROM users 
           WHERE status = 'approved'
         `);
-        
-        console.log(`Found ${alerts.length} active alerts and ${users.length} users`);
-        
+
+        console.log(
+          `Found ${alerts.length} active alerts and ${users.length} users`
+        );
+
         // Clear existing entries to avoid duplicates
         await connection.query(`TRUNCATE TABLE address_based_alerts`);
-        
+
         // Insert new entries
         let insertCount = 0;
-        
+
         for (const alert of alerts) {
           const location = alert.location || alert.report_location;
           if (!location) continue;
-          
+
           for (const user of users) {
             const userAddress = user.address;
             if (!userAddress) continue;
-            
+
             // Check if the user's address matches the alert location
-            const locationMatches = 
-              userAddress.includes(location) || 
-              location.includes(userAddress);
-            
+            const locationMatches =
+              userAddress.includes(location) || location.includes(userAddress);
+
             if (locationMatches) {
-              await connection.query(`
+              await connection.query(
+                `
                 INSERT INTO address_based_alerts (alert_id, user_id, created_at)
                 VALUES (?, ?, NOW())
-              `, [alert.id, user.id]);
-              
+              `,
+                [alert.id, user.id]
+              );
+
               insertCount++;
             }
           }
         }
-        
+
         return res.status(200).json({
           success: true,
-          message: `Successfully rebuilt address-based alerts. Created ${insertCount} alerts.`
+          message: `Successfully rebuilt address-based alerts. Created ${insertCount} alerts.`,
         });
       } finally {
         if (connection) await connection.release();
@@ -317,10 +341,10 @@ const CrimeAlertController = {
       return res.status(500).json({
         success: false,
         message: "Failed to rebuild address-based alerts.",
-        error: error.message
+        error: error.message,
       });
     }
-  }
+  },
 };
 
 module.exports = CrimeAlertController;

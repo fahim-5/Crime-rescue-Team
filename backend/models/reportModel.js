@@ -21,11 +21,23 @@ class ReportModel {
     try {
       await connection.beginTransaction();
 
+      // Get reporter address if reporter ID is provided
+      let reporterAddress = null;
+      if (reporterId) {
+        const [userRows] = await connection.query(
+          "SELECT address FROM users WHERE id = ?",
+          [reporterId]
+        );
+        if (userRows.length > 0) {
+          reporterAddress = userRows[0].address;
+        }
+      }
+
       // Insert the crime report
       const [reportResult] = await connection.query(
         `INSERT INTO crime_reports 
-        (location, time, crime_type, num_criminals, victim_gender, armed, photos, videos, reporter_id, created_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+        (location, time, crime_type, num_criminals, victim_gender, armed, photos, videos, reporter_id, reporter_address, created_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
         [
           location,
           time,
@@ -36,6 +48,7 @@ class ReportModel {
           JSON.stringify(photos),
           JSON.stringify(videos),
           reporterId,
+          reporterAddress,
         ]
       );
 

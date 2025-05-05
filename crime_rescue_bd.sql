@@ -164,10 +164,10 @@ INSERT INTO `crime_alerts` (`id`, `report_id`, `title`, `description`, `location
 --
 DELIMITER $$
 CREATE TRIGGER `after_crime_alert_insert` AFTER INSERT ON `crime_alerts` FOR EACH ROW BEGIN
-    -- Get the location of the crime report
-    DECLARE crime_location VARCHAR(255);
+    -- Get the reporter's address of the crime report
+    DECLARE reporter_addr VARCHAR(255);
     
-    SELECT location INTO crime_location
+    SELECT reporter_address INTO reporter_addr
     FROM crime_reports
     WHERE id = NEW.report_id;
     
@@ -176,10 +176,10 @@ CREATE TRIGGER `after_crime_alert_insert` AFTER INSERT ON `crime_alerts` FOR EAC
     SELECT NEW.id, u.id
     FROM users u
     WHERE 
-        -- Match users whose address contains the crime location
-        -- or the crime location contains the user's address (flexible matching)
-        (u.address LIKE CONCAT('%', crime_location, '%') OR
-         crime_location LIKE CONCAT('%', u.address, '%'));
+        -- Match users whose address contains the reporter's address
+        -- or the reporter's address contains the user's address (flexible matching)
+        (u.address LIKE CONCAT('%', reporter_addr, '%') OR
+         reporter_addr LIKE CONCAT('%', u.address, '%'));
 END
 $$
 DELIMITER ;
@@ -249,6 +249,7 @@ CREATE TABLE `crime_reports` (
   `videos` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`videos`)),
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `reporter_id` int(11) DEFAULT NULL,
+  `reporter_address` varchar(255) DEFAULT NULL,
   `status` enum('pending','validating','investigating','resolved','closed') NOT NULL DEFAULT 'pending',
   `category_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -257,44 +258,50 @@ CREATE TABLE `crime_reports` (
 -- Dumping data for table `crime_reports`
 --
 
-INSERT INTO `crime_reports` (`id`, `crime_id`, `location`, `time`, `crime_type`, `num_criminals`, `victim_gender`, `armed`, `photos`, `videos`, `created_at`, `reporter_id`, `status`, `category_id`) VALUES
-(3, NULL, 'Fahim Reporting', '2025-04-27 21:15:22', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-27 21:15:50', 20, 'pending', NULL),
-(4, NULL, 'Fahim 3', '2025-04-28 08:53:03', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 08:53:08', 21, 'pending', NULL),
-(5, NULL, 'one to one', '2025-04-28 14:23:57', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:24:05', 21, 'pending', NULL),
-(6, NULL, 'one to two', '2025-04-28 14:24:06', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:24:18', 21, 'pending', NULL),
-(7, NULL, 'one to three', '2025-04-28 14:24:18', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:24:28', 21, 'pending', NULL),
-(8, NULL, 'report from two to one', '2025-04-28 14:26:33', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:26:41', 22, 'pending', NULL),
-(9, NULL, 'two to two', '2025-04-28 14:26:41', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:26:49', 22, 'pending', NULL),
-(10, 'CR-2025-008', 'Adb is reproting', '2025-04-29 10:14:38', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:14:52', 21, 'pending', NULL),
-(11, 'CR-2025-009', '10000', '2025-04-29 10:17:10', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:17:22', 21, 'pending', NULL),
-(12, 'CR-2025-010', '20000', '2025-04-29 10:17:22', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:24:50', 21, 'pending', NULL),
-(13, 'CR-2025-011', '3000', '2025-04-29 10:32:43', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:32:49', 21, 'pending', NULL),
-(14, 'CR-2025-012', 'wegvmsoibm', '2025-04-29 11:51:26', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 11:51:29', 21, 'pending', NULL),
-(15, 'CR-2025-013', 'Pavel is reporting', '2025-04-30 11:20:18', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-30 11:20:28', 28, 'pending', NULL),
-(16, 'CR-2025-014', 'report 1 bonna', '2025-04-30 12:05:46', 'theft', 1, 'male', 'yes', '[\"photos/photos-1746014813283-929886420.png\"]', '[]', '2025-04-30 12:06:53', 30, 'pending', NULL),
-(17, 'CR-2025-015', 'Bonna 2', '2025-04-30 13:03:22', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-30 13:03:31', 30, 'pending', NULL),
-(18, 'CR-2025-016', 'Me Bonna is reporting.', '2025-04-30 13:33:56', 'cybercrime', 1898, 'female', 'no', '[\"photos/photos-1746020131298-741966194.png\"]', '[]', '2025-04-30 13:35:31', 30, 'pending', NULL),
-(19, 'CR-2025-017', 'Notun Bazar , Infonrt of Forazi Hospital', '2025-04-30 16:34:25', 'robbery', 5, 'unknown', 'unknown', '[\"photos/photos-1746030986645-476526939.jpg\"]', '[\"videos/videos-1746030986646-632020885.mp4\"]', '2025-04-30 16:36:26', 28, 'pending', NULL),
-(20, 'CR-2025-018', 'pavel 1001', '2025-05-01 07:11:57', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 07:12:05', 28, 'pending', NULL),
-(21, 'CR-2025-019', 'pAVEL O11', '2025-05-01 07:12:05', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 07:13:16', 28, 'pending', NULL),
-(22, 'CR-2025-020', 'hELOLKO', '2025-05-01 07:13:16', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 07:13:43', 28, 'pending', NULL),
-(23, 'CR-2025-021', 'hWLLONOSANVLO', '2025-05-01 07:13:43', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 07:13:52', 28, 'pending', NULL),
-(24, 'CR-2025-022', 'Fahim vai whre are you>', '2025-05-01 08:33:02', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:33:20', 28, 'pending', NULL),
-(25, 'CR-2025-023', 'hiononiv', '2025-05-01 08:33:20', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:33:39', 28, 'pending', NULL),
-(26, 'CR-2025-024', 'ononbofdlbl', '2025-05-01 08:33:39', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:33:50', 28, 'pending', NULL),
-(27, 'CR-2025-025', 'Hello', '2025-05-01 08:42:16', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:42:23', 28, 'pending', NULL),
-(28, 'CR-2025-026', 'Me the king is reportin', '2025-05-01 08:42:44', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:42:52', 28, 'pending', NULL),
-(29, 'CR-2025-027', 'pavel vai', '2025-05-01 08:59:11', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:59:19', 28, 'pending', NULL),
-(30, 'CR-2025-028', 'Hello', '2025-05-01 09:55:31', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 09:56:20', 28, 'pending', NULL),
-(31, 'CR-2025-029', 'My vai', '2025-05-01 11:48:24', 'theft', 1, 'male', 'yes', '[\"photos/photos-1746100129916-160053575.jpg\"]', '[\"videos/videos-1746100129919-653554878.mp4\"]', '2025-05-01 11:48:50', 28, 'pending', NULL);
+INSERT INTO `crime_reports` (`id`, `crime_id`, `location`, `time`, `crime_type`, `num_criminals`, `victim_gender`, `armed`, `photos`, `videos`, `created_at`, `reporter_id`, `reporter_address`, `status`, `category_id`) VALUES
+(3, NULL, 'Fahim Reporting', '2025-04-27 21:15:22', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-27 21:15:50', 20, NULL, 'pending', NULL),
+(4, NULL, 'Fahim 3', '2025-04-28 08:53:03', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 08:53:08', 21, NULL, 'pending', NULL),
+(5, NULL, 'one to one', '2025-04-28 14:23:57', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:24:05', 21, NULL, 'pending', NULL),
+(6, NULL, 'one to two', '2025-04-28 14:24:06', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:24:18', 21, NULL, 'pending', NULL),
+(7, NULL, 'one to three', '2025-04-28 14:24:18', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:24:28', 21, NULL, 'pending', NULL),
+(8, NULL, 'report from two to one', '2025-04-28 14:26:33', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:26:41', 22, NULL, 'pending', NULL),
+(9, NULL, 'two to two', '2025-04-28 14:26:41', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-28 14:26:49', 22, NULL, 'pending', NULL),
+(10, 'CR-2025-008', 'Adb is reproting', '2025-04-29 10:14:38', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:14:52', 21, NULL, 'pending', NULL),
+(11, 'CR-2025-009', '10000', '2025-04-29 10:17:10', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:17:22', 21, NULL, 'pending', NULL),
+(12, 'CR-2025-010', '20000', '2025-04-29 10:17:22', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:24:50', 21, NULL, 'pending', NULL),
+(13, 'CR-2025-011', '3000', '2025-04-29 10:32:43', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 10:32:49', 21, NULL, 'pending', NULL),
+(14, 'CR-2025-012', 'wegvmsoibm', '2025-04-29 11:51:26', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-29 11:51:29', 21, NULL, 'pending', NULL),
+(15, 'CR-2025-013', 'Pavel is reporting', '2025-04-30 11:20:18', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-30 11:20:28', 28, NULL, 'pending', NULL),
+(16, 'CR-2025-014', 'report 1 bonna', '2025-04-30 12:05:46', 'theft', 1, 'male', 'yes', '[\"photos/photos-1746014813283-929886420.png\"]', '[]', '2025-04-30 12:06:53', 30, NULL, 'pending', NULL),
+(17, 'CR-2025-015', 'Bonna 2', '2025-04-30 13:03:22', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-04-30 13:03:31', 30, NULL, 'pending', NULL),
+(18, 'CR-2025-016', 'Me Bonna is reporting.', '2025-04-30 13:33:56', 'cybercrime', 1898, 'female', 'no', '[\"photos/photos-1746020131298-741966194.png\"]', '[]', '2025-04-30 13:35:31', 30, NULL, 'pending', NULL),
+(19, 'CR-2025-017', 'Notun Bazar , Infonrt of Forazi Hospital', '2025-04-30 16:34:25', 'robbery', 5, 'unknown', 'unknown', '[\"photos/photos-1746030986645-476526939.jpg\"]', '[\"videos/videos-1746030986646-632020885.mp4\"]', '2025-04-30 16:36:26', 28, NULL, 'pending', NULL),
+(20, 'CR-2025-018', 'pavel 1001', '2025-05-01 07:11:57', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 07:12:05', 28, NULL, 'pending', NULL),
+(21, 'CR-2025-019', 'pAVEL O11', '2025-05-01 07:12:05', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 07:13:16', 28, NULL, 'pending', NULL),
+(22, 'CR-2025-020', 'hELOLKO', '2025-05-01 07:13:16', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 07:13:43', 28, NULL, 'pending', NULL),
+(23, 'CR-2025-021', 'hWLLONOSANVLO', '2025-05-01 07:13:43', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 07:13:52', 28, NULL, 'pending', NULL),
+(24, 'CR-2025-022', 'Fahim vai whre are you>', '2025-05-01 08:33:02', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:33:20', 28, NULL, 'pending', NULL),
+(25, 'CR-2025-023', 'hiononiv', '2025-05-01 08:33:20', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:33:39', 28, NULL, 'pending', NULL),
+(26, 'CR-2025-024', 'ononbofdlbl', '2025-05-01 08:33:39', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:33:50', 28, NULL, 'pending', NULL),
+(27, 'CR-2025-025', 'Hello', '2025-05-01 08:42:16', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:42:23', 28, NULL, 'pending', NULL),
+(28, 'CR-2025-026', 'Me the king is reportin', '2025-05-01 08:42:44', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:42:52', 28, NULL, 'pending', NULL),
+(29, 'CR-2025-027', 'pavel vai', '2025-05-01 08:59:11', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 08:59:19', 28, NULL, 'pending', NULL),
+(30, 'CR-2025-028', 'Hello', '2025-05-01 09:55:31', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-01 09:56:20', 28, NULL, 'pending', NULL),
+(31, 'CR-2025-029', 'My vai', '2025-05-01 11:48:24', 'theft', 1, 'male', 'yes', '[\"photos/photos-1746100129916-160053575.jpg\"]', '[\"videos/videos-1746100129919-653554878.mp4\"]', '2025-05-01 11:48:50', 28, NULL, 'pending', NULL);
 
 --
 -- Triggers `crime_reports`
 --
 DELIMITER $$
-CREATE TRIGGER `generate_crime_id` BEFORE INSERT ON `crime_reports` FOR EACH ROW BEGIN
+CREATE TRIGGER `before_crime_report_insert` BEFORE INSERT ON `crime_reports` FOR EACH ROW BEGIN
+  -- Generate crime_id if not provided
   IF NEW.crime_id IS NULL THEN
     SET NEW.crime_id = CONCAT('CR-', YEAR(CURRENT_DATE()), '-', LPAD((SELECT COUNT(*)+1 FROM `crime_reports` WHERE YEAR(created_at) = YEAR(CURRENT_DATE())), 3, '0'));
+  END IF;
+  
+  -- Set reporter_address from users table if reporter_id is provided and reporter_address is NULL
+  IF NEW.reporter_id IS NOT NULL AND (NEW.reporter_address IS NULL OR NEW.reporter_address = '') THEN
+    SET NEW.reporter_address = (SELECT address FROM users WHERE id = NEW.reporter_id);
   END IF;
 END
 $$
@@ -1181,3 +1188,11 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- Populate reporter_address for existing reports
+UPDATE crime_reports cr
+JOIN users u ON cr.reporter_id = u.id
+SET cr.reporter_address = u.address
+WHERE cr.reporter_address IS NULL AND cr.reporter_id IS NOT NULL;
+
+-- End of SQL file
