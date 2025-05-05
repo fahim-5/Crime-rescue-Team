@@ -28,11 +28,11 @@ const About = () => {
           </p>
           <div className={styles.stats}>
             <div className={styles.statItem}>
-              <span className={styles.statNumber}>10K+</span>
+              <span className={styles.statNumber}>15K+</span>
               <span className={styles.statLabel}>Crimes Prevented</span>
             </div>
             <div className={styles.statItem}>
-              <span className={styles.statNumber}>500K+</span>
+              <span className={styles.statNumber}>300K+</span>
               <span className={styles.statLabel}>Active Users</span>
             </div>
             <div className={styles.statItem}>
