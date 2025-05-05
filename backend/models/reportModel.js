@@ -30,6 +30,11 @@ class ReportModel {
         );
         if (userRows.length > 0) {
           reporterAddress = userRows[0].address;
+          console.log(
+            `Setting reporter_address to: ${reporterAddress} for user ID: ${reporterId}`
+          );
+        } else {
+          console.log(`No address found for user ID: ${reporterId}`);
         }
       }
 
@@ -52,10 +57,16 @@ class ReportModel {
         ]
       );
 
+      // Log the created report ID and address info for debugging
+      console.log(
+        `Created report ID: ${reportResult.insertId}, with reporter_address: ${reporterAddress}`
+      );
+
       await connection.commit();
       return reportResult.insertId;
     } catch (error) {
       await connection.rollback();
+      console.error("Error creating report:", error);
       throw error;
     } finally {
       connection.release();
@@ -71,6 +82,7 @@ class ReportModel {
     try {
       const [rows] = await connection.query(
         `SELECT cr.*, 
+         cr.reporter_address,
          COUNT(v.id) AS total_validations,
          SUM(CASE WHEN v.is_valid = true THEN 1 ELSE 0 END) AS valid_count,
          SUM(CASE WHEN v.is_valid = false THEN 1 ELSE 0 END) AS invalid_count
@@ -79,6 +91,15 @@ class ReportModel {
          GROUP BY cr.id
          ORDER BY cr.created_at DESC`
       );
+
+      console.log(`Retrieved ${rows.length} reports from database`);
+
+      // Check if we have reporter_address in results
+      if (rows.length > 0) {
+        console.log(
+          `First report reporter_address: ${rows[0].reporter_address}`
+        );
+      }
 
       // Process and return the rows with parsed JSON data and full URLs
       return rows.map((row) => {
@@ -95,9 +116,11 @@ class ReportModel {
             path: video,
             url: fileUtils.getFileUrl(video),
           })),
+          description: `${row.crime_type} in ${row.location}`,
         };
       });
     } catch (error) {
+      console.error("Error in getAll:", error);
       throw error;
     } finally {
       connection.release();

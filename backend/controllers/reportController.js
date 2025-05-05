@@ -138,20 +138,29 @@ const createReport = async (req, res) => {
     }
 
     // Explicitly notify admins about high-risk reports that need urgent attention
-    if (req.body.armed === "yes" || 
-        req.body.crimeType === "homicide" || 
-        req.body.crimeType === "assault" || 
-        req.body.crimeType === "robbery") {
+    if (
+      req.body.armed === "yes" ||
+      req.body.crimeType === "homicide" ||
+      req.body.crimeType === "assault" ||
+      req.body.crimeType === "robbery"
+    ) {
       try {
         await NotificationService.notifyAllAdmins({
           title: "URGENT: High-Risk Crime Report",
-          message: `A ${req.body.armed === "yes" ? "ARMED " : ""}${req.body.crimeType} report (#${reportId}) in ${req.body.location} requires immediate attention.`,
+          message: `A ${req.body.armed === "yes" ? "ARMED " : ""}${
+            req.body.crimeType
+          } report (#${reportId}) in ${
+            req.body.location
+          } requires immediate attention.`,
           type: "alert",
-          relatedId: reportId
+          relatedId: reportId,
         });
         console.log("Urgent admin notifications sent successfully");
       } catch (notificationError) {
-        console.error("Error sending admin urgent notifications:", notificationError);
+        console.error(
+          "Error sending admin urgent notifications:",
+          notificationError
+        );
         // We still want to return success even if notification fails
       }
     }
@@ -221,18 +230,41 @@ const healthCheck = async (req, res) => {
  */
 const getAllReports = async (req, res) => {
   try {
-    // Using the improved model method to get reports with reporter details
-    const reports = await ReportModel.getAllWithReporterDetails();
+    // Get all reports from the database
+    const connection = await require("../config/db").pool.getConnection();
+    try {
+      // Modified query to include reporter_address
+      const [reports] = await connection.query(
+        `SELECT id, crime_id, location, time, crime_type, num_criminals, victim_gender, 
+        armed, photos, videos, status, created_at, reporter_id, reporter_address
+        FROM crime_reports ORDER BY created_at DESC`
+      );
 
-    res.status(200).json({
-      status: "success",
-      count: reports.length,
-      data: reports,
-    });
+      // Process photos and videos
+      const processedReports = reports.map((report) => {
+        const photos = report.photos ? JSON.parse(report.photos) : [];
+        const videos = report.videos ? JSON.parse(report.videos) : [];
+
+        return {
+          ...report,
+          photos: photos.map((photo) => ({ path: photo })),
+          videos: videos.map((video) => ({ path: video })),
+          description: `${report.crime_type} in ${report.location}`,
+        };
+      });
+
+      res.status(200).json({
+        success: true,
+        count: reports.length,
+        data: processedReports,
+      });
+    } finally {
+      connection.release();
+    }
   } catch (error) {
     console.error("Error fetching all reports:", error);
     res.status(500).json({
-      status: "error",
+      success: false,
       message: "Failed to fetch reports",
       error: error.message,
     });

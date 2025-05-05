@@ -17,11 +17,154 @@ const CrimeAlerts = () => {
   const [validationStatus, setValidationStatus] = useState({});
   const [showPoliceStationFinder, setShowPoliceStationFinder] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState("");
+  const [userProfile, setUserProfile] = useState(null);
   const { user, token } = useAuth();
 
+  // Fetch user profile when component mounts
   useEffect(() => {
-    fetchAlerts();
-  }, [user]);
+    fetchUserProfile();
+    fetchAllReports();
+  }, [user, token]);
+
+  // Fetch user profile to get the address
+  const fetchUserProfile = async () => {
+    if (!user || !token) return;
+
+    try {
+      const response = await axios.get(`${API_URL}/api/auth/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data && response.data.success) {
+        setUserProfile(response.data.user);
+        console.log("User profile fetched:", response.data.user);
+        console.log("User address:", response.data.user.address);
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
+
+  // Fetch all reports
+  const fetchAllReports = async () => {
+    try {
+      console.log("Fetching all reports...");
+      setLoading(true);
+      setError(null);
+
+      const response = await axios.get(`${API_URL}/api/reports`, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Reports API response:", response.data);
+
+      if (response.data && response.data.success) {
+        console.log(`Retrieved ${response.data.data.length} reports from API`);
+
+        // Check if reports have reporter_address field
+        if (response.data.data.length > 0) {
+          console.log("Sample report data:", {
+            id: response.data.data[0].id,
+            location: response.data.data[0].location,
+            reporter_address:
+              response.data.data[0].reporter_address || "Not set",
+          });
+        }
+
+        // Now filter the reports based on user address
+        filterReportsByUserAddress(response.data.data);
+      } else {
+        setError("Failed to load reports");
+        console.error("API returned error:", response.data);
+      }
+    } catch (err) {
+      console.error("Error fetching reports:", err);
+      if (err.response) {
+        console.error("Response status:", err.response.status);
+        console.error("Response data:", err.response.data);
+      }
+      setError("Failed to load reports. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter reports based on user address
+  const filterReportsByUserAddress = (reports) => {
+    if (!reports || reports.length === 0) {
+      console.log("No reports to filter");
+      setAlerts([]);
+      return;
+    }
+
+    if (!user || !userProfile || !userProfile.address) {
+      console.log(
+        "No user profile or address to filter with, showing all reports"
+      );
+      setAlerts(reports);
+      return;
+    }
+
+    const userAddress = userProfile.address;
+    console.log(
+      `Filtering ${reports.length} reports with user address: "${userAddress}"`
+    );
+
+    // Check if reports have reporter_address field
+    const hasReporterAddress = reports.some(
+      (report) => report.reporter_address
+    );
+    if (!hasReporterAddress) {
+      console.warn(
+        "Warning: Reports don't have reporter_address field. Check backend implementation."
+      );
+    }
+
+    // Filter reports where reporter_address matches user's address
+    const filteredReports = reports.filter((report) => {
+      if (!report.reporter_address) {
+        console.log(`Report ID: ${report.id} has no reporter_address`);
+        return false;
+      }
+
+      const isMatch = report.reporter_address === userAddress;
+      console.log(
+        `Report ID: ${report.id}, Location: ${report.location}, Reporter address: "${report.reporter_address}", Match with "${userAddress}": ${isMatch}`
+      );
+      return isMatch;
+    });
+
+    console.log(
+      `Filtered reports: ${filteredReports.length} out of ${reports.length} total reports`
+    );
+
+    if (filteredReports.length > 0) {
+      console.log(
+        "Matched reports:",
+        filteredReports.map((a) => a.id).join(", ")
+      );
+    } else {
+      console.log(`No reports match user address: "${userAddress}"`);
+    }
+
+    // Set the filtered reports as alerts
+    setAlerts(filteredReports);
+
+    // Initialize validation status for each alert
+    const initialValidationStatus = {};
+    filteredReports.forEach((alert) => {
+      initialValidationStatus[alert.id] = {
+        userValidated: false,
+        userMarkedFalse: false,
+      };
+    });
+    setValidationStatus(initialValidationStatus);
+  };
 
   // Update countdown timers every second
   useEffect(() => {
@@ -88,7 +231,7 @@ const CrimeAlerts = () => {
 
         // If all alerts have expired, refetch to get new ones
         if (alerts.length > 0 && allExpired) {
-          fetchAlerts();
+          fetchAllReports();
         }
 
         return updatedCountdowns;
@@ -120,69 +263,6 @@ const CrimeAlerts = () => {
     return `${timeObj.hours.toString().padStart(2, "0")}:${timeObj.minutes
       .toString()
       .padStart(2, "0")}:${timeObj.seconds.toString().padStart(2, "0")}`;
-  };
-
-  const fetchAlerts = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      let url = `${API_URL}/api/crime-alerts`;
-
-      // If the user is logged in, prioritize alerts in their area
-      if (user && user.address) {
-        // Extract location parts for more flexible matching
-        const addressParts = user.address.split("-");
-        let searchTerm = user.address;
-
-        if (addressParts.length >= 2) {
-          // For Dhaka, use the area name
-          if (addressParts[0].trim().toLowerCase() === "dhaka") {
-            searchTerm = addressParts[1].trim();
-          } else {
-            searchTerm = addressParts[0].trim(); // Use district otherwise
-          }
-        }
-
-        url = `${API_URL}/api/crime-alerts/location?location=${encodeURIComponent(
-          searchTerm
-        )}`;
-      }
-
-      const response = await axios.get(url, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
-
-      if (response.data && response.data.success) {
-        // Filter alerts that are less than 12 hours old
-        const now = new Date();
-        const validAlerts = response.data.data.filter((alert) => {
-          const createdTime = new Date(alert.created_at || alert.timestamp);
-          const expiryTime = new Date(
-            createdTime.getTime() + ALERT_VISIBILITY_HOURS * 60 * 60 * 1000
-          );
-          return now < expiryTime;
-        });
-
-        setAlerts(validAlerts);
-
-        // Initialize validation status for each alert
-        const initialValidationStatus = {};
-        validAlerts.forEach((alert) => {
-          initialValidationStatus[alert.id] = {
-            userValidated: false,
-            userMarkedFalse: false,
-          };
-        });
-        setValidationStatus(initialValidationStatus);
-      } else {
-        setError("Failed to load alerts");
-      }
-    } catch (err) {
-      setError("Failed to load alerts. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
   };
 
   const formatTime = (timestamp) => {
@@ -242,7 +322,7 @@ const CrimeAlerts = () => {
           userMarkedFalse: false,
         },
       }));
-      
+
       alert("Failed to validate alert. Please try again.");
     }
   };
@@ -264,13 +344,22 @@ const CrimeAlerts = () => {
           <p className={styles.subtitle}>
             Real-time updates on criminal activity in your area
           </p>
+
+          {userProfile && (
+            <div className={styles["address-display"]}>
+              Showing reports for address:{" "}
+              <strong>{userProfile.address || "Not set"}</strong>
+            </div>
+          )}
+
+         
         </header>
 
         <div className={styles["alerts-list"]}>
           {loading ? (
             <div className={styles["loading-container"]}>
               <div className={styles["loading-spinner"]}></div>
-              <p>Loading alerts...</p>
+              <p>Loading reports...</p>
             </div>
           ) : error ? (
             <div className={styles["error-container"]}>
@@ -290,16 +379,37 @@ const CrimeAlerts = () => {
             </div>
           ) : alerts.length > 0 ? (
             alerts.map((alert) => (
-              <div key={alert.id} className={`${styles["alert-card"]} ${styles[alert.status]}`}>
+              <div
+                key={alert.id}
+                className={`${styles["alert-card"]} ${
+                  styles[alert.status || "active"]
+                }`}
+              >
                 <div className={styles["alert-header"]}>
-                  <span className={`${styles["alert-type"]} ${styles[alert.type.toLowerCase()]}`}>
-                    {alert.type}
+                  <span
+                    className={`${styles["alert-type"]} ${
+                      styles[
+                        (
+                          alert.type ||
+                          alert.crime_type ||
+                          "other"
+                        ).toLowerCase()
+                      ]
+                    }`}
+                  >
+                    {alert.type || alert.crime_type || "Report"}
                   </span>
                   <span className={styles["alert-time"]}>
                     {formatTime(alert.timestamp || alert.created_at)}
                   </span>
-                  <span className={`${styles["alert-status"]} ${styles[alert.status]}`}>
-                    {alert.status === "active" ? "ACTIVE" : "RESOLVED"}
+                  <span
+                    className={`${styles["alert-status"]} ${
+                      styles[alert.status || "active"]
+                    }`}
+                  >
+                    {alert.status === "active"
+                      ? "ACTIVE"
+                      : alert.status?.toUpperCase() || "PENDING"}
                   </span>
                 </div>
 
@@ -317,10 +427,14 @@ const CrimeAlerts = () => {
                     </svg>
                     {alert.location}
                   </h3>
-                  <p className={styles["alert-description"]}>{alert.description}</p>
+                  <p className={styles["alert-description"]}>
+                    {alert.description}
+                  </p>
                   {countdowns[alert.id] && (
                     <div className={styles["alert-countdown"]}>
-                      <span className={styles["countdown-label"]}>Expires in:</span>
+                      <span className={styles["countdown-label"]}>
+                        Expires in:
+                      </span>
                       <span className={styles["countdown-timer"]}>
                         {formatCountdown(countdowns[alert.id])}
                       </span>
@@ -332,7 +446,9 @@ const CrimeAlerts = () => {
                   <div className={styles["validation-buttons"]}>
                     <button
                       className={`${styles["validate-btn"]} ${
-                        validationStatus[alert.id]?.userValidated ? styles.active : ""
+                        validationStatus[alert.id]?.userValidated
+                          ? styles.active
+                          : ""
                       }`}
                       onClick={() => handleValidation(alert.id, true)}
                       disabled={validationStatus[alert.id]?.userMarkedFalse}
@@ -400,8 +516,15 @@ const CrimeAlerts = () => {
                 <line x1="12" y1="9" x2="12" y2="13"></line>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
               </svg>
-              <h3>No alerts found</h3>
-              <p>There are currently no crime alerts in your area.</p>
+              <h3>No Reports Found</h3>
+              {userProfile && userProfile.address ? (
+                <p>
+                  There are currently no crime reports matching your address:{" "}
+                  <strong>{userProfile.address}</strong>
+                </p>
+              ) : (
+                <p>There are currently no crime reports in your area.</p>
+              )}
             </div>
           )}
         </div>
@@ -424,17 +547,28 @@ const CrimeAlerts = () => {
 
               <div className={styles["modal-header"]}>
                 <div className={styles["modal-title"]}>
-                  <h2>{activeAlert.type} Incident Details</h2>
-                  <span className={`${styles["modal-status"]} ${styles[activeAlert.status]}`}>
+                  <h2>
+                    {activeAlert.type || activeAlert.crime_type || "Crime"}{" "}
+                    Incident Details
+                  </h2>
+                  <span
+                    className={`${styles["modal-status"]} ${
+                      styles[activeAlert.status || "active"]
+                    }`}
+                  >
                     {activeAlert.status === "active"
                       ? "ACTIVE ALERT"
-                      : "RESOLVED CASE"}
+                      : activeAlert.status === "resolved"
+                      ? "RESOLVED CASE"
+                      : "PENDING REVIEW"}
                   </span>
                 </div>
                 <div className={styles["alert-timer"]}>
                   {countdowns[activeAlert.id] && (
                     <div className={styles["alert-countdown"]}>
-                      <span className={styles["countdown-label"]}>Alert expires in:</span>
+                      <span className={styles["countdown-label"]}>
+                        Alert expires in:
+                      </span>
                       <span className={styles["countdown-timer"]}>
                         {formatCountdown(countdowns[activeAlert.id])}
                       </span>
@@ -444,10 +578,18 @@ const CrimeAlerts = () => {
               </div>
 
               <div className={styles["modal-body"]}>
-                <div className={`${styles["detail-group"]} ${styles["incident-overview"]}`}>
+                <div
+                  className={`${styles["detail-group"]} ${styles["incident-overview"]}`}
+                >
                   <h3>Incident Overview</h3>
                   <div className={styles["detail-item"]}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
                       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                       <circle cx="12" cy="10" r="3"></circle>
                     </svg>
@@ -457,27 +599,53 @@ const CrimeAlerts = () => {
                     </div>
                   </div>
                   <div className={styles["detail-item"]}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
                       <circle cx="12" cy="12" r="10"></circle>
                       <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
                     <div>
                       <strong>Time:</strong>
-                      <p>{formatTime(activeAlert.timestamp || activeAlert.created_at)}</p>
+                      <p>
+                        {formatTime(
+                          activeAlert.timestamp || activeAlert.created_at
+                        )}
+                      </p>
                     </div>
                   </div>
                   <div className={styles["detail-item"]}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
                       <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
                       <line x1="4" y1="22" x2="4" y2="15"></line>
                     </svg>
                     <div>
                       <strong>Crime Type:</strong>
-                      <p>{activeAlert.type}</p>
+                      <p>
+                        {activeAlert.type ||
+                          activeAlert.crime_type ||
+                          "Unknown"}
+                      </p>
                     </div>
                   </div>
                   <div className={styles["detail-item"]}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                       <polyline points="14 2 14 8 20 8"></polyline>
                       <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -489,6 +657,25 @@ const CrimeAlerts = () => {
                       <p>{activeAlert.description}</p>
                     </div>
                   </div>
+
+                  {activeAlert.reporter_address && (
+                    <div className={styles["detail-item"]}>
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                      </svg>
+                      <div>
+                        <strong>Reporter Address:</strong>
+                        <p>{activeAlert.reporter_address}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {activeAlert.details && (
@@ -498,7 +685,13 @@ const CrimeAlerts = () => {
                       <div className={styles["detail-grid"]}>
                         {activeAlert.details.peopleInvolved && (
                           <div className={styles["detail-item"]}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                            >
                               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                               <circle cx="9" cy="7" r="4"></circle>
                               <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -512,7 +705,13 @@ const CrimeAlerts = () => {
                         )}
                         {activeAlert.details.victimDescription && (
                           <div className={styles["detail-item"]}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                            >
                               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                               <circle cx="12" cy="7" r="4"></circle>
                             </svg>
@@ -523,11 +722,17 @@ const CrimeAlerts = () => {
                           </div>
                         )}
                       </div>
-                      
+
                       <div className={styles["detail-grid"]}>
                         {activeAlert.details.weapons && (
                           <div className={styles["detail-item"]}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                            >
                               <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
                             </svg>
                             <div>
@@ -538,7 +743,13 @@ const CrimeAlerts = () => {
                         )}
                         {activeAlert.details.suspectDescription && (
                           <div className={styles["detail-item"]}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                            >
                               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                               <circle cx="12" cy="7" r="4"></circle>
                               <line x1="12" y1="11" x2="12" y2="17"></line>
@@ -558,14 +769,26 @@ const CrimeAlerts = () => {
                       <div className={styles["detail-grid"]}>
                         {activeAlert.details.dangerLevel && (
                           <div className={styles["detail-item"]}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                            >
                               <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                               <line x1="12" y1="9" x2="12" y2="13"></line>
                               <line x1="12" y1="17" x2="12.01" y2="17"></line>
                             </svg>
                             <div>
                               <strong>Danger Level:</strong>
-                              <p className={`${styles["danger-level"]} ${styles[activeAlert.details.dangerLevel.toLowerCase()]}`}>
+                              <p
+                                className={`${styles["danger-level"]} ${
+                                  styles[
+                                    activeAlert.details.dangerLevel.toLowerCase()
+                                  ]
+                                }`}
+                              >
                                 {activeAlert.details.dangerLevel}
                               </p>
                             </div>
@@ -573,7 +796,13 @@ const CrimeAlerts = () => {
                         )}
                         {activeAlert.details.policeResponse && (
                           <div className={styles["detail-item"]}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                            >
                               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                             </svg>
                             <div>
@@ -649,7 +878,10 @@ const CrimeAlerts = () => {
                     </svg>
                     Find Nearby Police Stations
                   </button>
-                  <button className={`${styles["action-btn"]} ${styles.secondary} ${styles["close-btn"]}`} onClick={closeDetails}>
+                  <button
+                    className={`${styles["action-btn"]} ${styles.secondary} ${styles["close-btn"]}`}
+                    onClick={closeDetails}
+                  >
                     <svg
                       width="16"
                       height="16"

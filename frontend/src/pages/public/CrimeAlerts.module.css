@@ -323,9 +323,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10000; /* Extreme z-index for overlay */
+  z-index: 10000;
+  /* Extreme z-index for overlay */
   padding: 1rem;
-  overflow-y: auto; /* Allow modal scrolling on small screens */
+  overflow-y: auto;
+  /* Allow modal scrolling on small screens */
   /* backdrop-filter: blur(5px); */
 }
 
@@ -335,11 +337,13 @@
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
   width: 100%;
   max-width: 700px;
-  max-height: 90vh; /* More vertical space */
+  max-height: 90vh;
+  /* More vertical space */
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden; /* Contain internal scrolling */
+  overflow: hidden;
+  /* Contain internal scrolling */
   border: 1px solid var(--gray-300);
   animation: modalFadeIn 0.3s ease-out;
 }
@@ -349,6 +353,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -359,7 +364,8 @@
 .modal-body {
   overflow-y: auto;
   padding: 1.5rem;
-  -webkit-overflow-scrolling: touch; /* Smooth scroll on mobile */
+  -webkit-overflow-scrolling: touch;
+  /* Smooth scroll on mobile */
   max-height: 60vh;
 }
 
@@ -368,7 +374,8 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  z-index: 10; /* Ensure close button stays on top */
+  z-index: 10;
+  /* Ensure close button stays on top */
   background: rgba(231, 76, 60, 0.9);
   border-radius: 50%;
   width: 2.5rem;
@@ -401,7 +408,8 @@
   color: var(--white);
   border-bottom: 1px solid var(--gray-200);
   position: relative;
-  z-index: 2; /* Keep header above scrolling content */
+  z-index: 2;
+  /* Keep header above scrolling content */
 }
 
 .modal-title h2 {
@@ -438,7 +446,8 @@
   background: var(--white);
   position: sticky;
   bottom: 0;
-  z-index: 2; /* Keep footer above scrolling content */
+  z-index: 2;
+  /* Keep footer above scrolling content */
   box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
@@ -504,9 +513,20 @@
   display: inline-block;
 }
 
-.danger-level.high { background: #fee2e2; color: #dc2626; }
-.danger-level.medium { background: #fef3c7; color: #d97706; }
-.danger-level.low { background: #dcfce7; color: #16a34a; }
+.danger-level.high {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.danger-level.medium {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.danger-level.low {
+  background: #dcfce7;
+  color: #16a34a;
+}
 
 /* Button groups */
 .validation-buttons {
@@ -586,7 +606,8 @@
 
 /* Police Station Finder Modal Integration */
 .police-station-modal {
-  z-index: 20000; /* Ensure it's above everything else */
+  z-index: 20000;
+  /* Ensure it's above everything else */
   position: fixed;
   top: 0;
   left: 0;
@@ -665,7 +686,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 50%);
   z-index: 1;
   pointer-events: none;
 }
@@ -805,17 +826,17 @@
     flex-direction: column;
     width: 100%;
   }
-  
+
   .alert-footer {
     flex-direction: column;
     gap: var(--space-md);
   }
-  
+
   .details-btn {
     width: 100%;
     justify-content: center;
   }
-  
+
   .validation-buttons {
     width: 100%;
     justify-content: space-between;
@@ -840,8 +861,45 @@
   .detail-group h3 {
     font-size: 1rem;
   }
-  
+
   .modal-content {
     max-height: 95vh;
   }
+}
+
+/* Add CSS for address display and refresh button */
+.address-display {
+  background-color: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin: 10px 0;
+  border-left: 4px solid #2c3e50;
+  font-size: 0.9rem;
+  color: #495057;
+  text-align: center;
+}
+
+.address-display strong {
+  color: #212529;
+  font-weight: 600;
+}
+
+.refresh-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2c3e50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  margin: 10px auto;
+  transition: all 0.2s ease;
+}
+
+.refresh-button:hover {
+  background-color: #1a252f;
+  transform: translateY(-2px);
 }
