@@ -19,6 +19,7 @@ const PoliceAlert = () => {
   const [showPoliceStationFinder, setShowPoliceStationFinder] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState("");
   const [userProfile, setUserProfile] = useState(null);
+  const [policeStationAddress, setPoliceStationAddress] = useState("");
   const { user, token } = useAuth();
 
   // Fetch user profile when component mounts
@@ -27,13 +28,13 @@ const PoliceAlert = () => {
     fetchAllReports();
   }, [user, token]);
 
-  // Apply address-based filtering whenever userProfile or allReports change
+  // Apply address-based filtering whenever userProfile, policeStationAddress or allReports change
   useEffect(() => {
     if (userProfile && allReports.length > 0) {
       console.log("Auto-filtering reports based on user profile change");
-      filterReportsByUserAddress(allReports);
+      filterReportsByPoliceStation(allReports);
     }
-  }, [userProfile, allReports]);
+  }, [userProfile, policeStationAddress, allReports]);
 
   // Fetch user profile to get the address
   const fetchUserProfile = async () => {
@@ -49,7 +50,18 @@ const PoliceAlert = () => {
       if (response.data && response.data.success) {
         setUserProfile(response.data.user);
         console.log("User profile fetched:", response.data.user);
-        console.log("User address:", response.data.user.address);
+
+        // Check if user is a police officer and has a station field
+        if (
+          response.data.user.role === "police" &&
+          response.data.user.station
+        ) {
+          setPoliceStationAddress(response.data.user.station);
+          console.log("Police station address:", response.data.user.station);
+        } else if (response.data.user.address) {
+          // Fallback to user address if station is not available
+          console.log("User address:", response.data.user.address);
+        }
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -75,7 +87,7 @@ const PoliceAlert = () => {
       if (response.data && response.data.success) {
         console.log(`Retrieved ${response.data.data.length} reports from API`);
 
-        // Check if reports have reporter_address field
+        // Check if reports have location field
         if (response.data.data.length > 0) {
           console.log("Sample report data:", {
             id: response.data.data[0].id,
@@ -91,7 +103,7 @@ const PoliceAlert = () => {
         // If userProfile is already available, filter reports now
         // Otherwise, the useEffect will handle filtering when userProfile changes
         if (userProfile) {
-          filterReportsByUserAddress(response.data.data);
+          filterReportsByPoliceStation(response.data.data);
         }
       } else {
         setError("Failed to load reports");
@@ -109,48 +121,55 @@ const PoliceAlert = () => {
     }
   };
 
-  // Filter reports based on user address
-  const filterReportsByUserAddress = (reports) => {
+  // Filter reports based on police station address
+  const filterReportsByPoliceStation = (reports) => {
     if (!reports || reports.length === 0) {
       console.log("No reports to filter");
       setAlerts([]);
       return;
     }
 
-    if (!user || !userProfile || !userProfile.address) {
-      console.log(
-        "No user profile or address to filter with, showing all reports"
-      );
+    if (!user || !userProfile) {
+      console.log("No user profile to filter with, showing all reports");
       setAlerts(reports);
       return;
     }
 
-    const userAddress = userProfile.address;
-    console.log(
-      `Filtering ${reports.length} reports with user address: "${userAddress}"`
-    );
+    // Use police station address if available, otherwise fall back to user address
+    const stationAddress = policeStationAddress || userProfile.address || "";
 
-    // Check if reports have reporter_address field
-    const hasReporterAddress = reports.some(
-      (report) => report.reporter_address
-    );
-    if (!hasReporterAddress) {
-      console.warn(
-        "Warning: Reports don't have reporter_address field. Check backend implementation."
-      );
+    if (!stationAddress) {
+      console.log("No station address available, showing all reports");
+      setAlerts(reports);
+      return;
     }
 
-    // Filter reports where reporter_address matches user's address
+    console.log(
+      `Filtering ${reports.length} reports with police station address: "${stationAddress}"`
+    );
+
+    // Extract district from station address (format: District-Thana)
+    const districtMatch = stationAddress.match(/^([^-]+)/);
+    const district = districtMatch ? districtMatch[1].trim() : stationAddress;
+
+    console.log(`Extracted district for filtering: "${district}"`);
+
+    // Filter reports where location contains the police district
     const filteredReports = reports.filter((report) => {
-      if (!report.reporter_address) {
-        console.log(`Report ID: ${report.id} has no reporter_address`);
+      if (!report.location) {
+        console.log(`Report ID: ${report.id} has no location`);
         return false;
       }
 
-      const isMatch = report.reporter_address === userAddress;
+      // Check if the report's location contains the district
+      const isMatch = report.location
+        .toLowerCase()
+        .includes(district.toLowerCase());
+
       console.log(
-        `Report ID: ${report.id}, Location: ${report.location}, Reporter address: "${report.reporter_address}", Match with "${userAddress}": ${isMatch}`
+        `Report ID: ${report.id}, Location: "${report.location}", Match with district "${district}": ${isMatch}`
       );
+
       return isMatch;
     });
 
@@ -164,7 +183,7 @@ const PoliceAlert = () => {
         filteredReports.map((a) => a.id).join(", ")
       );
     } else {
-      console.log(`No reports match user address: "${userAddress}"`);
+      console.log(`No reports match police station district: "${district}"`);
     }
 
     // Set the filtered reports as alerts
@@ -360,12 +379,17 @@ const PoliceAlert = () => {
             Real-time updates on criminal activity in your area
           </p>
 
-          {userProfile && (
+          {policeStationAddress ? (
+            <div className={styles["address-display"]}>
+              Showing reports for police station:{" "}
+              <strong>{policeStationAddress}</strong>
+            </div>
+          ) : userProfile && userProfile.address ? (
             <div className={styles["address-display"]}>
               Showing reports for address:{" "}
               <strong>{userProfile.address || "Not set"}</strong>
             </div>
-          )}
+          ) : null}
 
           <button
             className={styles["refresh-button"]}
@@ -537,7 +561,12 @@ const PoliceAlert = () => {
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
               </svg>
               <h3>No Reports Found</h3>
-              {userProfile && userProfile.address ? (
+              {policeStationAddress ? (
+                <p>
+                  There are currently no crime reports matching your police
+                  station area: <strong>{policeStationAddress}</strong>
+                </p>
+              ) : userProfile && userProfile.address ? (
                 <p>
                   There are currently no crime reports matching your address:{" "}
                   <strong>{userProfile.address}</strong>
