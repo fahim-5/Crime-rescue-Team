@@ -107,8 +107,8 @@ const Navbar = () => {
             <NotificationBadge />
           </li>
           <li className={`alert-link-container ${hasActiveAlerts || isOnAlertsPage ? "alert-active" : ""}`}>
-            <Link to="/crime-alerts">Crime Alerts</Link>
-          </li>
+              <Link to="/police/alert">Crime Alerts</Link>
+            </li>
           <li><Link to="/police/analytics">Analytics</Link></li>
           <li><Link to="/police/settings">Console</Link></li>
           <li><Link to="/messages">Messages</Link></li>

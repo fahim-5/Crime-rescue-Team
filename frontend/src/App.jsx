@@ -37,7 +37,7 @@ import PoliceDashboard from "./pages/police/PoliceDashboard";
 import PoliceReports from "./pages/police/PoliceReports";
 import ResolvedCases from "./pages/police/ResolvedCases";
 import PendingCases from "./pages/police/PendingCases";
-
+import PoliceAlert from "./pages/police/PoliceAlert";
 // Shared
 import UserReports from "./components/UserReports";
 import PrivateRoute from "./components/PrivateRoute";
@@ -102,6 +102,7 @@ function App() {
           <Route path="/police/pending" element={<PendingCases />} />
           <Route path="/police/resolved" element={<ResolvedCases />} />
           <Route path="/police/messages" element={<MessagesPanel />} />
+          <Route path="/police/alert" element={<PoliceAlert />} />
 
           {/* Admin Routes */}
           <Route
