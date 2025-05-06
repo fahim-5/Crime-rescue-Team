@@ -567,7 +567,17 @@ const changePassword = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id; // Get user ID from authenticated request
-    const { full_name, email, mobile_no, address, nid } = req.body;
+    const {
+      full_name,
+      email,
+      mobile_no,
+      address,
+      nid,
+      police_id,
+      rank,
+      badge,
+      station,
+    } = req.body;
 
     // Only validate that required fields are present
     if (!full_name || !email) {
@@ -591,6 +601,23 @@ const updateProfile = async (req, res) => {
 
     if (nid) {
       updateData.national_id = nid;
+    }
+
+    // Add police-specific fields if they are provided
+    if (police_id !== undefined) {
+      updateData.police_id = police_id;
+    }
+
+    if (rank !== undefined) {
+      updateData.rank = rank;
+    }
+
+    if (badge !== undefined) {
+      updateData.badge_number = badge; // Note: frontend uses 'badge', backend uses 'badge_number'
+    }
+
+    if (station !== undefined) {
+      updateData.station = station;
     }
 
     console.log("Profile update data:", updateData);

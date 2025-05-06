@@ -11,11 +11,13 @@ import {
   FiPhone,
   FiMapPin,
   FiCreditCard,
+  FiBriefcase,
+  FiAward,
 } from "react-icons/fi";
 import styles from "./Settings.module.css";
 import axios from "axios";
 import { useAuth } from "../context/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   getProfileUpdateErrors,
   validatePassword,
@@ -24,7 +26,9 @@ import {
 const Settings = () => {
   const { user, login, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isAdminUser, setIsAdminUser] = useState(false);
+  const [isPoliceUser, setIsPoliceUser] = useState(false);
   const [userData, setUserData] = useState({
     id: "",
     username: "",
@@ -35,6 +39,11 @@ const Settings = () => {
     address: "",
     joinDate: "",
     lastLogin: "2 hours ago",
+    // Police specific fields
+    policeId: "",
+    rank: "",
+    badge: "",
+    station: "",
   });
 
   const [editMode, setEditMode] = useState(false);
@@ -50,21 +59,46 @@ const Settings = () => {
   const [redirectCountdown, setRedirectCountdown] = useState(5);
   const [redirectPath, setRedirectPath] = useState("/");
 
-  // Determine if the user is an admin when component mounts
+  // Determine if the user is an admin or police when component mounts
   useEffect(() => {
     try {
       const userStr = localStorage.getItem("user");
       if (userStr) {
         const userObj = JSON.parse(userStr);
+        console.log("User data from localStorage:", userObj); // Debug log
         if (userObj && userObj.role === "admin") {
           console.log("Admin user detected, enabling special handling");
           setIsAdminUser(true);
         }
+        if (userObj && userObj.role === "police") {
+          console.log("Police user detected, enabling police-specific fields");
+          setIsPoliceUser(true);
+        }
+
+        // Log specifically if the police role is found
+        console.log("User role:", userObj.role);
+        console.log("Is police user:", userObj.role === "police");
+      } else {
+        console.log("No user data found in localStorage");
       }
     } catch (error) {
-      console.error("Error checking admin status:", error);
+      console.error("Error checking user role status:", error);
     }
   }, []);
+
+  // Check if we're on the police/settings route
+  const isPoliceRoute = location.pathname.includes("police/settings");
+
+  // Show police fields when user is police role (regardless of route)
+  // Force enable for debugging if needed by setting to true
+  const showPoliceFields = isPoliceUser || isPoliceRoute;
+
+  // Debug log showPoliceFields status
+  useEffect(() => {
+    console.log("showPoliceFields:", showPoliceFields);
+    console.log("isPoliceUser:", isPoliceUser);
+    console.log("isPoliceRoute:", isPoliceRoute);
+  }, [showPoliceFields, isPoliceUser, isPoliceRoute]);
 
   // Fetch user profile data when component mounts
   useEffect(() => {
@@ -183,6 +217,22 @@ const Settings = () => {
       // Always attempt to get a token (will now always return something)
       const token = checkAuthToken();
 
+      // Check if the user is a police officer based on localStorage
+      try {
+        const userStr = localStorage.getItem("user");
+        if (userStr) {
+          const userObj = JSON.parse(userStr);
+          if (userObj && userObj.role === "police") {
+            console.log(
+              "Setting police user status true from fetchUserProfile"
+            );
+            setIsPoliceUser(true);
+          }
+        }
+      } catch (error) {
+        console.error("Error checking user role in fetchUserProfile:", error);
+      }
+
       if (!token) {
         // If token is invalid or missing, use fallback data immediately
         console.log("No valid token available, using fallback data");
@@ -209,6 +259,13 @@ const Settings = () => {
           setProfileError("");
 
           const profileData = response.data.user;
+          console.log("Profile data from API:", profileData);
+
+          // Check if user is police from API response
+          if (profileData.role === "police") {
+            console.log("Setting police user status to true from API response");
+            setIsPoliceUser(true);
+          }
 
           // Format date
           const joinDate = new Date(profileData.created_at).toLocaleDateString(
@@ -220,7 +277,7 @@ const Settings = () => {
             }
           );
 
-          setUserData({
+          const userData = {
             id: profileData.id,
             username: profileData.username || "",
             email: profileData.email || "",
@@ -238,27 +295,33 @@ const Settings = () => {
                   minute: "2-digit",
                 })
               : "2 hours ago",
-          });
+          };
 
-          setTempUserData({
-            id: profileData.id,
-            username: profileData.username || "",
-            email: profileData.email || "",
-            fullName: profileData.full_name || "",
-            phone: profileData.mobile_no || "",
-            nid: profileData.national_id || "",
-            address: profileData.address || "",
-            joinDate: joinDate,
-            lastLogin: profileData.last_login
-              ? new Date(profileData.last_login).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : "2 hours ago",
-          });
+          // Add police-specific fields if the user is a police officer or if the fields exist in the response
+          const isPoliceUser =
+            profileData.role === "police" ||
+            profileData.police_id ||
+            profileData.badge_number ||
+            profileData.rank ||
+            profileData.station;
+
+          if (isPoliceUser) {
+            console.log("Police fields from API:", {
+              police_id: profileData.police_id,
+              badge_number: profileData.badge_number,
+              rank: profileData.rank,
+              station: profileData.station,
+              role: profileData.role,
+            });
+
+            userData.policeId = profileData.police_id || "";
+            userData.rank = profileData.rank || "";
+            userData.badge = profileData.badge_number || ""; // Map badge_number to badge
+            userData.station = profileData.station || "";
+          }
+
+          setUserData(userData);
+          setTempUserData({ ...userData });
         } else {
           console.log("Server returned non-success status:", response.data);
           // Don't overwrite previous error messages from token validation
@@ -318,6 +381,7 @@ const Settings = () => {
 
       if (userStr) {
         storedUser = JSON.parse(userStr);
+        console.log("User data from localStorage:", storedUser);
       }
 
       // Use stored user data or fallback values
@@ -337,6 +401,26 @@ const Settings = () => {
         lastLogin: "Recently",
       };
 
+      // Add police-specific fields if appropriate
+      // Check both stored role and component state
+      const isPolice =
+        (storedUser && storedUser.role === "police") || isPoliceUser;
+
+      if (isPolice) {
+        console.log("Adding police fields from localStorage:", {
+          police_id: storedUser?.police_id,
+          badge_number: storedUser?.badge_number,
+          rank: storedUser?.rank,
+          station: storedUser?.station,
+        });
+
+        fallbackData.policeId = storedUser?.police_id || "";
+        fallbackData.rank = storedUser?.rank || "";
+        fallbackData.badge = storedUser?.badge_number || ""; // Map badge_number to badge
+        fallbackData.station = storedUser?.station || "";
+      }
+
+      console.log("Setting user data:", fallbackData);
       setUserData(fallbackData);
       setTempUserData(fallbackData);
     } catch (error) {
@@ -353,6 +437,14 @@ const Settings = () => {
         joinDate: new Date().toLocaleDateString(),
         lastLogin: "Recently",
       };
+
+      // Add police-specific fields even to hardcoded fallback if user is police
+      if (isPoliceUser) {
+        hardcodedFallback.policeId = "";
+        hardcodedFallback.rank = "";
+        hardcodedFallback.badge = "";
+        hardcodedFallback.station = "";
+      }
 
       setUserData(hardcodedFallback);
       setTempUserData(hardcodedFallback);
@@ -396,6 +488,21 @@ const Settings = () => {
         updateData.national_id = tempUserData.nid;
       }
 
+      // Include police-specific fields if user is police
+      if (showPoliceFields) {
+        updateData.police_id = tempUserData.policeId || "";
+        updateData.rank = tempUserData.rank || "";
+        updateData.badge = tempUserData.badge || ""; // Frontend uses badge, backend expects badge field
+        updateData.station = tempUserData.station || "";
+
+        console.log("Sending police fields to API:", {
+          police_id: updateData.police_id,
+          badge: updateData.badge,
+          rank: updateData.rank,
+          station: updateData.station,
+        });
+      }
+
       console.log("Sending profile update data:", updateData);
 
       try {
@@ -421,6 +528,13 @@ const Settings = () => {
             phone: tempUserData.phone,
             address: tempUserData.address,
             nid: tempUserData.nid,
+            // Update police fields if applicable
+            ...(showPoliceFields && {
+              policeId: tempUserData.policeId,
+              rank: tempUserData.rank,
+              badge: tempUserData.badge,
+              station: tempUserData.station,
+            }),
           });
 
           // Update local storage user data
@@ -436,6 +550,15 @@ const Settings = () => {
                 address: tempUserData.address || "",
                 national_id: tempUserData.nid || "",
               };
+
+              // Add police fields to local storage if applicable
+              if (showPoliceFields) {
+                updatedUser.police_id = tempUserData.policeId || "";
+                updatedUser.rank = tempUserData.rank || "";
+                updatedUser.badge = tempUserData.badge || "";
+                updatedUser.station = tempUserData.station || "";
+              }
+
               localStorage.setItem("user", JSON.stringify(updatedUser));
             }
           } catch (err) {
@@ -456,6 +579,15 @@ const Settings = () => {
               address: tempUserData.address || "",
               national_id: tempUserData.nid || "",
             };
+
+            // Add police fields to auth context if applicable
+            if (showPoliceFields) {
+              updatedUser.police_id = tempUserData.policeId || "";
+              updatedUser.rank = tempUserData.rank || "";
+              updatedUser.badge = tempUserData.badge || "";
+              updatedUser.station = tempUserData.station || "";
+            }
+
             login(updatedUser);
           }
 
@@ -762,6 +894,11 @@ const Settings = () => {
               <div className={styles.profileInfo}>
                 <h3>{userData.fullName}</h3>
                 <p className={styles.profileMeta}>@{userData.username}</p>
+                {showPoliceFields && (
+                  <p className={styles.profileMeta}>
+                    <FiAward className={styles.inlineIcon} /> {userData.rank}
+                  </p>
+                )}
                 <p className={styles.profileMeta}>
                   Member since {userData.joinDate}
                 </p>
@@ -838,7 +975,6 @@ const Settings = () => {
             <div className={styles.modalContent}>
               <div className={styles.modalHeader}>
                 <h2 className={styles.modalTitle}>Edit Profile</h2>
-               
               </div>
 
               <div className={styles.modalBody}>
@@ -848,6 +984,18 @@ const Settings = () => {
                 {profileSuccess && (
                   <p className={styles.successMessage}>{profileSuccess}</p>
                 )}
+
+                {/* Debug information about police status */}
+                <div style={{ display: "none" }}>
+                  <p>Debug: isPoliceUser = {String(isPoliceUser)}</p>
+                  <p>Debug: showPoliceFields = {String(showPoliceFields)}</p>
+                  <p>
+                    Debug: user role ={" "}
+                    {localStorage.getItem("user")
+                      ? JSON.parse(localStorage.getItem("user"))?.role
+                      : "none"}
+                  </p>
+                </div>
 
                 {editMode ? (
                   <>
@@ -910,6 +1058,64 @@ const Settings = () => {
                         placeholder="Enter your full address"
                       />
                     </div>
+
+                    {/* Police-specific fields in edit mode */}
+                    {(showPoliceFields || isPoliceUser) && (
+                      <>
+                        <div className={styles.sectionDivider}>
+                          <FiBriefcase className={styles.dividerIcon} />
+                          <span>Police Information</span>
+                        </div>
+
+                        <div className={styles.formGroup}>
+                          <label className={styles.label}>Police ID</label>
+                          <input
+                            type="text"
+                            name="policeId"
+                            value={tempUserData.policeId}
+                            onChange={handleInputChange}
+                            className={styles.input}
+                            disabled={isLoading}
+                          />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                          <label className={styles.label}>Rank</label>
+                          <input
+                            type="text"
+                            name="rank"
+                            value={tempUserData.rank}
+                            onChange={handleInputChange}
+                            className={styles.input}
+                            disabled={isLoading}
+                          />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                          <label className={styles.label}>Badge Number</label>
+                          <input
+                            type="text"
+                            name="badge"
+                            value={tempUserData.badge}
+                            onChange={handleInputChange}
+                            className={styles.input}
+                            disabled={isLoading}
+                          />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                          <label className={styles.label}>Station</label>
+                          <input
+                            type="text"
+                            name="station"
+                            value={tempUserData.station}
+                            onChange={handleInputChange}
+                            className={styles.input}
+                            disabled={isLoading}
+                          />
+                        </div>
+                      </>
+                    )}
                   </>
                 ) : (
                   <>
@@ -952,6 +1158,46 @@ const Settings = () => {
                         {userData.address}
                       </span>
                     </div>
+
+                    {/* Police-specific fields in view mode */}
+                    {(showPoliceFields || isPoliceUser) && (
+                      <>
+                        <div className={styles.sectionDivider}>
+                          <FiBriefcase className={styles.dividerIcon} />
+                          <span>Police Information</span>
+                        </div>
+
+                        <div className={styles.profileField}>
+                          <span className={styles.fieldLabel}>Police ID:</span>
+                          <span className={styles.fieldValue}>
+                            {userData.policeId}
+                          </span>
+                        </div>
+
+                        <div className={styles.profileField}>
+                          <span className={styles.fieldLabel}>Rank:</span>
+                          <span className={styles.fieldValue}>
+                            {userData.rank}
+                          </span>
+                        </div>
+
+                        <div className={styles.profileField}>
+                          <span className={styles.fieldLabel}>
+                            Badge Number:
+                          </span>
+                          <span className={styles.fieldValue}>
+                            {userData.badge}
+                          </span>
+                        </div>
+
+                        <div className={styles.profileField}>
+                          <span className={styles.fieldLabel}>Station:</span>
+                          <span className={styles.fieldValue}>
+                            {userData.station}
+                          </span>
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
               </div>
@@ -1007,7 +1253,6 @@ const Settings = () => {
             <div className={styles.modalContent}>
               <div className={styles.modalHeader}>
                 <h2 className={styles.modalTitleDelete}>Delete Account</h2>
-                
               </div>
 
               <div className={styles.modalBody}>
@@ -1035,7 +1280,6 @@ const Settings = () => {
               </div>
 
               <div className={styles.modalFooter}>
-
                 <button
                   className={`${styles.button} ${styles.dangerButton}`}
                   onClick={handleDeleteAccount}
@@ -1053,7 +1297,6 @@ const Settings = () => {
                 >
                   Cancel
                 </button>
-                
               </div>
             </div>
           </div>

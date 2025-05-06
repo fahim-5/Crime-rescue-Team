@@ -477,7 +477,9 @@ class UserModel {
       // Check if police table has user_id column
       let hasUserIdColumn = false;
       try {
-        const [columns] = await connection.query("SHOW COLUMNS FROM police WHERE Field = 'user_id'");
+        const [columns] = await connection.query(
+          "SHOW COLUMNS FROM police WHERE Field = 'user_id'"
+        );
         hasUserIdColumn = columns.length > 0;
       } catch (error) {
         console.error("Error checking for user_id column:", error);
@@ -626,42 +628,45 @@ class UserModel {
         "SELECT * FROM users WHERE id = ?",
         [id]
       );
-      
+
       if (!users[0]) {
         return null;
       }
-      
+
       const user = users[0];
-      
+
       // If this is a police user, get additional police information
       if (user.role === "police") {
         // First check if the police table has the user_id column
         let hasUserIdColumn = false;
         try {
-          const [columns] = await connection.query("SHOW COLUMNS FROM police WHERE Field = 'user_id'");
+          const [columns] = await connection.query(
+            "SHOW COLUMNS FROM police WHERE Field = 'user_id'"
+          );
           hasUserIdColumn = columns.length > 0;
         } catch (error) {
           console.error("Error checking for user_id column:", error);
         }
-        
+
         let query;
         if (hasUserIdColumn) {
-          query = "SELECT police_id, station, rank FROM police WHERE user_id = ? OR email = ?";
+          query =
+            "SELECT police_id, station, rank FROM police WHERE user_id = ? OR email = ?";
         } else {
           query = "SELECT police_id, station, rank FROM police WHERE email = ?";
         }
-        
-        const [policeInfo] = hasUserIdColumn 
+
+        const [policeInfo] = hasUserIdColumn
           ? await connection.query(query, [id, user.email])
           : await connection.query(query, [user.email]);
-        
+
         if (policeInfo[0]) {
           user.police_id = policeInfo[0].police_id;
           user.station = policeInfo[0].station;
           user.rank = policeInfo[0].rank;
         }
       }
-      
+
       return user;
     } finally {
       await connection.release();
@@ -673,7 +678,17 @@ class UserModel {
     try {
       await connection.beginTransaction();
 
-      const { full_name, email, mobile_no, address, national_id } = userData;
+      const {
+        full_name,
+        email,
+        mobile_no,
+        address,
+        national_id,
+        police_id,
+        rank,
+        badge_number,
+        station,
+      } = userData;
 
       // Check if user exists
       const [existingUsers] = await connection.query(
@@ -714,6 +729,16 @@ class UserModel {
         ? national_id.trim()
         : user.national_id;
 
+      // Police-specific fields updates (only if user is police)
+      const isPoliceUser = user.role === "police";
+      const updatedPoliceId =
+        police_id !== undefined ? police_id.trim() : user.police_id;
+      const updatedRank = rank !== undefined ? rank.trim() : user.rank;
+      const updatedBadgeNumber =
+        badge_number !== undefined ? badge_number.trim() : user.badge_number;
+      const updatedStation =
+        station !== undefined ? station.trim() : user.station;
+
       // Create the base SQL for update - always include all fields
       let usersSql = `UPDATE users SET 
         full_name = ?, 
@@ -721,18 +746,41 @@ class UserModel {
         mobile_no = ?, 
         address = ?, 
         national_id = ?,
-        updated_at = NOW()
-        WHERE id = ?`;
+        updated_at = NOW()`;
+
+      // Add police-specific fields to the users table update if the user is a police officer
+      if (isPoliceUser) {
+        usersSql += `, 
+        police_id = ?,
+        rank = ?,
+        badge_number = ?,
+        station = ?`;
+      }
+
+      usersSql += ` WHERE id = ?`;
 
       // Create parameters array with all fields
-      const params = [
+      let params = [
         updatedFullName,
         updatedEmail,
         updatedMobileNo,
         updatedAddress,
         updatedNationalId,
-        userId,
       ];
+
+      // Add police-specific parameters if user is police
+      if (isPoliceUser) {
+        params = [
+          ...params,
+          updatedPoliceId,
+          updatedRank,
+          updatedBadgeNumber,
+          updatedStation,
+        ];
+      }
+
+      // Add the user ID parameter at the end
+      params.push(userId);
 
       // Update users table
       await connection.query(usersSql, params);
@@ -760,23 +808,54 @@ class UserModel {
 
         await connection.query(publicSql, publicParams);
       } else if (user.role === "police") {
+        // Check if the police table has the user_id column
+        let hasUserIdColumn = false;
+        try {
+          const [columns] = await connection.query(
+            "SHOW COLUMNS FROM police WHERE Field = 'user_id'"
+          );
+          hasUserIdColumn = columns.length > 0;
+        } catch (error) {
+          console.error("Error checking for user_id column:", error);
+        }
+
         let policeSql = `UPDATE police SET 
           full_name = ?, 
           email = ?, 
           mobile_no = ?, 
           address = ?, 
           national_id = ?,
+          police_id = ?,
+          rank = ?,
+          badge_number = ?,
+          station = ?,
           updated_at = NOW()
-          WHERE username = ?`;
+          WHERE `;
 
+        // Add the appropriate WHERE clause based on table structure
+        policeSql += hasUserIdColumn
+          ? `(user_id = ? OR email = ?)`
+          : `email = ?`;
+
+        // Create parameters array for police table with all fields
         const policeParams = [
           updatedFullName,
           updatedEmail,
           updatedMobileNo,
           updatedAddress,
           updatedNationalId,
-          user.username,
+          updatedPoliceId,
+          updatedRank,
+          updatedBadgeNumber,
+          updatedStation,
         ];
+
+        // Add WHERE clause parameters
+        if (hasUserIdColumn) {
+          policeParams.push(userId, user.email);
+        } else {
+          policeParams.push(user.email);
+        }
 
         await connection.query(policeSql, policeParams);
       } else if (user.role === "admin") {
@@ -804,7 +883,7 @@ class UserModel {
       await connection.commit();
 
       // Return updated user data
-      return {
+      const result = {
         id: userId,
         full_name: updatedFullName,
         username: user.username,
@@ -814,6 +893,16 @@ class UserModel {
         national_id: updatedNationalId,
         role: user.role,
       };
+
+      // Add police-specific fields to the result if user is police
+      if (isPoliceUser) {
+        result.police_id = updatedPoliceId;
+        result.rank = updatedRank;
+        result.badge_number = updatedBadgeNumber;
+        result.station = updatedStation;
+      }
+
+      return result;
     } catch (error) {
       await connection.rollback();
       throw error;
@@ -898,15 +987,20 @@ class UserModel {
         // First check if the police table has the user_id column
         let hasUserIdColumn = false;
         try {
-          const [columns] = await connection.query("SHOW COLUMNS FROM police WHERE Field = 'user_id'");
+          const [columns] = await connection.query(
+            "SHOW COLUMNS FROM police WHERE Field = 'user_id'"
+          );
           hasUserIdColumn = columns.length > 0;
         } catch (error) {
           console.error("Error checking for user_id column:", error);
         }
-        
+
         // Delete from police table based on available columns
         if (hasUserIdColumn) {
-          await connection.query("DELETE FROM police WHERE user_id = ? OR email = ?", [userId, email]);
+          await connection.query(
+            "DELETE FROM police WHERE user_id = ? OR email = ?",
+            [userId, email]
+          );
         } else {
           await connection.query("DELETE FROM police WHERE email = ?", [email]);
         }
@@ -1369,12 +1463,14 @@ class UserModel {
         // First check if the police table has the user_id column
         let hasUserIdColumn = false;
         try {
-          const [columns] = await connection.query("SHOW COLUMNS FROM police WHERE Field = 'user_id'");
+          const [columns] = await connection.query(
+            "SHOW COLUMNS FROM police WHERE Field = 'user_id'"
+          );
           hasUserIdColumn = columns.length > 0;
         } catch (error) {
           console.error("Error checking for user_id column:", error);
         }
-        
+
         // Use the appropriate query based on table structure
         let query;
         if (hasUserIdColumn) {
@@ -1399,7 +1495,7 @@ class UserModel {
             WHERE u.role = ?
           `;
         }
-        
+
         const [users] = await connection.query(query, [role]);
         console.log(`Found ${users.length} police users`);
         return users;

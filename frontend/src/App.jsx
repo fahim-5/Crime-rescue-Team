@@ -35,7 +35,6 @@ import DatabaseManagement from "./pages/admin/DatabaseManagement";
 // Police
 import PoliceDashboard from "./pages/police/PoliceDashboard";
 import PoliceReports from "./pages/police/PoliceReports";
-import PoliceSettings from "./pages/police/PoliceSettings";
 import ResolvedCases from "./pages/police/ResolvedCases";
 import PendingCases from "./pages/police/PendingCases";
 
@@ -99,7 +98,7 @@ function App() {
           <Route path="/police/dashboard" element={<PoliceDashboard />} />
           <Route path="/police/reports" element={<ReportedCrimes />} />
           <Route path="/police/analytics" element={<Analytics />} />
-          <Route path="/police/settings" element={<PoliceSettings />} />
+          <Route path="/police/settings" element={<Settings />} />
           <Route path="/police/pending" element={<PendingCases />} />
           <Route path="/police/resolved" element={<ResolvedCases />} />
           <Route path="/police/messages" element={<MessagesPanel />} />
