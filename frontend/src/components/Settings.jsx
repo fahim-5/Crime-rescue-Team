@@ -505,6 +505,15 @@ const Settings = () => {
 
       console.log("Sending profile update data:", updateData);
 
+
+
+      // if (!/^[a-zA-Z\s]+-[a-zA-Z\s]+$/.test(formData.address)) {
+      //   setError(
+      //     "Address must be in format: District-Thana (e.g., Dhaka-Mirpur)"
+      //   );
+      //   return;
+      // }
+
       try {
         const response = await axios.put(
           "http://localhost:5000/api/auth/profile",
@@ -520,6 +529,13 @@ const Settings = () => {
         );
 
         if (response.data.success) {
+
+          if (!/^[a-zA-Z\s]+-[a-zA-Z\s]+$/.test(tempUserData.station)) {
+            setError(
+              "Address must be in format: District-Thana (e.g., Dhaka-Mirpur)"
+            );
+            return;
+          }
           // Update the local state with the new data
           setUserData({
             ...userData,

@@ -76,6 +76,14 @@ const PoliceSignup = () => {
       );
       return false;
     }
+    
+
+    if (!/^[a-zA-Z\s]+-[a-zA-Z\s]+$/.test(formData.station)) {
+      setError(
+        "Station adress must be in format: District-Thana (e.g., Dhaka-Mirpur)."
+      );
+      return false;
+    }
 
     return true;
   };
