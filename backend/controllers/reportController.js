@@ -328,6 +328,40 @@ const validateCrimeReport = async (req, res) => {
     // If report has a reporter_id, send them a notification about the validation
     if (report && report.reporter_id) {
       try {
+        // If the validation is positive (isValid=true) and this is the first validation or
+        // we've reached the threshold, award the reporter 50 points
+        if (
+          isValid &&
+          (validations.valid === 1 || validations.valid === ALERT_THRESHOLD)
+        ) {
+          try {
+            // Directly update the points in the users table
+            const connection =
+              await require("../config/db").pool.getConnection();
+            try {
+              // Log what we're doing
+              console.log(
+                `Awarding 50 points to reporter ${report.reporter_id} for validated report ${reportId}`
+              );
+
+              // Update the user's points
+              await connection.query(
+                "UPDATE users SET points = points + 50 WHERE id = ?",
+                [report.reporter_id]
+              );
+
+              console.log(
+                `Successfully awarded 50 points to reporter ${report.reporter_id}`
+              );
+            } finally {
+              connection.release();
+            }
+          } catch (pointsError) {
+            console.error("Error awarding points:", pointsError);
+            // Continue with validation even if points award fails
+          }
+        }
+
         // Check if we've reached the validation threshold
         if (validations.valid >= ALERT_THRESHOLD) {
           // Send validated notification

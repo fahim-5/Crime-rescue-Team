@@ -18,11 +18,11 @@ const crimeAlertRoutes = require("./routes/crimeAlertRoutes");
 const policeFilesRoutes = require("./routes/policeFilesRoutes"); // New route file
 const adminRoutes = require("./routes/adminRoutes"); // Admin routes
 const databaseRoutes = require("./routes/databaseRoutes"); // Database management routes
+const userRoutes = require("./routes/userRoutes"); // User points routes
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const upload = require("./middlewares/upload");
 
 // Remove non-existent route imports
-// const userRoutes = require("./routes/userRoutes");
 // const crimeReportRoutes = require("./routes/crimeReportRoutes");
 // const caseRoutes = require("./routes/caseRoutes");
 // const dashboardRoutes = require("./routes/dashboardRoutes");
@@ -93,32 +93,32 @@ app.get("/api/health", (req, res) => {
 app.get("/api/fix-database", async (req, res) => {
   try {
     const sqlPath = path.join(__dirname, "scripts", "fix-database.sql");
-    
+
     if (!fs.existsSync(sqlPath)) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Database fix script not found" 
+      return res.status(404).json({
+        success: false,
+        message: "Database fix script not found",
       });
     }
-    
+
     const sqlContent = fs.readFileSync(sqlPath, "utf8");
     const connection = await pool.getConnection();
-    
+
     try {
       await connection.query(sqlContent);
-      res.status(200).json({ 
-        success: true, 
-        message: "Database fixed successfully" 
+      res.status(200).json({
+        success: true,
+        message: "Database fixed successfully",
       });
     } finally {
       connection.release();
     }
   } catch (error) {
     console.error("Error fixing database:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Error fixing database", 
-      error: error.message 
+    res.status(500).json({
+      success: false,
+      message: "Error fixing database",
+      error: error.message,
     });
   }
 });
@@ -137,9 +137,9 @@ app.use("/api/crime-alerts", crimeAlertRoutes);
 app.use("/api/police-files", policeFilesRoutes); // New police files route
 app.use("/api/admin", adminRoutes); // Admin routes
 app.use("/api/admin/database", databaseRoutes); // Database management routes
+app.use("/api/users", userRoutes); // User points routes
 
 // Remove non-existent route usages
-// app.use("/api/users", userRoutes);
 // app.use("/api/crime-reports", crimeReportRoutes);
 // app.use("/api/cases", caseRoutes);
 // app.use("/api/dashboard", dashboardRoutes);
