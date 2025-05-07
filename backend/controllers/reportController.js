@@ -392,6 +392,36 @@ const validateCrimeReport = async (req, res) => {
   }
 };
 
+/**
+ * Get validation counts for a specific report
+ * @param {*} req - Request object
+ * @param {*} res - Response object
+ */
+const getReportValidations = async (req, res) => {
+  try {
+    const { reportId } = req.params;
+
+    // Get validation counts
+    const validations = await ReportModel.getValidationsCount(reportId);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        report_id: reportId,
+        valid_count: validations.valid,
+        invalid_count: validations.invalid,
+        total_validations: validations.total,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching report validations:", error);
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message || "Failed to fetch report validations",
+    });
+  }
+};
+
 const getNearbyReports = async (req, res) => {
   try {
     const { latitude, longitude, radius } = req.query;
@@ -908,4 +938,5 @@ module.exports = {
   healthCheck,
   getDashboardStats,
   getRecentReports,
+  getReportValidations,
 };

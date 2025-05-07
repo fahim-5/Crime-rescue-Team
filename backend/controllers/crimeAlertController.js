@@ -1,6 +1,7 @@
 const CrimeAlertModel = require("../models/crimeAlertModel");
 const NotificationModel = require("../models/notificationModel");
 const UserModel = require("../models/userModel");
+const ReportModel = require("../models/reportModel");
 const { pool } = require("../config/db");
 
 /**
@@ -342,6 +343,115 @@ const CrimeAlertController = {
         success: false,
         message: "Failed to rebuild address-based alerts.",
         error: error.message,
+      });
+    }
+  },
+
+  /**
+   * Validate a crime alert (confirm or mark as false)
+   * @param {Object} req - Request object
+   * @param {Object} res - Response object
+   */
+  validateAlert: async (req, res) => {
+    try {
+      const { alertId } = req.params;
+      const userId = req.user.id;
+      const { isValid, comment } = req.body;
+
+      if (isValid === undefined) {
+        return res.status(400).json({
+          success: false,
+          message: "Validation status (isValid) is required",
+        });
+      }
+
+      // First, get the alert to check if it exists and to get the report ID
+      const alert = await CrimeAlertModel.getAlertById(alertId);
+
+      if (!alert) {
+        return res.status(404).json({
+          success: false,
+          message: "Crime alert not found",
+        });
+      }
+
+      // Add validation to the associated report
+      const result = await ReportModel.addValidation(
+        alert.report_id,
+        userId,
+        isValid,
+        comment
+      );
+
+      // Get updated validation counts
+      const validations = await ReportModel.getValidationsCount(
+        alert.report_id
+      );
+      const ALERT_THRESHOLD = 3; // Configure as needed
+
+      // Check if we've reached the validation threshold
+      if (validations.valid >= ALERT_THRESHOLD) {
+        // Alert police if not already alerted
+        await ReportModel.alertPolice(alert.report_id);
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Alert validation recorded successfully",
+        data: {
+          alertId,
+          isValid,
+          validations,
+        },
+      });
+    } catch (error) {
+      console.error("Error validating crime alert:", error);
+      return res.status(error.status || 500).json({
+        success: false,
+        message: error.message || "Failed to validate crime alert",
+      });
+    }
+  },
+
+  /**
+   * Get validation counts for a crime alert
+   * @param {Object} req - Request object
+   * @param {Object} res - Response object
+   */
+  getAlertValidations: async (req, res) => {
+    try {
+      const { alertId } = req.params;
+
+      // First, get the alert to check if it exists and to get the report ID
+      const alert = await CrimeAlertModel.getAlertById(alertId);
+
+      if (!alert) {
+        return res.status(404).json({
+          success: false,
+          message: "Crime alert not found",
+        });
+      }
+
+      // Get validation counts for the report
+      const validations = await ReportModel.getValidationsCount(
+        alert.report_id
+      );
+
+      return res.status(200).json({
+        success: true,
+        data: {
+          alert_id: alertId,
+          report_id: alert.report_id,
+          valid_count: validations.valid,
+          invalid_count: validations.invalid,
+          total_validations: validations.total,
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching crime alert validations:", error);
+      return res.status(error.status || 500).json({
+        success: false,
+        message: error.message || "Failed to fetch crime alert validations",
       });
     }
   },

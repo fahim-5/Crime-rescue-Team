@@ -84,6 +84,13 @@ router.post(
   reportController.validateCrimeReport
 );
 
+// Get validation counts for a crime report
+router.get(
+  "/:reportId/validations",
+  authMiddleware.authenticateToken,
+  reportController.getReportValidations
+);
+
 // Get dashboard statistics (for admin)
 router.get(
   "/dashboard/stats",

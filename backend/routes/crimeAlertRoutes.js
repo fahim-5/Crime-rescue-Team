@@ -47,6 +47,28 @@ router.put(
 );
 
 /**
+ * @route POST /api/crime-alerts/:alertId/validate
+ * @description Validate a crime alert (confirm or mark as false)
+ * @access Private (requires authentication)
+ */
+router.post(
+  "/:alertId/validate",
+  authMiddleware.authenticateToken,
+  crimeAlertController.validateAlert
+);
+
+/**
+ * @route GET /api/crime-alerts/:alertId/validations
+ * @description Get validation counts for a crime alert
+ * @access Private (requires authentication)
+ */
+router.get(
+  "/:alertId/validations",
+  authMiddleware.authenticateToken,
+  crimeAlertController.getAlertValidations
+);
+
+/**
  * @route POST /api/crime-alerts/rebuild-address-alerts
  * @description Rebuild all address-based alerts
  * @access Private (Admin only)
@@ -54,7 +76,7 @@ router.put(
 router.post(
   "/rebuild-address-alerts",
   authMiddleware.authenticateToken,
-  authMiddleware.authorizeRoles(['admin']),
+  authMiddleware.authorizeRoles(["admin"]),
   crimeAlertController.rebuildAddressBasedAlerts
 );
 

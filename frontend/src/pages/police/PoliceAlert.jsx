@@ -20,6 +20,7 @@ const PoliceAlert = () => {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [userProfile, setUserProfile] = useState(null);
   const [policeStationAddress, setPoliceStationAddress] = useState("");
+  const [validationCounts, setValidationCounts] = useState({});
   const { user, token } = useAuth();
 
   // Fetch user profile when component mounts
@@ -122,7 +123,7 @@ const PoliceAlert = () => {
   };
 
   // Filter reports based on police station address
-  const filterReportsByPoliceStation = (reports) => {
+  const filterReportsByPoliceStation = async (reports) => {
     if (!reports || reports.length === 0) {
       console.log("No reports to filter");
       setAlerts([]);
@@ -186,7 +187,52 @@ const PoliceAlert = () => {
       console.log(`No reports match police station district: "${district}"`);
     }
 
-    // Set the filtered reports as alerts
+    // Fetch validation counts for each alert
+    const initialCounts = {};
+    for (const alert of filteredReports) {
+      try {
+        console.log(`Fetching validations for alert ${alert.id}`);
+
+        const validationResponse = await axios.get(
+          `${API_URL}/api/reports/${alert.id}/validations`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        console.log(
+          `Validation data for alert ${alert.id}:`,
+          validationResponse.data
+        );
+
+        if (validationResponse.data && validationResponse.data.data) {
+          const { valid_count, invalid_count, total_validations } =
+            validationResponse.data.data;
+          initialCounts[alert.id] = {
+            confirmed: valid_count || 0,
+            disputed: invalid_count || 0,
+            total: total_validations || 0,
+          };
+          console.log(`Counts for alert ${alert.id}:`, initialCounts[alert.id]);
+        }
+      } catch (validationErr) {
+        console.error(
+          `Failed to fetch validations for alert ${alert.id}:`,
+          validationErr
+        );
+        if (validationErr.response) {
+          console.error("Response status:", validationErr.response.status);
+          console.error("Response data:", validationErr.response.data);
+        }
+        initialCounts[alert.id] = { confirmed: 0, disputed: 0, total: 0 };
+      }
+    }
+
+    console.log("All validation counts:", initialCounts);
+    setValidationCounts(initialCounts);
     setAlerts(filteredReports);
 
     // Initialize validation status for each alert
@@ -335,19 +381,65 @@ const PoliceAlert = () => {
         },
       }));
 
+      console.log(
+        `Attempting to validate alert ${alertId} with value: ${isValid}`
+      );
+
       // Send validation to server
-      await axios.post(
-        `${API_URL}/api/crime-alerts/${alertId}/validate`,
+      const response = await axios.post(
+        `${API_URL}/api/reports/${alertId}/validate`,
         {
           isValid,
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         }
       );
+
+      console.log("Validation response:", response.data);
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Validation failed");
+      }
+
+      // After successful validation, fetch updated validation counts
+      const validationResponse = await axios.get(
+        `${API_URL}/api/reports/${alertId}/validations`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Retrieved validation counts:", validationResponse.data);
+
+      // Update the validation counts state
+      if (validationResponse.data && validationResponse.data.data) {
+        const { valid_count, invalid_count, total_validations } =
+          validationResponse.data.data;
+        setValidationCounts((prev) => ({
+          ...prev,
+          [alertId]: {
+            confirmed: valid_count || 0,
+            disputed: invalid_count || 0,
+            total: total_validations || 0,
+          },
+        }));
+      }
     } catch (err) {
+      console.error("Validation error:", err);
+      if (err.response) {
+        console.error(
+          "Error response:",
+          err.response.status,
+          err.response.data
+        );
+      }
+
       // Revert UI state on error
       setValidationStatus((prev) => ({
         ...prev,
@@ -357,7 +449,7 @@ const PoliceAlert = () => {
         },
       }));
 
-      alert("Failed to validate alert. Please try again.");
+      alert(err.message || "Failed to validate alert. Please try again.");
     }
   };
 
@@ -482,6 +574,36 @@ const PoliceAlert = () => {
                       <span className={styles["countdown-timer"]}>
                         {formatCountdown(countdowns[alert.id])}
                       </span>
+                    </div>
+                  )}
+
+                  {/* Add Validation Status Display */}
+                  {validationCounts[alert.id] && (
+                    <div className={styles["validation-stats"]}>
+                      <div className={styles["validation-stat"]}>
+                        <span className={styles["validation-label"]}>
+                          Confirmed:
+                        </span>
+                        <span className={styles["validation-value"]}>
+                          {validationCounts[alert.id]?.confirmed || 0}
+                        </span>
+                      </div>
+                      <div className={styles["validation-stat"]}>
+                        <span className={styles["validation-label"]}>
+                          Disputed:
+                        </span>
+                        <span className={styles["validation-value"]}>
+                          {validationCounts[alert.id]?.disputed || 0}
+                        </span>
+                      </div>
+                      <div className={styles["validation-stat"]}>
+                        <span className={styles["validation-label"]}>
+                          Total:
+                        </span>
+                        <span className={styles["validation-value"]}>
+                          {validationCounts[alert.id]?.total || 0}
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -864,6 +986,63 @@ const PoliceAlert = () => {
                     </div>
                   </>
                 )}
+
+                {/* Add Verification Status section */}
+                <div
+                  className={`${styles["detail-group"]} ${styles["verification-stats"]}`}
+                >
+                  <h3>Verification Status</h3>
+                  <div className={styles["verification-grid"]}>
+                    <div className={styles["verification-stat"]}>
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path d="M20 6L9 17l-5-5"></path>
+                      </svg>
+                      <div>
+                        <strong>Confirmed:</strong>
+                        <p>
+                          {validationCounts[activeAlert.id]?.confirmed || 0}
+                        </p>
+                      </div>
+                    </div>
+                    <div className={styles["verification-stat"]}>
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path d="M18 6L6 18M6 6l12 12"></path>
+                      </svg>
+                      <div>
+                        <strong>Disputed:</strong>
+                        <p>{validationCounts[activeAlert.id]?.disputed || 0}</p>
+                      </div>
+                    </div>
+                    <div className={styles["verification-stat"]}>
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <circle cx="12" cy="12" r="4"></circle>
+                      </svg>
+                      <div>
+                        <strong>Total Validations:</strong>
+                        <p>{validationCounts[activeAlert.id]?.total || 0}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className={styles["modal-footer"]}>
