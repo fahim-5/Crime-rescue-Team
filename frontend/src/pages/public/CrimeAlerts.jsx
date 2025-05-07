@@ -390,59 +390,9 @@ const CrimeAlerts = () => {
         throw new Error(response.data.message || "Validation failed");
       }
 
-      // If validation is successful and isValid is true, award 50 points to the reporter
-      if (isValid) {
-        try {
-          // First, get the report details to find the reporter
-          const reportResponse = await axios.get(
-            `${API_URL}/api/reports/${alertId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-
-          if (
-            reportResponse.data &&
-            reportResponse.data.success &&
-            reportResponse.data.data
-          ) {
-            const report = reportResponse.data.data;
-            const reporterId = report.reporter_id;
-
-            if (reporterId) {
-              // Award points to the reporter
-              const pointsResponse = await axios.post(
-                `${API_URL}/api/users/${reporterId}/award-points`,
-                {
-                  points: 50,
-                  reason: `Report validation reward for report #${alertId}`,
-                },
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                  },
-                }
-              );
-
-              console.log("Points awarded response:", pointsResponse.data);
-
-              if (pointsResponse.data && pointsResponse.data.success) {
-                console.log(
-                  `Successfully awarded 50 points to reporter ${reporterId}`
-                );
-              }
-            } else {
-              console.log("No reporter ID found for this report");
-            }
-          }
-        } catch (pointsError) {
-          console.error("Error awarding points:", pointsError);
-          // We don't want to fail the validation if points awarding fails
-        }
-      }
+      // Points are now awarded automatically in the backend
+      // For police: 200 points, For regular users: 50 points
+      // No need to make additional API calls for points awarding
 
       // After successful validation, fetch updated validation counts
       const validationResponse = await axios.get(

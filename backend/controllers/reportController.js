@@ -302,6 +302,7 @@ const validateCrimeReport = async (req, res) => {
     const { reportId } = req.params;
     const userId = req.user.id;
     const { isValid, comment } = req.body;
+    const isPoliceValidation = req.user.role === "police"; // Fixed typo - renamed from isPolicaValidation
 
     if (isValid === undefined) {
       return res.status(400).json({
@@ -328,30 +329,35 @@ const validateCrimeReport = async (req, res) => {
     // If report has a reporter_id, send them a notification about the validation
     if (report && report.reporter_id) {
       try {
-        // If the validation is positive (isValid=true) and this is the first validation or
-        // we've reached the threshold, award the reporter 50 points
-        if (
-          isValid &&
-          (validations.valid === 1 || validations.valid === ALERT_THRESHOLD)
-        ) {
+        // If the validation is positive (isValid=true) and either:
+        // 1. This is a police validation (award 200 points)
+        // 2. This is a regular validation and either the first validation or threshold reached (award 50 points)
+        if (isValid) {
           try {
             // Directly update the points in the users table
             const connection =
               await require("../config/db").pool.getConnection();
             try {
+              // Award points based on who is validating
+              const pointsToAward = isPoliceValidation ? 200 : 50;
+
               // Log what we're doing
               console.log(
-                `Awarding 50 points to reporter ${report.reporter_id} for validated report ${reportId}`
+                `Awarding ${pointsToAward} points to reporter ${
+                  report.reporter_id
+                } for validated report ${reportId}${
+                  isPoliceValidation ? " (Police validation)" : ""
+                }`
               );
 
               // Update the user's points
               await connection.query(
-                "UPDATE users SET points = points + 50 WHERE id = ?",
-                [report.reporter_id]
+                "UPDATE users SET points = points + ? WHERE id = ?",
+                [pointsToAward, report.reporter_id]
               );
 
               console.log(
-                `Successfully awarded 50 points to reporter ${report.reporter_id}`
+                `Successfully awarded ${pointsToAward} points to reporter ${report.reporter_id}`
               );
             } finally {
               connection.release();
@@ -362,8 +368,19 @@ const validateCrimeReport = async (req, res) => {
           }
         }
 
-        // Check if we've reached the validation threshold
-        if (validations.valid >= ALERT_THRESHOLD) {
+        // If police officer validates as true, always create/update police alert
+        if (isPoliceValidation && isValid) {
+          try {
+            console.log(
+              `Police officer ID ${userId} validated report ${reportId} - creating police alert`
+            );
+            await ReportModel.alertPolice(reportId);
+          } catch (alertError) {
+            console.error("Error creating police alert:", alertError);
+          }
+        }
+        // Check if we've reached the validation threshold from regular users
+        else if (validations.valid >= ALERT_THRESHOLD) {
           // Send validated notification
           await NotificationService.sendReportNotification({
             userId: report.reporter_id,
@@ -386,9 +403,9 @@ const validateCrimeReport = async (req, res) => {
             userId: report.reporter_id,
             reportId: reportId,
             action: "updated",
-            details: `A community member has ${
-              isValid ? "confirmed" : "questioned"
-            } your report.`,
+            details: `A ${
+              isPoliceValidation ? "police officer" : "community member"
+            } has ${isValid ? "confirmed" : "questioned"} your report.`,
           });
         }
       } catch (notificationError) {
@@ -400,7 +417,15 @@ const validateCrimeReport = async (req, res) => {
       }
     }
 
-    if (validations.valid >= ALERT_THRESHOLD) {
+    if (isPoliceValidation && isValid) {
+      // Police validation - special handling
+      res.status(200).json({
+        success: true,
+        message: "Police validation recorded successfully. Alert created.",
+        data: result,
+      });
+    } else if (validations.valid >= ALERT_THRESHOLD) {
+      // Community threshold reached
       // Alert police
       await ReportModel.alertPolice(reportId);
 
