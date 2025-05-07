@@ -26,6 +26,7 @@ const CrimeAlerts = () => {
   // Fetch user profile when component mounts
   useEffect(() => {
     fetchUserProfile();
+    fetchAllReports(); // Auto-fetch reports when component mounts
   }, [user, token]);
 
   // Apply address-based filtering whenever userProfile or allReports change
@@ -461,28 +462,6 @@ const CrimeAlerts = () => {
               <strong>{userProfile.address || "Not set"}</strong>
             </div>
           )}
-
-          <button
-            className={styles["refresh-button"]}
-            onClick={fetchAllReports}
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{ marginRight: "8px" }}
-            >
-              <path d="M23 4v6h-6"></path>
-              <path d="M1 20v-6h6"></path>
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-            </svg>
-            Refresh Reports
-          </button>
         </header>
 
         <div className={styles["alerts-list"]}>
@@ -621,46 +600,52 @@ const CrimeAlerts = () => {
 
                 <div className={styles["alert-footer"]}>
                   <div className={styles["validation-buttons"]}>
-                    <button
-                      className={`${styles["validate-btn"]} ${
-                        validationStatus[alert.id]?.userValidated
-                          ? styles.active
-                          : ""
-                      }`}
-                      onClick={() => handleValidation(alert.id, true)}
-                      disabled={validationStatus[alert.id]?.userMarkedFalse}
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
+                    {!validationStatus[alert.id]?.userMarkedFalse && (
+                      <button
+                        className={`${styles["validate-btn"]} ${
+                          validationStatus[alert.id]?.userValidated
+                            ? styles.active
+                            : ""
+                        }`}
+                        onClick={() => handleValidation(alert.id, true)}
                       >
-                        <path d="M20 6L9 17l-5-5"></path>
-                      </svg>
-                      Validate
-                    </button>
-                    <button
-                      className={`${styles["false-report-btn"]} ${
-                        validationStatus[alert.id]?.userMarkedFalse
-                          ? styles.active
-                          : ""
-                      }`}
-                      onClick={() => handleValidation(alert.id, false)}
-                      disabled={validationStatus[alert.id]?.userValidated}
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                        >
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                        {validationStatus[alert.id]?.userValidated
+                          ? "Validated ✓"
+                          : "Validate"}
+                      </button>
+                    )}
+                    {!validationStatus[alert.id]?.userValidated && (
+                      <button
+                        className={`${styles["false-report-btn"]} ${
+                          validationStatus[alert.id]?.userMarkedFalse
+                            ? styles.active
+                            : ""
+                        }`}
+                        onClick={() => handleValidation(alert.id, false)}
                       >
-                        <path d="M18 6L6 18M6 6l12 12"></path>
-                      </svg>
-                      False Report
-                    </button>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                        >
+                          <path d="M18 6L6 18M6 6l12 12"></path>
+                        </svg>
+                        {validationStatus[alert.id]?.userMarkedFalse
+                          ? "Marked False ✗"
+                          : "False Report"}
+                      </button>
+                    )}
                   </div>
                   <button
                     className={styles["details-btn"]}
@@ -1093,53 +1078,58 @@ const CrimeAlerts = () => {
 
               <div className={styles["modal-footer"]}>
                 <div className={styles["validation-buttons"]}>
-                  <button
-                    className={`${styles["validate-btn"]} ${
-                      validationStatus[activeAlert.id]?.userValidated
-                        ? styles.active
-                        : ""
-                    }`}
-                    onClick={() => handleValidation(activeAlert.id, true)}
-                    disabled={validationStatus[activeAlert.id]?.userMarkedFalse}
-                  >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                  {!validationStatus[activeAlert.id]?.userMarkedFalse && (
+                    <button
+                      className={`${styles["validate-btn"]} ${
+                        validationStatus[activeAlert.id]?.userValidated
+                          ? styles.active
+                          : ""
+                      }`}
+                      onClick={() => handleValidation(activeAlert.id, true)}
                     >
-                      <path d="M20 6L9 17l-5-5"></path>
-                    </svg>
-                    VALIDATE REPORT
-                  </button>
-
-                  <button
-                    className={`${styles["false-report-btn"]} ${
-                      validationStatus[activeAlert.id]?.userMarkedFalse
-                        ? styles.active
-                        : ""
-                    }`}
-                    onClick={() => handleValidation(activeAlert.id, false)}
-                    disabled={validationStatus[activeAlert.id]?.userValidated}
-                  >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M20 6L9 17l-5-5"></path>
+                      </svg>
+                      {validationStatus[activeAlert.id]?.userValidated
+                        ? "REPORT VALIDATED ✓"
+                        : "VALIDATE REPORT"}
+                    </button>
+                  )}
+                  {!validationStatus[activeAlert.id]?.userValidated && (
+                    <button
+                      className={`${styles["false-report-btn"]} ${
+                        validationStatus[activeAlert.id]?.userMarkedFalse
+                          ? styles.active
+                          : ""
+                      }`}
+                      onClick={() => handleValidation(activeAlert.id, false)}
                     >
-                      <path d="M18 6L6 18M6 6l12 12"></path>
-                    </svg>
-                    MARK AS FALSE
-                  </button>
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M18 6L6 18M6 6l12 12"></path>
+                      </svg>
+                      {validationStatus[activeAlert.id]?.userMarkedFalse
+                        ? "REPORT MARKED FALSE ✗"
+                        : "MARK AS FALSE"}
+                    </button>
+                  )}
                 </div>
 
                 <div className={styles["action-buttons"]}>

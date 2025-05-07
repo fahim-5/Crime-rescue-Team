@@ -11,7 +11,7 @@ const PoliceAlert = () => {
   const [activeAlert, setActiveAlert] = useState(null);
   const [alerts, setAlerts] = useState([]);
   const [allReports, setAllReports] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [countdowns, setCountdowns] = useState({});
   const [hasActiveTimers, setHasActiveTimers] = useState(false);
@@ -21,12 +21,13 @@ const PoliceAlert = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [policeStationAddress, setPoliceStationAddress] = useState("");
   const [validationCounts, setValidationCounts] = useState({});
+  const [dataInitialized, setDataInitialized] = useState(false);
   const { user, token } = useAuth();
 
   // Fetch user profile when component mounts
   useEffect(() => {
     fetchUserProfile();
-    fetchAllReports();
+    fetchAllReports(); // Auto-fetch reports when component mounts
   }, [user, token]);
 
   // Apply address-based filtering whenever userProfile, policeStationAddress or allReports change
@@ -100,6 +101,7 @@ const PoliceAlert = () => {
 
         // Store all reports in state
         setAllReports(response.data.data);
+        setDataInitialized(true);
 
         // If userProfile is already available, filter reports now
         // Otherwise, the useEffect will handle filtering when userProfile changes
@@ -310,9 +312,9 @@ const PoliceAlert = () => {
         window.dispatchEvent(event);
 
         // If all alerts have expired, refetch to get new ones
-        if (alerts.length > 0 && allExpired) {
-          fetchAllReports();
-        }
+        // if (alerts.length > 0 && allExpired) {
+        //   fetchAllReports();
+        // }
 
         return updatedCountdowns;
       });
@@ -483,12 +485,7 @@ const PoliceAlert = () => {
             </div>
           ) : null}
 
-          <button
-            className={styles["refresh-button"]}
-            onClick={fetchAllReports}
-          >
-            Refresh Reports
-          </button>
+          {/* Removing the refresh button as requested */}
         </header>
 
         <div className={styles["alerts-list"]}>
@@ -512,6 +509,23 @@ const PoliceAlert = () => {
               </svg>
               <h3>Error</h3>
               <p>{error}</p>
+            </div>
+          ) : !dataInitialized ? (
+            <div className={styles["no-alerts"]}>
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+              </svg>
+              <h3>Reports Not Loaded</h3>
+              <p>
+                Click the "Refresh Reports" button above to load crime reports
+                for your area.
+              </p>
             </div>
           ) : alerts.length > 0 ? (
             alerts.map((alert) => (
@@ -610,46 +624,52 @@ const PoliceAlert = () => {
 
                 <div className={styles["alert-footer"]}>
                   <div className={styles["validation-buttons"]}>
-                    <button
-                      className={`${styles["validate-btn"]} ${
-                        validationStatus[alert.id]?.userValidated
-                          ? styles.active
-                          : ""
-                      }`}
-                      onClick={() => handleValidation(alert.id, true)}
-                      disabled={validationStatus[alert.id]?.userMarkedFalse}
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
+                    {!validationStatus[alert.id]?.userMarkedFalse && (
+                      <button
+                        className={`${styles["validate-btn"]} ${
+                          validationStatus[alert.id]?.userValidated
+                            ? styles.active
+                            : ""
+                        }`}
+                        onClick={() => handleValidation(alert.id, true)}
                       >
-                        <path d="M20 6L9 17l-5-5"></path>
-                      </svg>
-                      Validate
-                    </button>
-                    <button
-                      className={`${styles["false-report-btn"]} ${
-                        validationStatus[alert.id]?.userMarkedFalse
-                          ? styles.active
-                          : ""
-                      }`}
-                      onClick={() => handleValidation(alert.id, false)}
-                      disabled={validationStatus[alert.id]?.userValidated}
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                        >
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                        {validationStatus[alert.id]?.userValidated
+                          ? "Validated ✓"
+                          : "Validate"}
+                      </button>
+                    )}
+                    {!validationStatus[alert.id]?.userValidated && (
+                      <button
+                        className={`${styles["false-report-btn"]} ${
+                          validationStatus[alert.id]?.userMarkedFalse
+                            ? styles.active
+                            : ""
+                        }`}
+                        onClick={() => handleValidation(alert.id, false)}
                       >
-                        <path d="M18 6L6 18M6 6l12 12"></path>
-                      </svg>
-                      False Report
-                    </button>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                        >
+                          <path d="M18 6L6 18M6 6l12 12"></path>
+                        </svg>
+                        {validationStatus[alert.id]?.userMarkedFalse
+                          ? "Marked False ✗"
+                          : "False Report"}
+                      </button>
+                    )}
                   </div>
                   <button
                     className={styles["details-btn"]}
@@ -1047,46 +1067,52 @@ const PoliceAlert = () => {
 
               <div className={styles["modal-footer"]}>
                 <div className={styles["validation-buttons"]}>
-                  <button
-                    className={`${styles["validate-btn"]} ${
-                      validationStatus[activeAlert.id]?.userValidated
-                        ? styles.active
-                        : ""
-                    }`}
-                    onClick={() => handleValidation(activeAlert.id, true)}
-                    disabled={validationStatus[activeAlert.id]?.userMarkedFalse}
-                  >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
+                  {!validationStatus[activeAlert.id]?.userMarkedFalse && (
+                    <button
+                      className={`${styles["validate-btn"]} ${
+                        validationStatus[activeAlert.id]?.userValidated
+                          ? styles.active
+                          : ""
+                      }`}
+                      onClick={() => handleValidation(activeAlert.id, true)}
                     >
-                      <path d="M20 6L9 17l-5-5"></path>
-                    </svg>
-                    Validate Report
-                  </button>
-                  <button
-                    className={`${styles["false-report-btn"]} ${
-                      validationStatus[activeAlert.id]?.userMarkedFalse
-                        ? styles.active
-                        : ""
-                    }`}
-                    onClick={() => handleValidation(activeAlert.id, false)}
-                    disabled={validationStatus[activeAlert.id]?.userValidated}
-                  >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path d="M20 6L9 17l-5-5"></path>
+                      </svg>
+                      {validationStatus[activeAlert.id]?.userValidated
+                        ? "Validated Report ✓"
+                        : "Validate Report"}
+                    </button>
+                  )}
+                  {!validationStatus[activeAlert.id]?.userValidated && (
+                    <button
+                      className={`${styles["false-report-btn"]} ${
+                        validationStatus[activeAlert.id]?.userMarkedFalse
+                          ? styles.active
+                          : ""
+                      }`}
+                      onClick={() => handleValidation(activeAlert.id, false)}
                     >
-                      <path d="M18 6L6 18M6 6l12 12"></path>
-                    </svg>
-                    Mark as False
-                  </button>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path d="M18 6L6 18M6 6l12 12"></path>
+                      </svg>
+                      {validationStatus[activeAlert.id]?.userMarkedFalse
+                        ? "Report Marked as False ✗"
+                        : "Mark as False"}
+                    </button>
+                  )}
                 </div>
                 <div className={styles["action-buttons"]}>
                   <button
