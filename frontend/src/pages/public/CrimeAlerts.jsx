@@ -554,22 +554,14 @@ const CrimeAlerts = () => {
           <div className={styles["alert-modal"]}>
             <div className={styles["modal-content"]}>
               <button className={styles["close-modal"]} onClick={closeDetails}>
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path d="M18 6L6 18M6 6l12 12"></path>
-                </svg>
+                ×
               </button>
 
               <div className={styles["modal-header"]}>
                 <div className={styles["modal-title"]}>
                   <h2>
-                    {activeAlert.type || activeAlert.crime_type || "Crime"}{" "}
-                    Incident Details
+                    {activeAlert.type || activeAlert.crime_type || "Incident"}{" "}
+                    Details
                   </h2>
                   <span
                     className={`${styles["modal-status"]} ${
@@ -598,101 +590,122 @@ const CrimeAlerts = () => {
               </div>
 
               <div className={styles["modal-body"]}>
-                <div
-                  className={`${styles["detail-group"]} ${styles["incident-overview"]}`}
-                >
+                <div className={styles["incident-overview"]}>
                   <h3>Incident Overview</h3>
-                  <div className={styles["detail-item"]}>
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                      <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    <div>
-                      <strong>Location:</strong>
-                      <p>{activeAlert.location}</p>
+                  <div className={styles["detail-grid"]}>
+                    <div className={styles["detail-item"]}>
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                      <div>
+                        <strong>Location:</strong>
+                        <p>{activeAlert.location}</p>
+                      </div>
+                    </div>
+                    <div className={styles["detail-item"]}>
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <div>
+                        <strong>Time:</strong>
+                        <p>
+                          {formatTime(
+                            activeAlert.timestamp || activeAlert.created_at
+                          )}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className={styles["detail-item"]}>
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    <div>
-                      <strong>Time:</strong>
-                      <p>
-                        {formatTime(
-                          activeAlert.timestamp || activeAlert.created_at
-                        )}
-                      </p>
+
+                  <div className={styles["detail-grid"]}>
+                    <div className={styles["detail-item"]}>
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                        <line x1="4" y1="22" x2="4" y2="15"></line>
+                      </svg>
+                      <div>
+                        <strong>Crime Type:</strong>
+                        <p>
+                          {activeAlert.type ||
+                            activeAlert.crime_type ||
+                            "Unknown"}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className={styles["detail-item"]}>
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                      <line x1="4" y1="22" x2="4" y2="15"></line>
-                    </svg>
-                    <div>
-                      <strong>Crime Type:</strong>
-                      <p>
-                        {activeAlert.type ||
-                          activeAlert.crime_type ||
-                          "Unknown"}
-                      </p>
-                    </div>
-                  </div>
-                  <div className={styles["detail-item"]}>
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                      <line x1="16" y1="13" x2="8" y2="13"></line>
-                      <line x1="16" y1="17" x2="8" y2="17"></line>
-                      <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    <div>
-                      <strong>Description:</strong>
-                      <p>{activeAlert.description}</p>
+
+                    <div className={styles["detail-item"]}>
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                      </svg>
+                      <div>
+                        <strong>Description:</strong>
+                        <p>{activeAlert.description}</p>
+                      </div>
                     </div>
                   </div>
 
                   {activeAlert.reporter_address && (
-                    <div className={styles["detail-item"]}>
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                      >
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                      </svg>
-                      <div>
-                        <strong>Reporter Address:</strong>
-                        <p>{activeAlert.reporter_address}</p>
+                    <div className={styles["detail-grid"]}>
+                      <div className={styles["detail-item"]}>
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <div>
+                          <strong>Reporter Address:</strong>
+                          <p>{activeAlert.reporter_address}</p>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -706,11 +719,14 @@ const CrimeAlerts = () => {
                         {activeAlert.details.peopleInvolved && (
                           <div className={styles["detail-item"]}>
                             <svg
-                              width="20"
-                              height="20"
+                              width="24"
+                              height="24"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             >
                               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                               <circle cx="9" cy="7" r="4"></circle>
@@ -726,11 +742,14 @@ const CrimeAlerts = () => {
                         {activeAlert.details.victimDescription && (
                           <div className={styles["detail-item"]}>
                             <svg
-                              width="20"
-                              height="20"
+                              width="24"
+                              height="24"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             >
                               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                               <circle cx="12" cy="7" r="4"></circle>
@@ -747,11 +766,14 @@ const CrimeAlerts = () => {
                         {activeAlert.details.weapons && (
                           <div className={styles["detail-item"]}>
                             <svg
-                              width="20"
-                              height="20"
+                              width="24"
+                              height="24"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             >
                               <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
                             </svg>
@@ -764,11 +786,14 @@ const CrimeAlerts = () => {
                         {activeAlert.details.suspectDescription && (
                           <div className={styles["detail-item"]}>
                             <svg
-                              width="20"
-                              height="20"
+                              width="24"
+                              height="24"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             >
                               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                               <circle cx="12" cy="7" r="4"></circle>
@@ -790,11 +815,14 @@ const CrimeAlerts = () => {
                         {activeAlert.details.dangerLevel && (
                           <div className={styles["detail-item"]}>
                             <svg
-                              width="20"
-                              height="20"
+                              width="24"
+                              height="24"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             >
                               <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                               <line x1="12" y1="9" x2="12" y2="13"></line>
@@ -817,11 +845,14 @@ const CrimeAlerts = () => {
                         {activeAlert.details.policeResponse && (
                           <div className={styles["detail-item"]}>
                             <svg
-                              width="20"
-                              height="20"
+                              width="24"
+                              height="24"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             >
                               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                             </svg>
@@ -839,46 +870,8 @@ const CrimeAlerts = () => {
 
               <div className={styles["modal-footer"]}>
                 <div className={styles["validation-buttons"]}>
-                  <button
-                    className={`${styles["validate-btn"]} ${
-                      validationStatus[activeAlert.id]?.userValidated
-                        ? styles.active
-                        : ""
-                    }`}
-                    onClick={() => handleValidation(activeAlert.id, true)}
-                    disabled={validationStatus[activeAlert.id]?.userMarkedFalse}
-                  >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <path d="M20 6L9 17l-5-5"></path>
-                    </svg>
-                    Validate Report
-                  </button>
-                  <button
-                    className={`${styles["false-report-btn"]} ${
-                      validationStatus[activeAlert.id]?.userMarkedFalse
-                        ? styles.active
-                        : ""
-                    }`}
-                    onClick={() => handleValidation(activeAlert.id, false)}
-                    disabled={validationStatus[activeAlert.id]?.userValidated}
-                  >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <path d="M18 6L6 18M6 6l12 12"></path>
-                    </svg>
-                    Mark as False
-                  </button>
+                 
+                 
                 </div>
                 <div className={styles["action-buttons"]}>
                   <button
@@ -888,26 +881,32 @@ const CrimeAlerts = () => {
                     }}
                   >
                     <svg
-                      width="16"
-                      height="16"
+                      width="18"
+                      height="18"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                     </svg>
-                    Find Nearby Police Stations
+                    Find Nearby Police
                   </button>
                   <button
-                    className={`${styles["action-btn"]} ${styles.secondary} ${styles["close-btn"]}`}
+                    className={`${styles["action-btn"]} ${styles.secondary}`}
                     onClick={closeDetails}
                   >
                     <svg
-                      width="16"
-                      height="16"
+                      width="18"
+                      height="18"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path d="M18 6L6 18M6 6l12 12"></path>
                     </svg>
