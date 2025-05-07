@@ -11,7 +11,7 @@ const CrimeAlerts = () => {
   const [activeAlert, setActiveAlert] = useState(null);
   const [alerts, setAlerts] = useState([]);
   const [allReports, setAllReports] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [countdowns, setCountdowns] = useState({});
   const [hasActiveTimers, setHasActiveTimers] = useState(false);
@@ -19,12 +19,12 @@ const CrimeAlerts = () => {
   const [showPoliceStationFinder, setShowPoliceStationFinder] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState("");
   const [userProfile, setUserProfile] = useState(null);
+  const [dataInitialized, setDataInitialized] = useState(false);
   const { user, token } = useAuth();
 
   // Fetch user profile when component mounts
   useEffect(() => {
     fetchUserProfile();
-    fetchAllReports();
   }, [user, token]);
 
   // Apply address-based filtering whenever userProfile or allReports change
@@ -87,6 +87,7 @@ const CrimeAlerts = () => {
 
         // Store all reports in state
         setAllReports(response.data.data);
+        setDataInitialized(true);
 
         // If userProfile is already available, filter reports now
         // Otherwise, the useEffect will handle filtering when userProfile changes
@@ -244,10 +245,10 @@ const CrimeAlerts = () => {
         });
         window.dispatchEvent(event);
 
-        // If all alerts have expired, refetch to get new ones
-        if (alerts.length > 0 && allExpired) {
-          fetchAllReports();
-        }
+        // Removed auto-refresh on expiry
+        // if (alerts.length > 0 && allExpired) {
+        //   fetchAllReports();
+        // }
 
         return updatedCountdowns;
       });
@@ -371,6 +372,21 @@ const CrimeAlerts = () => {
             className={styles["refresh-button"]}
             onClick={fetchAllReports}
           >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ marginRight: "8px" }}
+            >
+              <path d="M23 4v6h-6"></path>
+              <path d="M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
             Refresh Reports
           </button>
         </header>
@@ -396,6 +412,23 @@ const CrimeAlerts = () => {
               </svg>
               <h3>Error</h3>
               <p>{error}</p>
+            </div>
+          ) : !dataInitialized ? (
+            <div className={styles["no-alerts"]}>
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+              </svg>
+              <h3>Reports Not Loaded</h3>
+              <p>
+                Click the "Refresh Reports" button above to load crime reports
+                for your area.
+              </p>
             </div>
           ) : alerts.length > 0 ? (
             alerts.map((alert) => (
@@ -870,9 +903,55 @@ const CrimeAlerts = () => {
 
               <div className={styles["modal-footer"]}>
                 <div className={styles["validation-buttons"]}>
-                 
-                 
+                  <button
+                    className={`${styles["validate-btn"]} ${
+                      validationStatus[activeAlert.id]?.userValidated
+                        ? styles.active
+                        : ""
+                    }`}
+                    onClick={() => handleValidation(activeAlert.id, true)}
+                    disabled={validationStatus[activeAlert.id]?.userMarkedFalse}
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20 6L9 17l-5-5"></path>
+                    </svg>
+                    VALIDATE REPORT
+                  </button>
+
+                  <button
+                    className={`${styles["false-report-btn"]} ${
+                      validationStatus[activeAlert.id]?.userMarkedFalse
+                        ? styles.active
+                        : ""
+                    }`}
+                    onClick={() => handleValidation(activeAlert.id, false)}
+                    disabled={validationStatus[activeAlert.id]?.userValidated}
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M18 6L6 18M6 6l12 12"></path>
+                    </svg>
+                    MARK AS FALSE
+                  </button>
                 </div>
+
                 <div className={styles["action-buttons"]}>
                   <button
                     className={`${styles["action-btn"]} ${styles.primary} ${styles["contact-police-btn"]}`}
@@ -892,7 +971,7 @@ const CrimeAlerts = () => {
                     >
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                     </svg>
-                    Find Nearby Police
+                    FIND NEARBY POLICE
                   </button>
                   <button
                     className={`${styles["action-btn"]} ${styles.secondary}`}
@@ -910,7 +989,7 @@ const CrimeAlerts = () => {
                     >
                       <path d="M18 6L6 18M6 6l12 12"></path>
                     </svg>
-                    Close Details
+                    CLOSE DETAILS
                   </button>
                 </div>
               </div>
