@@ -267,6 +267,8 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  flex: 1;
 }
 
 .details-btn:hover {
@@ -285,6 +287,7 @@
   height: 16px;
   stroke: var(--white);
   stroke-width: 2px;
+  margin-left: 4px;
 }
 
 /* No Alerts State */
@@ -1205,4 +1208,100 @@
   background-color: rgba(0, 0, 0, 0.03);
   border-radius: 8px;
   font-style: italic;
+}
+
+/* New styles for the action buttons row and Take the Case button */
+.action-buttons-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.take-case-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex: 1;
+}
+
+.take-case-btn:hover {
+  background-color: #218838;
+}
+
+.taken-case-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: not-allowed;
+  opacity: 0.8;
+  flex: 1;
+}
+
+/* Styles for case assignment indicators */
+.case-assigned {
+  position: relative;
+  border-left: 4px solid #6200ea;
+}
+
+.case-assigned-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: #6200ea;
+  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: auto;
+}
+
+.case-assigned-badge svg {
+  width: 12px;
+  height: 12px;
+  stroke: white;
+}
+
+.other-officer-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: not-allowed;
+  opacity: 0.8;
+  flex: 1;
+}
+
+.other-officer-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: white;
+  stroke-width: 2px;
 }

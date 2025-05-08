@@ -91,6 +91,14 @@ router.get(
   reportController.getReportValidations
 );
 
+// Police officer takes a case
+router.post(
+  "/:id/take-case",
+  authMiddleware.authenticateToken,
+  authMiddleware.isPolice,
+  reportController.takeCase
+);
+
 // Get dashboard statistics (for admin)
 router.get(
   "/dashboard/stats",

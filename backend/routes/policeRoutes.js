@@ -6,6 +6,9 @@ const authMiddleware = require("../middlewares/authMiddleware");
 // Ensure all police routes are protected
 router.use(authMiddleware.authenticateToken, authMiddleware.isPolice);
 
+// Get officer details by ID (accessible to any authenticated police officer)
+router.get("/officer/:id", policeController.getOfficerDetails);
+
 // Dashboard statistics for police
 router.get("/stats", policeController.getDashboardStats);
 

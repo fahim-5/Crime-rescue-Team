@@ -3,6 +3,7 @@ const path = require("path");
 const fileUtils = require("../utils/fileUtils");
 const NotificationService = require("../services/notificationService");
 const CrimeAlertModel = require("../models/crimeAlertModel");
+const { pool } = require("../config/db");
 
 const createReport = async (req, res) => {
   try {
@@ -1034,6 +1035,135 @@ const getRecentReports = async (req, res) => {
   }
 };
 
+/**
+ * Take case - Police officer takes ownership of a case
+ * @route POST /api/reports/:id/take-case
+ * @access Private (Police only)
+ */
+const takeCase = async (req, res) => {
+  try {
+    // Check if user is a police officer (should already be checked by middleware)
+    if (req.user.role !== "police") {
+      return res.status(403).json({
+        success: false,
+        message: "Only police officers can take cases",
+      });
+    }
+
+    const reportId = req.params.id;
+
+    // IMPROVED: First query the police table to get the actual police_id for this user
+    let policeId = null;
+
+    // Try to get the police_id from the police table first
+    const [policeRows] = await pool.query(
+      "SELECT police_id FROM police WHERE id = ?",
+      [req.user.id]
+    );
+
+    if (policeRows.length > 0 && policeRows[0].police_id) {
+      policeId = policeRows[0].police_id;
+      console.log(
+        `Found police_id ${policeId} in police table for user ${req.user.id}`
+      );
+    }
+    // If not found in police table, use from request body if provided
+    else if (req.body.police_id) {
+      policeId = req.body.police_id;
+      console.log(`Using police_id ${policeId} from request body`);
+    }
+    // Fallback to other options if needed
+    else {
+      policeId =
+        req.user.police_id || req.user.badge_number || `POI-${req.user.id}`;
+      console.log(`Using fallback police_id ${policeId}`);
+    }
+
+    console.log("Police officer taking case:", {
+      userId: req.user.id,
+      policeId: policeId,
+      requestBody: req.body,
+      name: req.user.name || req.user.username,
+      reportId: reportId,
+    });
+
+    // First check if the report already has a police officer assigned
+    const [checkReport] = await pool.query(
+      "SELECT police_id FROM crime_reports WHERE id = ?",
+      [reportId]
+    );
+
+    if (checkReport.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Report not found",
+      });
+    }
+
+    // Log the police IDs for debugging
+    console.log("Case assignment check:", {
+      reportId: reportId,
+      existingPoliceId: checkReport[0].police_id,
+      requestingPoliceId: policeId,
+      user: req.user,
+    });
+
+    // If police_id exists and doesn't match current user's police_id, it's taken by someone else
+    // However, if police_id is the same as user's system ID (string format), allow it
+    // This handles migration from old to new format
+    if (
+      checkReport[0].police_id &&
+      checkReport[0].police_id !== policeId &&
+      checkReport[0].police_id !== req.user.id.toString()
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "This case is already taken by another officer",
+      });
+    }
+
+    // If we get here, either no one has taken the case, or this officer has already taken it
+    // Update the crime_reports table with the police officer's ID
+    await pool.query(
+      "UPDATE crime_reports SET police_id = ?, case_taken_at = NOW() WHERE id = ?",
+      [policeId, reportId]
+    );
+
+    // Optionally, create an entry in a case_actions or case_history table
+    // This would allow tracking of all actions taken on a case
+    try {
+      await pool.query(
+        "INSERT INTO case_updates (report_id, user_id, action, timestamp) VALUES (?, ?, ?, NOW())",
+        [reportId, req.user.id, "case_taken"]
+      );
+    } catch (error) {
+      console.log(
+        "Warning: Could not add to case_updates table:",
+        error.message
+      );
+      // Don't fail the whole operation if this table doesn't exist
+    }
+
+    // Return success response
+    return res.status(200).json({
+      success: true,
+      message: "Case successfully assigned to you",
+      data: {
+        reportId,
+        policeId,
+        takenAt: new Date(),
+      },
+    });
+  } catch (error) {
+    console.error("Error taking case:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while taking case",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createReport,
   getAllReports,
@@ -1050,4 +1180,5 @@ module.exports = {
   getDashboardStats,
   getRecentReports,
   getReportValidations,
+  takeCase,
 };

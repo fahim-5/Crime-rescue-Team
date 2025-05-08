@@ -1,6 +1,44 @@
 const PoliceModel = require("../models/policeModel");
 const ReportModel = require("../models/reportModel");
 const AnalyticsModel = require("../models/analyticsModel");
+const { pool } = require("../config/db");
+
+/**
+ * Get officer details by ID
+ * @route GET /api/police/officer/:id
+ * @access Private (Police only)
+ */
+const getOfficerDetails = async (req, res) => {
+  try {
+    const officerId = req.params.id;
+
+    // Query the police table to get officer details including police_id
+    const [officers] = await pool.query(
+      "SELECT id, police_id, badge_number, rank, station FROM police WHERE id = ?",
+      [officerId]
+    );
+
+    if (officers.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Police officer not found",
+      });
+    }
+
+    // Return the officer details
+    return res.status(200).json({
+      success: true,
+      data: officers[0],
+    });
+  } catch (error) {
+    console.error("Error fetching officer details:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch officer details",
+      error: error.message,
+    });
+  }
+};
 
 // Get dashboard statistics for police officer
 const getDashboardStats = async (req, res) => {
@@ -26,7 +64,7 @@ const getRecentReports = async (req, res) => {
   try {
     const policeId = req.user.id;
 
-    // Get recent reports 
+    // Get recent reports
     const reports = await PoliceModel.getRecentReports(policeId);
 
     res.status(200).json(reports);
@@ -340,6 +378,7 @@ const getCrimeStatsByArea = async (req, res) => {
 };
 
 module.exports = {
+  getOfficerDetails,
   getDashboardStats,
   getRecentReports,
   getAssignedCases,
