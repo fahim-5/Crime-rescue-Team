@@ -22,6 +22,7 @@ const CrimeAlerts = () => {
   const [dataInitialized, setDataInitialized] = useState(false);
   const [validationCounts, setValidationCounts] = useState({});
   const [userValidatedReports, setUserValidatedReports] = useState({});
+  const [mediaLoading, setMediaLoading] = useState(false);
   const { user, token } = useAuth();
 
   // Fetch user profile when component mounts
@@ -354,7 +355,7 @@ const CrimeAlerts = () => {
     });
   };
 
-  const openDetails = (alert) => {
+  const openDetails = async (alert) => {
     // Check if the alert is expired before opening modal
     const createdTime = new Date(alert.created_at || alert.timestamp);
     const expiryTime = new Date(
@@ -363,7 +364,40 @@ const CrimeAlerts = () => {
 
     // Only open details if alert is not expired
     if (expiryTime > new Date()) {
-      setActiveAlert(alert);
+      try {
+        // Set initial alert state for better UX
+        setActiveAlert(alert);
+
+        // Show loading indicator while fetching full details
+        setMediaLoading(true);
+
+        // Get full report details to ensure we have all media properly formatted
+        if (alert.id && token) {
+          const response = await axios.get(
+            `${API_URL}/api/reports/${alert.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.data && response.data.success) {
+            console.log(
+              "Loaded full report details with media:",
+              response.data.data
+            );
+            setActiveAlert({
+              ...alert,
+              ...response.data.data,
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Error loading full report details:", err);
+      } finally {
+        setMediaLoading(false);
+      }
     } else {
       // Alert the user that the alert has expired
       alert("This alert has expired and is no longer available for viewing.");
@@ -827,7 +861,7 @@ const CrimeAlerts = () => {
         {/* Detailed Alert Modal */}
         {activeAlert && (
           <div className={styles["alert-modal"]}>
-            <div className={styles["modal-content"]}>
+            <div className={styles["modal-content-wide"]}>
               <button className={styles["close-modal"]} onClick={closeDetails}>
                 ×
               </button>
@@ -1206,6 +1240,97 @@ const CrimeAlerts = () => {
                       </div>
                     </div>
                   </div>
+                </div>
+
+                {/* Now add a new section for media evidence in the modal-body */}
+                <div className={styles["detail-group"]}>
+                  <h3>Media Evidence</h3>
+                  {mediaLoading ? (
+                    <div className={styles["loading-media"]}>
+                      <div className={styles["spinner"]}></div>
+                      <p>Loading media evidence...</p>
+                    </div>
+                  ) : activeAlert?.photos?.length > 0 ||
+                    activeAlert?.videos?.length > 0 ? (
+                    <div className={styles["media-evidence-container"]}>
+                      {activeAlert?.photos?.length > 0 && (
+                        <div className={styles["photos-section"]}>
+                          <h4>Photos</h4>
+                          <div className={styles["media-grid"]}>
+                            {activeAlert.photos.map((photo, index) => (
+                              <div
+                                key={`photo-${index}`}
+                                className={styles["media-item"]}
+                              >
+                                <img
+                                  src={
+                                    photo.url ||
+                                    `http://localhost:5000/uploads/${photo.path}`
+                                  }
+                                  alt={`Evidence ${index + 1}`}
+                                  onClick={() =>
+                                    window.open(
+                                      photo.url ||
+                                        `http://localhost:5000/uploads/${photo.path}`,
+                                      "_blank"
+                                    )
+                                  }
+                                  onError={(e) => {
+                                    console.error(
+                                      `Failed to load image ${index}`,
+                                      e
+                                    );
+                                    e.target.src =
+                                      "https://via.placeholder.com/300x200?text=Image+Not+Available";
+                                    e.target.style.opacity = "0.7";
+                                  }}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {activeAlert?.videos?.length > 0 && (
+                        <div className={styles["videos-section"]}>
+                          <h4>Videos</h4>
+                          <div className={styles["media-grid"]}>
+                            {activeAlert.videos.map((video, index) => (
+                              <div
+                                key={`video-${index}`}
+                                className={styles["media-item"]}
+                              >
+                                <video
+                                  controls
+                                  src={
+                                    video.url ||
+                                    `http://localhost:5000/uploads/${video.path}`
+                                  }
+                                  alt={`Video evidence ${index + 1}`}
+                                  onError={(e) => {
+                                    console.error(
+                                      `Failed to load video ${index}`,
+                                      e
+                                    );
+                                    e.target.style.display = "none";
+                                    const errorMsg =
+                                      document.createElement("div");
+                                    errorMsg.className = styles["video-error"];
+                                    errorMsg.innerHTML = "Video unavailable";
+                                    e.target.parentNode.appendChild(errorMsg);
+                                  }}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <p className={styles["no-media-message"]}>
+                      No media evidence available for this report.
+                    </p>
+                  )}
                 </div>
               </div>
 
