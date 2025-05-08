@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 07, 2025 at 05:56 PM
+-- Generation Time: May 08, 2025 at 04:25 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -72,7 +72,63 @@ INSERT INTO `address_based_alerts` (`id`, `alert_id`, `user_id`, `created_at`) V
 (42, 30, 27, '2025-05-06 16:02:28'),
 (43, 30, 28, '2025-05-06 16:02:28'),
 (44, 30, 29, '2025-05-06 16:02:28'),
-(45, 30, 30, '2025-05-06 16:02:28');
+(45, 30, 30, '2025-05-06 16:02:28'),
+(46, 31, 27, '2025-05-07 15:58:52'),
+(47, 31, 28, '2025-05-07 15:58:52'),
+(48, 31, 29, '2025-05-07 15:58:52'),
+(49, 31, 30, '2025-05-07 15:58:52'),
+(53, 32, 27, '2025-05-07 16:24:06'),
+(54, 32, 28, '2025-05-07 16:24:06'),
+(55, 32, 29, '2025-05-07 16:24:06'),
+(56, 32, 30, '2025-05-07 16:24:06'),
+(60, 33, 27, '2025-05-07 16:38:38'),
+(61, 33, 28, '2025-05-07 16:38:38'),
+(62, 33, 29, '2025-05-07 16:38:38'),
+(63, 33, 30, '2025-05-07 16:38:38'),
+(67, 34, 27, '2025-05-07 16:47:24'),
+(68, 34, 28, '2025-05-07 16:47:24'),
+(69, 34, 29, '2025-05-07 16:47:24'),
+(70, 34, 30, '2025-05-07 16:47:24'),
+(74, 35, 27, '2025-05-07 17:10:45'),
+(75, 35, 28, '2025-05-07 17:10:45'),
+(76, 35, 29, '2025-05-07 17:10:45'),
+(77, 35, 30, '2025-05-07 17:10:45'),
+(78, 36, 27, '2025-05-08 13:29:32'),
+(79, 36, 28, '2025-05-08 13:29:32'),
+(80, 36, 29, '2025-05-08 13:29:32'),
+(81, 36, 30, '2025-05-08 13:29:32'),
+(85, 37, 27, '2025-05-08 13:44:48'),
+(86, 37, 28, '2025-05-08 13:44:48'),
+(87, 37, 29, '2025-05-08 13:44:48'),
+(88, 37, 30, '2025-05-08 13:44:48'),
+(92, 38, 27, '2025-05-08 13:45:14'),
+(93, 38, 28, '2025-05-08 13:45:14'),
+(94, 38, 29, '2025-05-08 13:45:14'),
+(95, 38, 30, '2025-05-08 13:45:14'),
+(99, 39, 27, '2025-05-08 13:45:21'),
+(100, 39, 28, '2025-05-08 13:45:21'),
+(101, 39, 29, '2025-05-08 13:45:21'),
+(102, 39, 30, '2025-05-08 13:45:21'),
+(106, 40, 27, '2025-05-08 13:51:44'),
+(107, 40, 28, '2025-05-08 13:51:44'),
+(108, 40, 29, '2025-05-08 13:51:44'),
+(109, 40, 30, '2025-05-08 13:51:44'),
+(113, 41, 27, '2025-05-08 13:51:48'),
+(114, 41, 28, '2025-05-08 13:51:48'),
+(115, 41, 29, '2025-05-08 13:51:48'),
+(116, 41, 30, '2025-05-08 13:51:48'),
+(120, 42, 27, '2025-05-08 13:56:34'),
+(121, 42, 28, '2025-05-08 13:56:34'),
+(122, 42, 29, '2025-05-08 13:56:34'),
+(123, 42, 30, '2025-05-08 13:56:34'),
+(127, 43, 27, '2025-05-08 13:56:42'),
+(128, 43, 28, '2025-05-08 13:56:42'),
+(129, 43, 29, '2025-05-08 13:56:42'),
+(130, 43, 30, '2025-05-08 13:56:42'),
+(134, 44, 27, '2025-05-08 13:59:24'),
+(135, 44, 28, '2025-05-08 13:59:24'),
+(136, 44, 29, '2025-05-08 13:59:24'),
+(137, 44, 30, '2025-05-08 13:59:24');
 
 -- --------------------------------------------------------
 
@@ -197,7 +253,21 @@ INSERT INTO `crime_alerts` (`id`, `report_id`, `title`, `description`, `location
 (27, 41, '', 'Theft reported in Bonna : 1 43 area', 'Bonna : 1 43', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-05 19:43:59', NULL, NULL, '2025-05-05 19:43:59'),
 (28, 42, '', 'Theft reported in 1 45 area', '1 45', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-05 19:45:47', NULL, NULL, '2025-05-05 19:45:47'),
 (29, 43, '', 'Theft reported in Darling is reporting. area', 'Darling is reporting.', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-06 15:42:55', NULL, NULL, '2025-05-06 15:42:55'),
-(30, 44, '', 'Theft reported in Dhaka Mirput reoring area', 'Dhaka Mirput reoring', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-06 16:02:28', NULL, NULL, '2025-05-06 16:02:28');
+(30, 44, '', 'Theft reported in Dhaka Mirput reoring area', 'Dhaka Mirput reoring', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-06 16:02:28', NULL, NULL, '2025-05-06 16:02:28'),
+(31, 45, '', 'Theft reported in 9 10 is reporting area', '9 10 is reporting', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-07 15:58:52', NULL, NULL, '2025-05-07 15:58:52'),
+(32, 46, '', 'Theft reported in pavel points area', 'pavel points', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-07 16:24:06', NULL, NULL, '2025-05-07 16:24:06'),
+(33, 47, '', 'Theft reported in police potins area', 'police potins', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-07 16:38:38', NULL, NULL, '2025-05-07 16:38:38'),
+(34, 48, '', 'Theft reported in pavel 2334 area', 'pavel 2334', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-07 16:47:24', NULL, NULL, '2025-05-07 16:47:24'),
+(35, 49, '', 'Theft reported in ascac area', 'ascac', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-07 17:10:45', NULL, NULL, '2025-05-07 17:10:45'),
+(36, 50, '', 'Theft reported in 12 hours disapera checking area', '12 hours disapera checking', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-08 13:29:32', NULL, NULL, '2025-05-08 13:29:32'),
+(37, 51, '', 'Theft reported in Pavel point chekcing area', 'Pavel point chekcing', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-08 13:44:48', NULL, NULL, '2025-05-08 13:44:48'),
+(38, 52, '', 'Theft reported in acasc area', 'acasc', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-08 13:45:14', NULL, NULL, '2025-05-08 13:45:14'),
+(39, 53, '', 'Theft reported in qcqcasc area', 'qcqcasc', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-08 13:45:21', NULL, NULL, '2025-05-08 13:45:21'),
+(40, 54, '', 'Theft reported in 1 area', '1', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-08 13:51:44', NULL, NULL, '2025-05-08 13:51:44'),
+(41, 55, '', 'Theft reported in 2 area', '2', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-08 13:51:48', NULL, NULL, '2025-05-08 13:51:48'),
+(42, 56, '', 'Theft reported in 45 area', '45', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-08 13:56:34', NULL, NULL, '2025-05-08 13:56:34'),
+(43, 57, '', 'Theft reported in 46 area', '46', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-08 13:56:42', NULL, NULL, '2025-05-08 13:56:42'),
+(44, 58, '', 'Robbery reported in full detisl report area', 'full detisl report', '', 'warning', 'active', 'medium', 0, NULL, NULL, NULL, '2025-05-08 13:59:24', NULL, NULL, '2025-05-08 13:59:24');
 
 --
 -- Triggers `crime_alerts`
@@ -314,7 +384,21 @@ INSERT INTO `crime_reports` (`id`, `crime_id`, `location`, `time`, `crime_type`,
 (41, 'CR-2025-013', 'Bonna : 1 43', '2025-05-05 19:43:40', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-05 19:43:59', 30, 'Dhaka-Mirpur', 'pending', NULL),
 (42, 'CR-2025-014', '1 45', '2025-05-05 19:45:36', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-05 19:45:47', 30, 'Dhaka-Mirpur', 'pending', NULL),
 (43, 'CR-2025-015', 'Darling is reporting.', '2025-05-06 15:42:35', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-06 15:42:55', 30, 'Dhaka-Mirpur', 'pending', NULL),
-(44, 'CR-2025-016', 'Dhaka Mirput reoring', '2025-05-06 16:02:16', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-06 16:02:28', 28, 'Dhaka-Mirpur', 'pending', NULL);
+(44, 'CR-2025-016', 'Dhaka Mirput reoring', '2025-05-06 16:02:16', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-06 16:02:28', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(45, 'CR-2025-017', '9 10 is reporting', '2025-05-07 15:58:39', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-07 15:58:52', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(46, 'CR-2025-018', 'pavel points', '2025-05-07 16:23:55', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-07 16:24:06', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(47, 'CR-2025-019', 'police potins', '2025-05-07 16:38:32', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-07 16:38:38', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(48, 'CR-2025-020', 'pavel 2334', '2025-05-07 16:47:19', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-07 16:47:24', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(49, 'CR-2025-021', 'ascac', '2025-05-07 17:10:04', 'theft', 1, 'male', 'yes', '[\"photos/photos-1746637845113-70370143.jpg\",\"photos/photos-1746637845124-749133987.jpg\"]', '[\"videos/videos-1746637845129-297098146.mp4\"]', '2025-05-07 17:10:45', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(50, 'CR-2025-022', '12 hours disapera checking', '2025-05-08 13:29:21', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-08 13:29:32', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(51, 'CR-2025-023', 'Pavel point chekcing', '2025-05-08 13:44:41', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-08 13:44:48', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(52, 'CR-2025-024', 'acasc', '2025-05-08 13:45:12', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-08 13:45:14', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(53, 'CR-2025-025', 'qcqcasc', '2025-05-08 13:45:14', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-08 13:45:21', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(54, 'CR-2025-026', '1', '2025-05-08 13:51:40', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-08 13:51:44', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(55, 'CR-2025-027', '2', '2025-05-08 13:51:44', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-08 13:51:48', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(56, 'CR-2025-028', '45', '2025-05-08 13:56:31', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-08 13:56:34', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(57, 'CR-2025-029', '46', '2025-05-08 13:56:34', 'theft', 1, 'male', 'yes', '[]', '[]', '2025-05-08 13:56:42', 28, 'Dhaka-Mirpur', 'pending', NULL),
+(58, 'CR-2025-030', 'full detisl report', '2025-04-29 13:58:41', 'robbery', 23, 'other', 'yes', '[\"photos/photos-1746712763924-344343182.jpg\"]', '[\"videos/videos-1746712763938-802538936.mp4\"]', '2025-05-08 13:59:24', 28, 'Dhaka-Mirpur', 'pending', NULL);
 
 --
 -- Triggers `crime_reports`
@@ -429,114 +513,193 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`id`, `user_id`, `title`, `message`, `type`, `is_read`, `related_to`, `related_id`, `created_at`, `updated_at`) VALUES
-(52, 28, 'Report Submitted', 'Your crime report #15 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 15, '2025-04-30 11:20:28', '2025-04-30 11:20:28'),
+(52, 28, 'Report Submitted', 'Your crime report #15 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 15, '2025-04-30 11:20:28', '2025-05-07 18:33:11'),
 (53, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#15) in Pavel is reporting requires immediate attention.', 'alert', 0, NULL, 15, '2025-04-30 11:20:28', '2025-04-30 11:20:28'),
 (54, 30, 'Report Submitted', 'Your crime report #16 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 16, '2025-04-30 12:06:53', '2025-04-30 12:06:53'),
-(55, 28, 'New Crime Report', 'A new report about theft in report 1 bonna has been submitted. Stay safe!', 'info', 0, NULL, 16, '2025-04-30 12:06:53', '2025-04-30 12:06:53'),
+(55, 28, 'New Crime Report', 'A new report about theft in report 1 bonna has been submitted. Stay safe!', 'info', 1, NULL, 16, '2025-04-30 12:06:53', '2025-05-07 18:33:11'),
 (56, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#16) in report 1 bonna requires immediate attention.', 'alert', 0, NULL, 16, '2025-04-30 12:06:53', '2025-04-30 12:06:53'),
 (57, 30, 'Report Submitted', 'Your crime report #17 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 17, '2025-04-30 13:03:31', '2025-04-30 13:03:31'),
-(58, 28, 'New Crime Report', 'A new report about theft in Bonna 2 has been submitted. Stay safe!', 'info', 0, NULL, 17, '2025-04-30 13:03:31', '2025-04-30 13:03:31'),
+(58, 28, 'New Crime Report', 'A new report about theft in Bonna 2 has been submitted. Stay safe!', 'info', 1, NULL, 17, '2025-04-30 13:03:31', '2025-05-07 18:33:11'),
 (59, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#17) in Bonna 2 requires immediate attention.', 'alert', 0, NULL, 17, '2025-04-30 13:03:31', '2025-04-30 13:03:31'),
 (60, 30, 'Report Submitted', 'Your crime report #18 has been submitted successfully: Your report about cybercrime has been submitted successfully.', 'success', 0, NULL, 18, '2025-04-30 13:35:31', '2025-04-30 13:35:31'),
-(61, 28, 'New Crime Report', 'A new report about cybercrime in Me Bonna is reporting. has been submitted. Stay safe!', 'info', 0, NULL, 18, '2025-04-30 13:35:31', '2025-04-30 13:35:31'),
-(62, 28, 'Report Submitted', 'Your crime report #19 has been submitted successfully: Your report about robbery has been submitted successfully.', 'success', 0, NULL, 19, '2025-04-30 16:36:26', '2025-04-30 16:36:26'),
+(61, 28, 'New Crime Report', 'A new report about cybercrime in Me Bonna is reporting. has been submitted. Stay safe!', 'info', 1, NULL, 18, '2025-04-30 13:35:31', '2025-05-07 18:33:11'),
+(62, 28, 'Report Submitted', 'Your crime report #19 has been submitted successfully: Your report about robbery has been submitted successfully.', 'success', 1, NULL, 19, '2025-04-30 16:36:26', '2025-05-07 18:33:11'),
 (63, 30, 'New Crime Report', 'A new report about robbery in Notun Bazar , Infonrt of Forazi Hospital has been submitted. Stay safe!', 'info', 0, NULL, 19, '2025-04-30 16:36:26', '2025-04-30 16:36:26'),
 (64, 29, 'URGENT: High-Risk Crime Report', 'A robbery report (#19) in Notun Bazar , Infonrt of Forazi Hospital requires immediate attention.', 'alert', 0, NULL, 19, '2025-04-30 16:36:26', '2025-04-30 16:36:26'),
-(65, 28, 'Report Submitted', 'Your crime report #20 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 20, '2025-05-01 07:12:05', '2025-05-01 07:12:05'),
+(65, 28, 'Report Submitted', 'Your crime report #20 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 20, '2025-05-01 07:12:05', '2025-05-07 18:33:11'),
 (66, 30, 'New Crime Report', 'A new report about theft in pavel 1001 has been submitted. Stay safe!', 'info', 0, NULL, 20, '2025-05-01 07:12:05', '2025-05-01 07:12:05'),
 (67, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#20) in pavel 1001 requires immediate attention.', 'alert', 0, NULL, 20, '2025-05-01 07:12:05', '2025-05-01 07:12:05'),
-(68, 28, 'Report Submitted', 'Your crime report #21 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 21, '2025-05-01 07:13:16', '2025-05-01 07:13:16'),
+(68, 28, 'Report Submitted', 'Your crime report #21 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 21, '2025-05-01 07:13:16', '2025-05-07 18:33:11'),
 (69, 30, 'New Crime Report', 'A new report about theft in pAVEL O11 has been submitted. Stay safe!', 'info', 0, NULL, 21, '2025-05-01 07:13:16', '2025-05-01 07:13:16'),
 (70, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#21) in pAVEL O11 requires immediate attention.', 'alert', 0, NULL, 21, '2025-05-01 07:13:16', '2025-05-01 07:13:16'),
-(71, 28, 'Report Submitted', 'Your crime report #22 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 22, '2025-05-01 07:13:43', '2025-05-01 07:13:43'),
+(71, 28, 'Report Submitted', 'Your crime report #22 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 22, '2025-05-01 07:13:43', '2025-05-07 18:33:11'),
 (72, 30, 'New Crime Report', 'A new report about theft in hELOLKO has been submitted. Stay safe!', 'info', 0, NULL, 22, '2025-05-01 07:13:43', '2025-05-01 07:13:43'),
 (73, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#22) in hELOLKO requires immediate attention.', 'alert', 0, NULL, 22, '2025-05-01 07:13:43', '2025-05-01 07:13:43'),
-(74, 28, 'Report Submitted', 'Your crime report #23 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 23, '2025-05-01 07:13:52', '2025-05-01 07:13:52'),
+(74, 28, 'Report Submitted', 'Your crime report #23 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 23, '2025-05-01 07:13:52', '2025-05-07 18:33:11'),
 (75, 30, 'New Crime Report', 'A new report about theft in hWLLONOSANVLO has been submitted. Stay safe!', 'info', 0, NULL, 23, '2025-05-01 07:13:52', '2025-05-01 07:13:52'),
 (76, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#23) in hWLLONOSANVLO requires immediate attention.', 'alert', 0, NULL, 23, '2025-05-01 07:13:52', '2025-05-01 07:13:52'),
-(77, 28, 'Report Submitted', 'Your crime report #24 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 24, '2025-05-01 08:33:20', '2025-05-01 08:33:20'),
+(77, 28, 'Report Submitted', 'Your crime report #24 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 24, '2025-05-01 08:33:20', '2025-05-07 18:33:11'),
 (78, 30, 'New Crime Report', 'A new report about theft in Fahim vai whre are you> has been submitted. Stay safe!', 'info', 0, NULL, 24, '2025-05-01 08:33:20', '2025-05-01 08:33:20'),
 (79, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#24) in Fahim vai whre are you> requires immediate attention.', 'alert', 0, NULL, 24, '2025-05-01 08:33:20', '2025-05-01 08:33:20'),
-(80, 28, 'Report Submitted', 'Your crime report #25 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 25, '2025-05-01 08:33:39', '2025-05-01 08:33:39'),
+(80, 28, 'Report Submitted', 'Your crime report #25 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 25, '2025-05-01 08:33:39', '2025-05-07 18:33:11'),
 (81, 30, 'New Crime Report', 'A new report about theft in hiononiv has been submitted. Stay safe!', 'info', 0, NULL, 25, '2025-05-01 08:33:39', '2025-05-01 08:33:39'),
 (82, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#25) in hiononiv requires immediate attention.', 'alert', 0, NULL, 25, '2025-05-01 08:33:39', '2025-05-01 08:33:39'),
-(83, 28, 'Report Submitted', 'Your crime report #26 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 26, '2025-05-01 08:33:50', '2025-05-01 08:33:50'),
+(83, 28, 'Report Submitted', 'Your crime report #26 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 26, '2025-05-01 08:33:50', '2025-05-07 18:33:11'),
 (84, 30, 'New Crime Report', 'A new report about theft in ononbofdlbl has been submitted. Stay safe!', 'info', 0, NULL, 26, '2025-05-01 08:33:50', '2025-05-01 08:33:50'),
 (85, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#26) in ononbofdlbl requires immediate attention.', 'alert', 0, NULL, 26, '2025-05-01 08:33:50', '2025-05-01 08:33:50'),
-(86, 28, 'Report Submitted', 'Your crime report #27 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 27, '2025-05-01 08:42:23', '2025-05-01 08:42:23'),
+(86, 28, 'Report Submitted', 'Your crime report #27 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 27, '2025-05-01 08:42:23', '2025-05-07 18:33:11'),
 (87, 30, 'New Crime Report', 'A new report about theft in Hello has been submitted. Stay safe!', 'info', 0, NULL, 27, '2025-05-01 08:42:23', '2025-05-01 08:42:23'),
 (88, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#27) in Hello requires immediate attention.', 'alert', 0, NULL, 27, '2025-05-01 08:42:23', '2025-05-01 08:42:23'),
-(89, 28, 'Report Submitted', 'Your crime report #28 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 28, '2025-05-01 08:42:52', '2025-05-01 08:42:52'),
+(89, 28, 'Report Submitted', 'Your crime report #28 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 28, '2025-05-01 08:42:52', '2025-05-07 18:33:11'),
 (90, 30, 'New Crime Report', 'A new report about theft in Me the king is reportin has been submitted. Stay safe!', 'info', 0, NULL, 28, '2025-05-01 08:42:52', '2025-05-01 08:42:52'),
 (91, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#28) in Me the king is reportin requires immediate attention.', 'alert', 0, NULL, 28, '2025-05-01 08:42:52', '2025-05-01 08:42:52'),
 (93, 30, 'New Crime Report', 'A new report about theft in pavel vai has been submitted. Stay safe!', 'info', 0, NULL, 29, '2025-05-01 08:59:19', '2025-05-01 08:59:19'),
 (94, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#29) in pavel vai requires immediate attention.', 'alert', 0, NULL, 29, '2025-05-01 08:59:19', '2025-05-01 08:59:19'),
 (96, 30, 'New Crime Report', 'A new report about theft in Hello has been submitted. Stay safe!', 'info', 0, NULL, 30, '2025-05-01 09:56:20', '2025-05-01 09:56:20'),
 (97, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#30) in Hello requires immediate attention.', 'alert', 0, NULL, 30, '2025-05-01 09:56:20', '2025-05-01 09:56:20'),
-(98, 28, 'Report Submitted', 'Your crime report #31 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 31, '2025-05-01 11:48:50', '2025-05-01 11:48:50'),
+(98, 28, 'Report Submitted', 'Your crime report #31 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 31, '2025-05-01 11:48:50', '2025-05-07 18:33:11'),
 (99, 30, 'New Crime Report', 'A new report about theft in My vai has been submitted. Stay safe!', 'info', 0, NULL, 31, '2025-05-01 11:48:50', '2025-05-01 11:48:50'),
 (100, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#31) in My vai requires immediate attention.', 'alert', 0, NULL, 31, '2025-05-01 11:48:50', '2025-05-01 11:48:50'),
 (101, 30, 'Report Submitted', 'Your crime report #32 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 32, '2025-05-05 17:04:22', '2025-05-05 17:04:22'),
-(102, 28, 'New Crime Report', 'A new report about theft in new report has been submitted. Stay safe!', 'info', 0, NULL, 32, '2025-05-05 17:04:22', '2025-05-05 17:04:22'),
+(102, 28, 'New Crime Report', 'A new report about theft in new report has been submitted. Stay safe!', 'info', 1, NULL, 32, '2025-05-05 17:04:22', '2025-05-07 18:33:11'),
 (103, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#32) in new report requires immediate attention.', 'alert', 0, NULL, 32, '2025-05-05 17:04:22', '2025-05-05 17:04:22'),
 (104, 31, 'Report Submitted', 'Your crime report #33 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 33, '2025-05-05 17:15:54', '2025-05-05 17:15:54'),
-(105, 28, 'New Crime Report', 'A new report about theft in Bonna2-01 has been submitted. Stay safe!', 'info', 0, NULL, 33, '2025-05-05 17:15:54', '2025-05-05 17:15:54'),
+(105, 28, 'New Crime Report', 'A new report about theft in Bonna2-01 has been submitted. Stay safe!', 'info', 1, NULL, 33, '2025-05-05 17:15:54', '2025-05-07 18:33:11'),
 (106, 30, 'New Crime Report', 'A new report about theft in Bonna2-01 has been submitted. Stay safe!', 'info', 0, NULL, 33, '2025-05-05 17:15:54', '2025-05-05 17:15:54'),
 (107, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#33) in Bonna2-01 requires immediate attention.', 'alert', 0, NULL, 33, '2025-05-05 17:15:54', '2025-05-05 17:15:54'),
 (108, 31, 'Report Submitted', 'Your crime report #34 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 34, '2025-05-05 17:18:59', '2025-05-05 17:18:59'),
-(109, 28, 'New Crime Report', 'A new report about theft in Boona reporting 04 has been submitted. Stay safe!', 'info', 0, NULL, 34, '2025-05-05 17:18:59', '2025-05-05 17:18:59'),
+(109, 28, 'New Crime Report', 'A new report about theft in Boona reporting 04 has been submitted. Stay safe!', 'info', 1, NULL, 34, '2025-05-05 17:18:59', '2025-05-07 18:33:11'),
 (110, 30, 'New Crime Report', 'A new report about theft in Boona reporting 04 has been submitted. Stay safe!', 'info', 0, NULL, 34, '2025-05-05 17:18:59', '2025-05-05 17:18:59'),
 (111, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#34) in Boona reporting 04 requires immediate attention.', 'alert', 0, NULL, 34, '2025-05-05 17:18:59', '2025-05-05 17:18:59'),
 (112, 30, 'Report Submitted', 'Your crime report #35 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 35, '2025-05-05 17:41:17', '2025-05-05 17:41:17'),
-(113, 28, 'New Crime Report', 'A new report about theft in reportin from mirpur has been submitted. Stay safe!', 'info', 0, NULL, 35, '2025-05-05 17:41:17', '2025-05-05 17:41:17'),
+(113, 28, 'New Crime Report', 'A new report about theft in reportin from mirpur has been submitted. Stay safe!', 'info', 1, NULL, 35, '2025-05-05 17:41:17', '2025-05-07 18:33:11'),
 (114, 31, 'New Crime Report', 'A new report about theft in reportin from mirpur has been submitted. Stay safe!', 'info', 0, NULL, 35, '2025-05-05 17:41:17', '2025-05-05 17:41:17'),
 (115, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#35) in reportin from mirpur requires immediate attention.', 'alert', 0, NULL, 35, '2025-05-05 17:41:17', '2025-05-05 17:41:17'),
 (116, 31, 'Report Submitted', 'Your crime report #36 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 36, '2025-05-05 17:50:31', '2025-05-05 17:50:31'),
-(117, 28, 'New Crime Report', 'A new report about theft in reporting from dinajpur 11 50 has been submitted. Stay safe!', 'info', 0, NULL, 36, '2025-05-05 17:50:31', '2025-05-05 17:50:31'),
+(117, 28, 'New Crime Report', 'A new report about theft in reporting from dinajpur 11 50 has been submitted. Stay safe!', 'info', 1, NULL, 36, '2025-05-05 17:50:31', '2025-05-07 18:33:11'),
 (118, 30, 'New Crime Report', 'A new report about theft in reporting from dinajpur 11 50 has been submitted. Stay safe!', 'info', 0, NULL, 36, '2025-05-05 17:50:31', '2025-05-05 17:50:31'),
 (119, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#36) in reporting from dinajpur 11 50 requires immediate attention.', 'alert', 0, NULL, 36, '2025-05-05 17:50:31', '2025-05-05 17:50:31'),
 (120, 31, 'Report Submitted', 'Your crime report #37 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 37, '2025-05-05 18:23:03', '2025-05-05 18:23:03'),
-(121, 28, 'New Crime Report', 'A new report about theft in 12 22 has been submitted. Stay safe!', 'info', 0, NULL, 37, '2025-05-05 18:23:03', '2025-05-05 18:23:03'),
+(121, 28, 'New Crime Report', 'A new report about theft in 12 22 has been submitted. Stay safe!', 'info', 1, NULL, 37, '2025-05-05 18:23:03', '2025-05-07 18:33:11'),
 (122, 30, 'New Crime Report', 'A new report about theft in 12 22 has been submitted. Stay safe!', 'info', 0, NULL, 37, '2025-05-05 18:23:03', '2025-05-05 18:23:03'),
 (123, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#37) in 12 22 requires immediate attention.', 'alert', 0, NULL, 37, '2025-05-05 18:23:03', '2025-05-05 18:23:03'),
 (124, 31, 'Report Submitted', 'Your crime report #38 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 38, '2025-05-05 18:36:19', '2025-05-05 18:36:19'),
-(125, 28, 'New Crime Report', 'A new report about theft in b2 12 36 has been submitted. Stay safe!', 'info', 0, NULL, 38, '2025-05-05 18:36:19', '2025-05-05 18:36:19'),
+(125, 28, 'New Crime Report', 'A new report about theft in b2 12 36 has been submitted. Stay safe!', 'info', 1, NULL, 38, '2025-05-05 18:36:19', '2025-05-07 18:33:11'),
 (126, 30, 'New Crime Report', 'A new report about theft in b2 12 36 has been submitted. Stay safe!', 'info', 0, NULL, 38, '2025-05-05 18:36:19', '2025-05-05 18:36:19'),
 (127, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#38) in b2 12 36 requires immediate attention.', 'alert', 0, NULL, 38, '2025-05-05 18:36:19', '2025-05-05 18:36:19'),
-(128, 28, 'Report Submitted', 'Your crime report #39 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 39, '2025-05-05 19:18:34', '2025-05-05 19:18:34'),
+(128, 28, 'Report Submitted', 'Your crime report #39 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 39, '2025-05-05 19:18:34', '2025-05-07 18:33:11'),
 (129, 30, 'New Crime Report', 'A new report about theft in pavel is reporing from mirpur has been submitted. Stay safe!', 'info', 0, NULL, 39, '2025-05-05 19:18:34', '2025-05-05 19:18:34'),
 (130, 31, 'New Crime Report', 'A new report about theft in pavel is reporing from mirpur has been submitted. Stay safe!', 'info', 0, NULL, 39, '2025-05-05 19:18:34', '2025-05-05 19:18:34'),
 (131, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#39) in pavel is reporing from mirpur requires immediate attention.', 'alert', 0, NULL, 39, '2025-05-05 19:18:34', '2025-05-05 19:18:34'),
 (132, 31, 'Report Submitted', 'Your crime report #40 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 40, '2025-05-05 19:41:48', '2025-05-05 19:42:17'),
-(133, 28, 'New Crime Report', 'A new report about theft in bonaa two from dinajpur is reporing 1 41 has been submitted. Stay safe!', 'info', 0, NULL, 40, '2025-05-05 19:41:48', '2025-05-05 19:41:48'),
+(133, 28, 'New Crime Report', 'A new report about theft in bonaa two from dinajpur is reporing 1 41 has been submitted. Stay safe!', 'info', 1, NULL, 40, '2025-05-05 19:41:48', '2025-05-07 18:33:11'),
 (134, 30, 'New Crime Report', 'A new report about theft in bonaa two from dinajpur is reporing 1 41 has been submitted. Stay safe!', 'info', 0, NULL, 40, '2025-05-05 19:41:48', '2025-05-05 19:41:48'),
 (135, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#40) in bonaa two from dinajpur is reporing 1 41 requires immediate attention.', 'alert', 0, NULL, 40, '2025-05-05 19:41:48', '2025-05-05 19:41:48'),
 (136, 30, 'Report Submitted', 'Your crime report #41 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 41, '2025-05-05 19:43:59', '2025-05-05 19:43:59'),
-(137, 28, 'New Crime Report', 'A new report about theft in Bonna : 1 43 has been submitted. Stay safe!', 'info', 0, NULL, 41, '2025-05-05 19:43:59', '2025-05-05 19:43:59'),
+(137, 28, 'New Crime Report', 'A new report about theft in Bonna : 1 43 has been submitted. Stay safe!', 'info', 1, NULL, 41, '2025-05-05 19:43:59', '2025-05-07 18:33:11'),
 (138, 31, 'New Crime Report', 'A new report about theft in Bonna : 1 43 has been submitted. Stay safe!', 'info', 0, NULL, 41, '2025-05-05 19:43:59', '2025-05-05 19:43:59'),
 (139, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#41) in Bonna : 1 43 requires immediate attention.', 'alert', 0, NULL, 41, '2025-05-05 19:43:59', '2025-05-05 19:43:59'),
 (140, 30, 'Report Submitted', 'Your crime report #42 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 42, '2025-05-05 19:45:48', '2025-05-05 19:45:48'),
-(141, 28, 'New Crime Report', 'A new report about theft in 1 45 has been submitted. Stay safe!', 'info', 0, NULL, 42, '2025-05-05 19:45:48', '2025-05-05 19:45:48'),
+(141, 28, 'New Crime Report', 'A new report about theft in 1 45 has been submitted. Stay safe!', 'info', 1, NULL, 42, '2025-05-05 19:45:48', '2025-05-07 18:33:11'),
 (142, 31, 'New Crime Report', 'A new report about theft in 1 45 has been submitted. Stay safe!', 'info', 0, NULL, 42, '2025-05-05 19:45:48', '2025-05-05 19:45:48'),
 (143, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#42) in 1 45 requires immediate attention.', 'alert', 0, NULL, 42, '2025-05-05 19:45:48', '2025-05-05 19:45:48'),
 (144, 30, 'Report Submitted', 'Your crime report #43 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 43, '2025-05-06 15:42:55', '2025-05-06 15:42:55'),
-(145, 28, 'New Crime Report', 'A new report about theft in Darling is reporting. has been submitted. Stay safe!', 'info', 0, NULL, 43, '2025-05-06 15:42:55', '2025-05-06 15:42:55'),
+(145, 28, 'New Crime Report', 'A new report about theft in Darling is reporting. has been submitted. Stay safe!', 'info', 1, NULL, 43, '2025-05-06 15:42:55', '2025-05-07 18:33:11'),
 (146, 31, 'New Crime Report', 'A new report about theft in Darling is reporting. has been submitted. Stay safe!', 'info', 0, NULL, 43, '2025-05-06 15:42:55', '2025-05-06 15:42:55'),
 (147, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#43) in Darling is reporting. requires immediate attention.', 'alert', 0, NULL, 43, '2025-05-06 15:42:55', '2025-05-06 15:42:55'),
-(148, 28, 'Report Submitted', 'Your crime report #44 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 44, '2025-05-06 16:02:28', '2025-05-06 16:02:28'),
+(148, 28, 'Report Submitted', 'Your crime report #44 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 44, '2025-05-06 16:02:28', '2025-05-07 18:33:11'),
 (149, 30, 'New Crime Report', 'A new report about theft in Dhaka Mirput reoring has been submitted. Stay safe!', 'info', 0, NULL, 44, '2025-05-06 16:02:28', '2025-05-06 16:02:28'),
 (150, 31, 'New Crime Report', 'A new report about theft in Dhaka Mirput reoring has been submitted. Stay safe!', 'info', 0, NULL, 44, '2025-05-06 16:02:28', '2025-05-06 16:02:28'),
 (151, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#44) in Dhaka Mirput reoring requires immediate attention.', 'alert', 0, NULL, 44, '2025-05-06 16:02:28', '2025-05-06 16:02:28'),
-(152, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 44, '2025-05-07 14:22:59', '2025-05-07 14:22:59'),
-(153, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 44, '2025-05-07 14:30:03', '2025-05-07 14:30:03'),
-(154, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 44, '2025-05-07 14:35:22', '2025-05-07 14:35:22'),
-(155, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 44, '2025-05-07 14:35:28', '2025-05-07 14:35:28'),
+(152, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 44, '2025-05-07 14:22:59', '2025-05-07 18:33:11'),
+(153, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 44, '2025-05-07 14:30:03', '2025-05-07 18:33:11'),
+(154, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 44, '2025-05-07 14:35:22', '2025-05-07 18:33:11'),
+(155, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 44, '2025-05-07 14:35:28', '2025-05-07 18:33:11'),
 (156, 30, 'Report Updated', 'Your crime report #43 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 43, '2025-05-07 14:35:33', '2025-05-07 14:35:33'),
-(157, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 44, '2025-05-07 14:36:02', '2025-05-07 14:36:02'),
-(158, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 44, '2025-05-07 14:40:36', '2025-05-07 14:40:36'),
-(159, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 44, '2025-05-07 14:40:48', '2025-05-07 14:40:48'),
-(160, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 44, '2025-05-07 14:40:53', '2025-05-07 14:40:53'),
-(161, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 44, '2025-05-07 15:48:40', '2025-05-07 15:48:40');
+(157, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 44, '2025-05-07 14:36:02', '2025-05-07 18:33:11'),
+(158, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 44, '2025-05-07 14:40:36', '2025-05-07 18:33:11'),
+(159, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 44, '2025-05-07 14:40:48', '2025-05-07 18:33:11'),
+(160, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 44, '2025-05-07 14:40:53', '2025-05-07 18:33:11'),
+(161, 28, 'Report Updated', 'Your crime report #44 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 44, '2025-05-07 15:48:40', '2025-05-07 18:33:11'),
+(162, 28, 'Report Submitted', 'Your crime report #45 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 45, '2025-05-07 15:58:52', '2025-05-07 18:33:11'),
+(163, 30, 'New Crime Report', 'A new report about theft in 9 10 is reporting has been submitted. Stay safe!', 'info', 0, NULL, 45, '2025-05-07 15:58:52', '2025-05-07 15:58:52'),
+(164, 31, 'New Crime Report', 'A new report about theft in 9 10 is reporting has been submitted. Stay safe!', 'info', 0, NULL, 45, '2025-05-07 15:58:52', '2025-05-07 15:58:52'),
+(165, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#45) in 9 10 is reporting requires immediate attention.', 'alert', 0, NULL, 45, '2025-05-07 15:58:52', '2025-05-07 15:58:52'),
+(166, 28, 'Report Updated', 'Your crime report #45 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 45, '2025-05-07 16:00:39', '2025-05-07 18:33:11'),
+(167, 28, 'Report Submitted', 'Your crime report #46 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 46, '2025-05-07 16:24:06', '2025-05-07 18:33:11'),
+(168, 30, 'New Crime Report', 'A new report about theft in pavel points has been submitted. Stay safe!', 'info', 0, NULL, 46, '2025-05-07 16:24:06', '2025-05-07 16:24:06'),
+(169, 31, 'New Crime Report', 'A new report about theft in pavel points has been submitted. Stay safe!', 'info', 0, NULL, 46, '2025-05-07 16:24:06', '2025-05-07 16:24:06'),
+(170, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#46) in pavel points requires immediate attention.', 'alert', 0, NULL, 46, '2025-05-07 16:24:06', '2025-05-07 16:24:06'),
+(171, 28, 'Report Updated', 'Your crime report #46 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 46, '2025-05-07 16:24:50', '2025-05-07 18:33:11'),
+(172, 28, 'Report Updated', 'Your crime report #44 has been updated: A police officer has confirmed your report.', 'info', 1, NULL, 44, '2025-05-07 16:38:05', '2025-05-07 18:33:11'),
+(173, 28, 'Report Submitted', 'Your crime report #47 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 47, '2025-05-07 16:38:38', '2025-05-07 18:33:11'),
+(174, 30, 'New Crime Report', 'A new report about theft in police potins has been submitted. Stay safe!', 'info', 0, NULL, 47, '2025-05-07 16:38:38', '2025-05-07 16:38:38'),
+(175, 31, 'New Crime Report', 'A new report about theft in police potins has been submitted. Stay safe!', 'info', 0, NULL, 47, '2025-05-07 16:38:38', '2025-05-07 16:38:38'),
+(176, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#47) in police potins requires immediate attention.', 'alert', 0, NULL, 47, '2025-05-07 16:38:38', '2025-05-07 16:38:38'),
+(177, 28, 'Report Submitted', 'Your crime report #48 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 48, '2025-05-07 16:47:24', '2025-05-07 18:33:11'),
+(178, 30, 'New Crime Report', 'A new report about theft in pavel 2334 has been submitted. Stay safe!', 'info', 0, NULL, 48, '2025-05-07 16:47:24', '2025-05-07 16:47:24'),
+(179, 31, 'New Crime Report', 'A new report about theft in pavel 2334 has been submitted. Stay safe!', 'info', 0, NULL, 48, '2025-05-07 16:47:24', '2025-05-07 16:47:24'),
+(180, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#48) in pavel 2334 requires immediate attention.', 'alert', 0, NULL, 48, '2025-05-07 16:47:24', '2025-05-07 16:47:24'),
+(181, 28, 'Report Updated', 'Your crime report #47 has been updated: A police officer has questioned your report.', 'info', 1, NULL, 47, '2025-05-07 16:56:04', '2025-05-07 18:33:11'),
+(182, 28, 'Report Submitted', 'Your crime report #49 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 1, NULL, 49, '2025-05-07 17:10:45', '2025-05-07 18:33:11'),
+(183, 30, 'New Crime Report', 'A new report about theft in ascac has been submitted. Stay safe!', 'info', 0, NULL, 49, '2025-05-07 17:10:45', '2025-05-07 17:10:45'),
+(184, 31, 'New Crime Report', 'A new report about theft in ascac has been submitted. Stay safe!', 'info', 0, NULL, 49, '2025-05-07 17:10:45', '2025-05-07 17:10:45'),
+(185, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#49) in ascac requires immediate attention.', 'alert', 0, NULL, 49, '2025-05-07 17:10:45', '2025-05-07 17:10:45'),
+(186, 28, 'Report Updated', 'Your crime report #49 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 49, '2025-05-07 17:11:42', '2025-05-07 18:33:11'),
+(187, 28, 'Report Updated', 'Your crime report #49 has been updated: A community member has confirmed your report.', 'info', 1, NULL, 49, '2025-05-07 18:33:49', '2025-05-08 13:22:51'),
+(188, 28, 'Report Submitted', 'Your crime report #50 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 50, '2025-05-08 13:29:32', '2025-05-08 13:29:32'),
+(189, 30, 'New Crime Report', 'A new report about theft in 12 hours disapera checking has been submitted. Stay safe!', 'info', 0, NULL, 50, '2025-05-08 13:29:32', '2025-05-08 13:29:32'),
+(190, 31, 'New Crime Report', 'A new report about theft in 12 hours disapera checking has been submitted. Stay safe!', 'info', 0, NULL, 50, '2025-05-08 13:29:32', '2025-05-08 13:29:32'),
+(191, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#50) in 12 hours disapera checking requires immediate attention.', 'alert', 0, NULL, 50, '2025-05-08 13:29:32', '2025-05-08 13:29:32'),
+(192, 28, 'Report Updated', 'Your crime report #50 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 50, '2025-05-08 13:37:27', '2025-05-08 13:37:27'),
+(193, 28, 'Report Updated', 'Your crime report #50 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 50, '2025-05-08 13:37:38', '2025-05-08 13:37:38'),
+(194, 28, 'Report Updated', 'Your crime report #50 has been updated: A community member has questioned your report.', 'info', 0, NULL, 50, '2025-05-08 13:38:14', '2025-05-08 13:38:14'),
+(195, 28, 'Report Updated', 'Your crime report #50 has been updated: A community member has questioned your report.', 'info', 0, NULL, 50, '2025-05-08 13:38:32', '2025-05-08 13:38:32'),
+(196, 28, 'Report Updated', 'Your crime report #50 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 50, '2025-05-08 13:38:42', '2025-05-08 13:38:42'),
+(197, 28, 'Report Updated', 'Your crime report #50 has been updated: A community member has questioned your report.', 'info', 0, NULL, 50, '2025-05-08 13:38:47', '2025-05-08 13:38:47'),
+(198, 28, 'Report Updated', 'Your crime report #50 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 50, '2025-05-08 13:38:50', '2025-05-08 13:38:50'),
+(199, 28, 'Report Updated', 'Your crime report #50 has been updated: A community member has questioned your report.', 'info', 0, NULL, 50, '2025-05-08 13:38:53', '2025-05-08 13:38:53'),
+(200, 28, 'Report Updated', 'Your crime report #50 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 50, '2025-05-08 13:38:55', '2025-05-08 13:38:55'),
+(201, 28, 'Report Updated', 'Your crime report #50 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 50, '2025-05-08 13:40:08', '2025-05-08 13:40:08'),
+(202, 28, 'Report Updated', 'Your crime report #50 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 50, '2025-05-08 13:44:14', '2025-05-08 13:44:14'),
+(203, 28, 'Report Submitted', 'Your crime report #51 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 51, '2025-05-08 13:44:48', '2025-05-08 13:44:48'),
+(204, 30, 'New Crime Report', 'A new report about theft in Pavel point chekcing has been submitted. Stay safe!', 'info', 0, NULL, 51, '2025-05-08 13:44:48', '2025-05-08 13:44:48'),
+(205, 31, 'New Crime Report', 'A new report about theft in Pavel point chekcing has been submitted. Stay safe!', 'info', 0, NULL, 51, '2025-05-08 13:44:48', '2025-05-08 13:44:48'),
+(206, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#51) in Pavel point chekcing requires immediate attention.', 'alert', 0, NULL, 51, '2025-05-08 13:44:48', '2025-05-08 13:44:48'),
+(207, 28, 'Report Updated', 'Your crime report #51 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 51, '2025-05-08 13:44:57', '2025-05-08 13:44:57'),
+(208, 28, 'Report Submitted', 'Your crime report #52 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 52, '2025-05-08 13:45:14', '2025-05-08 13:45:14'),
+(209, 30, 'New Crime Report', 'A new report about theft in acasc has been submitted. Stay safe!', 'info', 0, NULL, 52, '2025-05-08 13:45:14', '2025-05-08 13:45:14'),
+(210, 31, 'New Crime Report', 'A new report about theft in acasc has been submitted. Stay safe!', 'info', 0, NULL, 52, '2025-05-08 13:45:14', '2025-05-08 13:45:14'),
+(211, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#52) in acasc requires immediate attention.', 'alert', 0, NULL, 52, '2025-05-08 13:45:14', '2025-05-08 13:45:14'),
+(212, 28, 'Report Submitted', 'Your crime report #53 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 53, '2025-05-08 13:45:21', '2025-05-08 13:45:21'),
+(213, 30, 'New Crime Report', 'A new report about theft in qcqcasc has been submitted. Stay safe!', 'info', 0, NULL, 53, '2025-05-08 13:45:21', '2025-05-08 13:45:21'),
+(214, 31, 'New Crime Report', 'A new report about theft in qcqcasc has been submitted. Stay safe!', 'info', 0, NULL, 53, '2025-05-08 13:45:21', '2025-05-08 13:45:21'),
+(215, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#53) in qcqcasc requires immediate attention.', 'alert', 0, NULL, 53, '2025-05-08 13:45:21', '2025-05-08 13:45:21'),
+(216, 28, 'Report Updated', 'Your crime report #53 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 53, '2025-05-08 13:45:29', '2025-05-08 13:45:29'),
+(217, 28, 'Report Updated', 'Your crime report #52 has been updated: A community member has questioned your report.', 'info', 0, NULL, 52, '2025-05-08 13:45:35', '2025-05-08 13:45:35'),
+(218, 28, 'Report Submitted', 'Your crime report #54 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 54, '2025-05-08 13:51:44', '2025-05-08 13:51:44'),
+(219, 30, 'New Crime Report', 'A new report about theft in 1 has been submitted. Stay safe!', 'info', 0, NULL, 54, '2025-05-08 13:51:44', '2025-05-08 13:51:44'),
+(220, 31, 'New Crime Report', 'A new report about theft in 1 has been submitted. Stay safe!', 'info', 0, NULL, 54, '2025-05-08 13:51:44', '2025-05-08 13:51:44'),
+(221, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#54) in 1 requires immediate attention.', 'alert', 0, NULL, 54, '2025-05-08 13:51:44', '2025-05-08 13:51:44'),
+(222, 28, 'Report Submitted', 'Your crime report #55 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 55, '2025-05-08 13:51:48', '2025-05-08 13:51:48'),
+(223, 30, 'New Crime Report', 'A new report about theft in 2 has been submitted. Stay safe!', 'info', 0, NULL, 55, '2025-05-08 13:51:48', '2025-05-08 13:51:48'),
+(224, 31, 'New Crime Report', 'A new report about theft in 2 has been submitted. Stay safe!', 'info', 0, NULL, 55, '2025-05-08 13:51:48', '2025-05-08 13:51:48'),
+(225, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#55) in 2 requires immediate attention.', 'alert', 0, NULL, 55, '2025-05-08 13:51:48', '2025-05-08 13:51:48'),
+(226, 28, 'Report Updated', 'Your crime report #55 has been updated: A community member has questioned your report.', 'info', 0, NULL, 55, '2025-05-08 13:51:59', '2025-05-08 13:51:59'),
+(227, 28, 'Report Updated', 'Your crime report #54 has been updated: A community member has confirmed your report.', 'info', 0, NULL, 54, '2025-05-08 13:52:10', '2025-05-08 13:52:10'),
+(228, 28, 'Report Submitted', 'Your crime report #56 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 56, '2025-05-08 13:56:34', '2025-05-08 13:56:34'),
+(229, 30, 'New Crime Report', 'A new report about theft in 45 has been submitted. Stay safe!', 'info', 0, NULL, 56, '2025-05-08 13:56:34', '2025-05-08 13:56:34'),
+(230, 31, 'New Crime Report', 'A new report about theft in 45 has been submitted. Stay safe!', 'info', 0, NULL, 56, '2025-05-08 13:56:34', '2025-05-08 13:56:34'),
+(231, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#56) in 45 requires immediate attention.', 'alert', 0, NULL, 56, '2025-05-08 13:56:34', '2025-05-08 13:56:34'),
+(232, 28, 'Report Submitted', 'Your crime report #57 has been submitted successfully: Your report about theft has been submitted successfully.', 'success', 0, NULL, 57, '2025-05-08 13:56:42', '2025-05-08 13:56:42'),
+(233, 30, 'New Crime Report', 'A new report about theft in 46 has been submitted. Stay safe!', 'info', 0, NULL, 57, '2025-05-08 13:56:42', '2025-05-08 13:56:42'),
+(234, 31, 'New Crime Report', 'A new report about theft in 46 has been submitted. Stay safe!', 'info', 0, NULL, 57, '2025-05-08 13:56:42', '2025-05-08 13:56:42'),
+(235, 29, 'URGENT: High-Risk Crime Report', 'A ARMED theft report (#57) in 46 requires immediate attention.', 'alert', 0, NULL, 57, '2025-05-08 13:56:42', '2025-05-08 13:56:42'),
+(236, 28, 'Report Update', 'Your report #57 has been updated: Your crime report has been marked as false by a community member. 50 points have been deducted.', 'info', 1, NULL, 57, '2025-05-08 13:56:55', '2025-05-08 14:16:36'),
+(240, 30, 'New Crime Report', 'A new report about robbery in full detisl report has been submitted. Stay safe!', 'info', 0, NULL, 58, '2025-05-08 13:59:24', '2025-05-08 13:59:24'),
+(241, 31, 'New Crime Report', 'A new report about robbery in full detisl report has been submitted. Stay safe!', 'info', 0, NULL, 58, '2025-05-08 13:59:24', '2025-05-08 13:59:24'),
+(242, 29, 'URGENT: High-Risk Crime Report', 'A ARMED robbery report (#58) in full detisl report requires immediate attention.', 'alert', 0, NULL, 58, '2025-05-08 13:59:24', '2025-05-08 13:59:24'),
+(244, 28, 'Report Validated', 'Your crime report #58 has been validated by community members: Your crime report has been validated by a community member. You\'ve earned 50 points!', 'success', 0, NULL, 58, '2025-05-08 14:20:36', '2025-05-08 14:20:36');
 
 -- --------------------------------------------------------
 
@@ -612,7 +775,21 @@ INSERT INTO `police_alerts` (`id`, `report_id`, `police_id`, `status`, `response
 (37, 41, NULL, 'pending', NULL, '2025-05-05 19:43:59', NULL, '2025-05-05 19:43:59'),
 (38, 42, NULL, 'pending', NULL, '2025-05-05 19:45:47', NULL, '2025-05-05 19:45:47'),
 (39, 43, NULL, 'pending', NULL, '2025-05-06 15:42:55', NULL, '2025-05-06 15:42:55'),
-(40, 44, NULL, 'pending', NULL, '2025-05-06 16:02:28', NULL, '2025-05-06 16:02:28');
+(40, 44, NULL, 'pending', NULL, '2025-05-06 16:02:28', NULL, '2025-05-06 16:02:28'),
+(41, 45, NULL, 'pending', NULL, '2025-05-07 15:58:52', NULL, '2025-05-07 15:58:52'),
+(42, 46, NULL, 'pending', NULL, '2025-05-07 16:24:06', NULL, '2025-05-07 16:24:06'),
+(43, 47, NULL, 'pending', NULL, '2025-05-07 16:38:38', NULL, '2025-05-07 16:38:38'),
+(44, 48, NULL, 'confirmed', NULL, '2025-05-07 16:47:24', NULL, '2025-05-07 16:52:14'),
+(45, 49, NULL, 'pending', NULL, '2025-05-07 17:10:45', NULL, '2025-05-07 17:10:45'),
+(46, 50, NULL, 'pending', NULL, '2025-05-08 13:29:32', NULL, '2025-05-08 13:29:32'),
+(47, 51, NULL, 'pending', NULL, '2025-05-08 13:44:48', NULL, '2025-05-08 13:44:48'),
+(48, 52, NULL, 'pending', NULL, '2025-05-08 13:45:14', NULL, '2025-05-08 13:45:14'),
+(49, 53, NULL, 'pending', NULL, '2025-05-08 13:45:21', NULL, '2025-05-08 13:45:21'),
+(50, 54, NULL, 'pending', NULL, '2025-05-08 13:51:44', NULL, '2025-05-08 13:51:44'),
+(51, 55, NULL, 'pending', NULL, '2025-05-08 13:51:48', NULL, '2025-05-08 13:51:48'),
+(52, 56, NULL, 'pending', NULL, '2025-05-08 13:56:34', NULL, '2025-05-08 13:56:34'),
+(53, 57, NULL, 'confirmed', NULL, '2025-05-08 13:56:42', NULL, '2025-05-08 13:57:42'),
+(54, 58, NULL, 'pending', NULL, '2025-05-08 13:59:24', NULL, '2025-05-08 13:59:24');
 
 -- --------------------------------------------------------
 
@@ -852,7 +1029,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `national_id`, `passport`, `mobile_no`, `password`, `role`, `address`, `status`, `police_id`, `station`, `rank`, `badge_number`, `joining_date`, `created_at`, `updated_at`, `reset_code`, `reset_code_expires`, `points`, `user_level`) VALUES
 (26, 'police-3', 'plc3', 'police3@gmail.com', '15951595159', '55555500', '01774073356', '$2a$10$CAVpF2f3u58VR2lJ5H9o4e55DK8NqRsov4aXetnzSe6/PfFXTw92S', 'police', 'Dhaka-vatar', 'approved', '3695', 'Dhaka-Mirpur', 'ASP', '56-U', '2025-04-18', '2025-04-28 18:58:16', '2025-05-06 16:07:24', NULL, NULL, 0, 'Bronze'),
 (27, 'five', 'five', 'police5@gmail.com', '696969696969', '2598525852', '017594995959', '$2a$10$ZcVIpXO1tY2DUw4RUM9ojuSmhRqMEXF94M4a4t.JZp587kfp7ZgC6', 'police', 'Dhaka-Mirpur', 'pending', 'POI-1001', 'Vatara', 'DECS', '7989', '2025-04-19', '2025-04-29 11:09:26', '2025-04-29 11:09:26', NULL, NULL, 0, 'Bronze'),
-(28, 'md:pavel', 'pavel12', 'pavel@gmail.com', '213', '42529529592', '01746467979', '$2a$10$oHnxgP147ubzoXo3drhC3ONge.yJc9W/EDdS6VvZk0STVDHnWCpli', 'public', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-30 09:16:17', '2025-05-06 15:45:52', NULL, NULL, 0, 'Bronze'),
+(28, 'md:pavel', 'pavel12', 'pavel@gmail.com', '213', '42529529592', '01746467979', '$2a$10$oHnxgP147ubzoXo3drhC3ONge.yJc9W/EDdS6VvZk0STVDHnWCpli', 'public', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-30 09:16:17', '2025-05-08 14:20:36', NULL, NULL, 1150, 'Bronze'),
 (29, 'Fahim Faysal', 'fahim01', 'mfaysal@bscse.uiu.ac.bd', '5858999581', '581518181818', '01774071130', '$2a$10$WatGbgDh7I3vndEw0coecOh1NTAVJK/NoUkKaZ7lNZV2sTOEBqZRC', 'admin', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-30 10:19:47', '2025-04-30 19:09:18', NULL, NULL, 0, 'Bronze'),
 (30, 'Bonna Darling', 'bonna1', 'bonna1@gmail.com', '311664615', '54643542350', '01754466112', '$2a$10$9AZ31SqoOBfC49M/7NTRCe.7ReherfNFEn6RT0gOyB8ahiF.46r/S', 'public', 'Dhaka-Mirpur', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-04-30 12:05:09', '2025-05-06 10:26:32', NULL, NULL, 0, 'Bronze'),
 (31, 'bonna5 to 4', 'bonna2', 'bonna2@gmail.com', '9999999999', '598598598', '01775692264', '$2a$10$XGV1RweUgHrgU.GHUTZTH.2QsABV8rx3jGoRaz0/BhRRnnw85wpAq', 'public', 'Dinajpur-Birol', 'approved', NULL, NULL, NULL, NULL, NULL, '2025-05-05 17:09:42', '2025-05-06 15:50:40', NULL, NULL, 0, 'Bronze');
@@ -878,9 +1055,26 @@ CREATE TABLE `validations` (
 --
 
 INSERT INTO `validations` (`id`, `report_id`, `user_id`, `is_valid`, `comment`, `created_at`, `updated_at`) VALUES
-(1, 44, 26, 1, NULL, '2025-05-07 14:22:59', '2025-05-07 15:48:40'),
+(1, 44, 26, 1, NULL, '2025-05-07 14:22:59', '2025-05-07 16:38:05'),
 (2, 44, 28, 1, NULL, '2025-05-07 14:30:03', '2025-05-07 14:35:28'),
-(3, 43, 28, 1, NULL, '2025-05-07 14:35:33', '2025-05-07 14:35:33');
+(3, 43, 28, 1, NULL, '2025-05-07 14:35:33', '2025-05-07 14:35:33'),
+(4, 45, 30, 1, NULL, '2025-05-07 16:00:39', '2025-05-07 16:00:39'),
+(5, 46, 30, 1, NULL, '2025-05-07 16:24:50', '2025-05-07 16:24:50'),
+(6, 48, 26, 1, NULL, '2025-05-07 16:52:14', '2025-05-07 16:52:14'),
+(7, 47, 26, 0, NULL, '2025-05-07 16:56:04', '2025-05-07 16:56:04'),
+(8, 49, 28, 1, NULL, '2025-05-07 17:11:42', '2025-05-07 18:33:48'),
+(9, 50, 28, 1, NULL, '2025-05-08 13:37:27', '2025-05-08 13:44:14'),
+(10, 51, 28, 1, NULL, '2025-05-08 13:44:57', '2025-05-08 13:44:57'),
+(11, 53, 28, 1, NULL, '2025-05-08 13:45:29', '2025-05-08 13:45:29'),
+(12, 52, 28, 0, NULL, '2025-05-08 13:45:35', '2025-05-08 13:45:35'),
+(13, 55, 28, 0, NULL, '2025-05-08 13:51:59', '2025-05-08 13:51:59'),
+(14, 54, 28, 1, NULL, '2025-05-08 13:52:10', '2025-05-08 13:52:10'),
+(15, 57, 28, 0, NULL, '2025-05-08 13:56:55', '2025-05-08 13:56:55'),
+(16, 56, 28, 1, NULL, '2025-05-08 13:57:02', '2025-05-08 13:57:02'),
+(17, 57, 26, 1, NULL, '2025-05-08 13:57:42', '2025-05-08 13:57:42'),
+(18, 56, 26, 0, NULL, '2025-05-08 13:58:07', '2025-05-08 13:58:07'),
+(19, 58, 30, 1, NULL, '2025-05-08 14:02:51', '2025-05-08 14:02:51'),
+(20, 58, 28, 1, NULL, '2025-05-08 14:20:36', '2025-05-08 14:20:36');
 
 --
 -- Indexes for dumped tables
@@ -1088,7 +1282,7 @@ ALTER TABLE `validations`
 -- AUTO_INCREMENT for table `address_based_alerts`
 --
 ALTER TABLE `address_based_alerts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
 
 --
 -- AUTO_INCREMENT for table `admin`
@@ -1112,7 +1306,7 @@ ALTER TABLE `case_updates`
 -- AUTO_INCREMENT for table `crime_alerts`
 --
 ALTER TABLE `crime_alerts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `crime_areas`
@@ -1130,7 +1324,7 @@ ALTER TABLE `crime_categories`
 -- AUTO_INCREMENT for table `crime_reports`
 --
 ALTER TABLE `crime_reports`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT for table `emergency_contacts`
@@ -1154,7 +1348,7 @@ ALTER TABLE `feedback`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=245;
 
 --
 -- AUTO_INCREMENT for table `police`
@@ -1166,7 +1360,7 @@ ALTER TABLE `police`
 -- AUTO_INCREMENT for table `police_alerts`
 --
 ALTER TABLE `police_alerts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `police_files`
@@ -1202,7 +1396,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `validations`
 --
 ALTER TABLE `validations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Constraints for dumped tables
