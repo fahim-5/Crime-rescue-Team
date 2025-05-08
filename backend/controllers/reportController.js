@@ -301,14 +301,24 @@ const validateCrimeReport = async (req, res) => {
   try {
     const { reportId } = req.params;
     const userId = req.user.id;
-    const { isValid, comment } = req.body;
-    const isPoliceValidation = req.user.role === "police"; // Fixed typo - renamed from isPolicaValidation
+    const { isValid, comment, pointsAdjustment, isNewValidation } = req.body;
+    const isPoliceValidation = req.user.role === "police";
 
     if (isValid === undefined) {
       return res.status(400).json({
         success: false,
         message: "Validation status (isValid) is required",
       });
+    }
+
+    // Check if this is a new validation or an update to an existing one
+    let isFirstValidation = false;
+    if (isNewValidation) {
+      const existingValidation = await ReportModel.getUserValidation(
+        reportId,
+        userId
+      );
+      isFirstValidation = !existingValidation;
     }
 
     // Add validation
@@ -326,46 +336,72 @@ const validateCrimeReport = async (req, res) => {
     // Get the report to check who created it
     const report = await ReportModel.getById(reportId);
 
-    // If report has a reporter_id, send them a notification about the validation
-    if (report && report.reporter_id) {
-      try {
-        // If the validation is positive (isValid=true) and either:
-        // 1. This is a police validation (award 200 points)
-        // 2. This is a regular validation and either the first validation or threshold reached (award 50 points)
-        if (isValid) {
-          try {
-            // Directly update the points in the users table
-            const connection =
-              await require("../config/db").pool.getConnection();
-            try {
-              // Award points based on who is validating
-              const pointsToAward = isPoliceValidation ? 200 : 50;
+    let pointsAwarded = 0;
 
-              // Log what we're doing
+    // If report has a reporter_id and this is a new validation, process points
+    if (report && report.reporter_id && isNewValidation && isFirstValidation) {
+      try {
+        // Handle points based on validation type - both positive and negative
+        try {
+          // Directly update the points in the users table
+          const connection = await require("../config/db").pool.getConnection();
+          try {
+            // If pointsAdjustment is specified in the request, use that value
+            if (pointsAdjustment !== undefined) {
+              pointsAwarded = pointsAdjustment;
+            } else {
+              // Otherwise use default values based on validation type
+              if (isValid) {
+                // Positive validation
+                pointsAwarded = isPoliceValidation ? 200 : 50;
+              } else {
+                // Negative validation (mark as false)
+                pointsAwarded = isPoliceValidation ? -200 : -50;
+              }
+            }
+
+            // Log what we're doing
+            if (pointsAwarded > 0) {
               console.log(
-                `Awarding ${pointsToAward} points to reporter ${
+                `Awarding ${pointsAwarded} points to reporter ${
                   report.reporter_id
                 } for validated report ${reportId}${
                   isPoliceValidation ? " (Police validation)" : ""
                 }`
               );
-
-              // Update the user's points
-              await connection.query(
-                "UPDATE users SET points = points + ? WHERE id = ?",
-                [pointsToAward, report.reporter_id]
-              );
-
+            } else {
               console.log(
-                `Successfully awarded ${pointsToAward} points to reporter ${report.reporter_id}`
+                `Deducting ${Math.abs(pointsAwarded)} points from reporter ${
+                  report.reporter_id
+                } for report marked as false ${reportId}${
+                  isPoliceValidation ? " (Police validation)" : ""
+                }`
               );
-            } finally {
-              connection.release();
             }
-          } catch (pointsError) {
-            console.error("Error awarding points:", pointsError);
-            // Continue with validation even if points award fails
+
+            // Update the user's points (will handle both addition and subtraction since pointsAwarded can be negative)
+            await connection.query(
+              "UPDATE users SET points = points + ? WHERE id = ?",
+              [pointsAwarded, report.reporter_id]
+            );
+
+            if (pointsAwarded > 0) {
+              console.log(
+                `Successfully awarded ${pointsAwarded} points to reporter ${report.reporter_id}`
+              );
+            } else {
+              console.log(
+                `Successfully deducted ${Math.abs(
+                  pointsAwarded
+                )} points from reporter ${report.reporter_id}`
+              );
+            }
+          } finally {
+            connection.release();
           }
+        } catch (pointsError) {
+          console.error("Error updating points:", pointsError);
+          // Continue with validation even if points update fails
         }
 
         // If police officer validates as true, always create/update police alert
@@ -398,14 +434,21 @@ const validateCrimeReport = async (req, res) => {
             message: `A crime report in ${report.location} has been confirmed by multiple community members. Stay vigilant!`,
           });
         } else {
-          // Send updated notification
+          // Send notification to reporter based on validation type
+          const notificationType = isValid ? "validated" : "marked_false";
+          const details = isValid
+            ? `Your crime report has been validated by ${
+                isPoliceValidation ? "a police officer" : "a community member"
+              }. You've earned ${pointsAwarded} points!`
+            : `Your crime report has been marked as false by ${
+                isPoliceValidation ? "a police officer" : "a community member"
+              }. ${Math.abs(pointsAwarded)} points have been deducted.`;
+
           await NotificationService.sendReportNotification({
             userId: report.reporter_id,
             reportId: reportId,
-            action: "updated",
-            details: `A ${
-              isPoliceValidation ? "police officer" : "community member"
-            } has ${isValid ? "confirmed" : "questioned"} your report.`,
+            action: notificationType,
+            details: details,
           });
         }
       } catch (notificationError) {
@@ -417,12 +460,19 @@ const validateCrimeReport = async (req, res) => {
       }
     }
 
+    // Include information about points in the response
+    const responseData = {
+      ...result,
+      pointsAwarded,
+    };
+
     if (isPoliceValidation && isValid) {
       // Police validation - special handling
       res.status(200).json({
         success: true,
         message: "Police validation recorded successfully. Alert created.",
-        data: result,
+        data: responseData,
+        pointsAwarded,
       });
     } else if (validations.valid >= ALERT_THRESHOLD) {
       // Community threshold reached
@@ -432,14 +482,16 @@ const validateCrimeReport = async (req, res) => {
       res.status(200).json({
         success: true,
         message: "Validation recorded successfully. Police has been alerted.",
-        data: result,
+        data: responseData,
+        pointsAwarded,
       });
     } else {
       res.status(200).json({
         success: true,
         message: "Validation recorded successfully",
-        data: result,
+        data: responseData,
         validations,
+        pointsAwarded,
       });
     }
   } catch (error) {

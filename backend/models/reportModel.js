@@ -917,6 +917,23 @@ class ReportModel {
       connection.release();
     }
   }
+
+  // Add a method to check if a user has already validated a report
+  static async getUserValidation(reportId, userId) {
+    const connection = await pool.getConnection();
+    try {
+      const [validations] = await connection.query(
+        "SELECT id, is_valid FROM validations WHERE report_id = ? AND user_id = ?",
+        [reportId, userId]
+      );
+
+      return validations.length > 0 ? validations[0] : null;
+    } catch (error) {
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
 }
 
 module.exports = ReportModel;

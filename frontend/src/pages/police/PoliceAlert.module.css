@@ -1000,3 +1000,47 @@
     grid-template-columns: 1fr;
   }
 }
+
+.validation-complete {
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.validation-message {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  background-color: rgba(76, 175, 80, 0.1);
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.validation-message svg {
+  color: #4caf50;
+}
+
+.validation-false {
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+.false-message {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  background-color: rgba(231, 76, 60, 0.1);
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.false-message svg {
+  color: #e74c3c;
+}
