@@ -54,12 +54,15 @@ function App() {
           <Route path="/start" element={<Start />} />
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/faq" element={<FAQ />} />
-          
+
           {/* Auth Routes */}
           <Route path="/" element={<LoginForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password-with-code" element={<ResetPasswordWithCode />} />
+          <Route
+            path="/reset-password-with-code"
+            element={<ResetPasswordWithCode />}
+          />
 
           {/* Signup Routes */}
           <Route path="/police-signup" element={<PoliceSignup />} />
@@ -104,6 +107,16 @@ function App() {
           <Route path="/police/messages" element={<MessagesPanel />} />
           <Route path="/police/alert" element={<PoliceAlert />} />
 
+          {/* Add route for police report details */}
+          <Route
+            path="/police/report/:id"
+            element={
+              <PrivateRoute allowedRole="police">
+                <AdminReportDetail />
+              </PrivateRoute>
+            }
+          />
+
           {/* Admin Routes */}
           <Route
             path="/admin/dashboard"
@@ -146,7 +159,7 @@ function App() {
             }
           />
 
-<Route
+          <Route
             path="/admin/validations"
             element={
               <PrivateRoute allowedRole="admin">

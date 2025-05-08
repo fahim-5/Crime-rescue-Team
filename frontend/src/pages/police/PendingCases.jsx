@@ -134,8 +134,8 @@ const MyCases = () => {
 
   const handleViewFullDetails = (reportId) => {
     closeModal();
-    // Use a generic route that works for both roles
-    navigate(`/report/${reportId}`);
+    // Update to use police route pattern to match the URL structure
+    navigate(`/police/report/${reportId}`);
   };
 
   // Filter crimes based on search term and police_id
@@ -382,6 +382,13 @@ const MyCases = () => {
                         onClick={() => handleViewReport(crime)}
                       >
                         View Details
+                      </button>
+                      <button
+                        className={styles["view-btn"]}
+                        style={{ marginLeft: "8px" }}
+                        onClick={() => navigate(`/police/report/${crime.id}`)}
+                      >
+                        Report Details
                       </button>
                     </td>
                   </tr>
