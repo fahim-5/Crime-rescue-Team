@@ -139,10 +139,14 @@ const Navbar = () => {
           <li>
             <Link to="/admin/reports">Reports</Link>
           </li>
-          {/* <li><Link to="/admin/analytics">Analytics</Link></li> */}
-          <li>
+          
+          
+
+          {/* <li>
             <Link to="/messages">Messages</Link>
-          </li>
+          </li> */}
+
+
           <li>
             <Link to="/admin/management">Management</Link>
           </li>
@@ -182,9 +186,14 @@ const Navbar = () => {
           <li>
             <Link to="/police/settings">Console</Link>
           </li>
+
+{/* 
           <li>
             <Link to="/messages">Messages</Link>
-          </li>
+          </li> */}
+
+
+
         </>
       );
     } else {
@@ -222,9 +231,13 @@ const Navbar = () => {
               <li>
                 <Link to="/public/settings">Account</Link>
               </li>
+
+{/* 
               <li>
                 <Link to="/messages">Messages</Link>
-              </li>
+              </li> */}
+
+
             </>
           )}
         </>
