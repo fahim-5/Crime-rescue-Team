@@ -231,15 +231,29 @@ const healthCheck = async (req, res) => {
  */
 const getAllReports = async (req, res) => {
   try {
+    // Check for user role in the query parameters
+    const userRole = req.query.role;
+
     // Get all reports from the database
     const connection = await require("../config/db").pool.getConnection();
     try {
-      // Modified query to include reporter_address
-      const [reports] = await connection.query(
-        `SELECT id, crime_id, location, time, crime_type, num_criminals, victim_gender, 
-        armed, photos, videos, status, created_at, reporter_id, reporter_address
-        FROM crime_reports ORDER BY created_at DESC`
-      );
+      // Base query to include reporter_address
+      let query = `SELECT id, crime_id, location, time, crime_type, num_criminals, victim_gender, 
+        armed, photos, videos, status, created_at, reporter_id, reporter_address, police_id
+        FROM crime_reports`;
+
+      // If no role is provided or role is not admin/police, apply restrictions
+      if (!userRole || (userRole !== "admin" && userRole !== "police")) {
+        return res.status(403).json({
+          success: false,
+          message: "Access denied. Admin or police role required.",
+        });
+      }
+
+      // Always order by created_at in descending order
+      query += ` ORDER BY created_at DESC`;
+
+      const [reports] = await connection.query(query);
 
       // Process photos and videos
       const processedReports = reports.map((report) => {
