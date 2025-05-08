@@ -151,8 +151,8 @@ const PoliceAlert = () => {
       `Filtering ${reports.length} reports with police station address: "${stationAddress}"`
     );
 
-    // Simple exact matching with full station address, similar to public version
-    const filteredReports = reports.filter((report) => {
+    // First filter by address
+    const addressFilteredReports = reports.filter((report) => {
       // Get both report location and possibly reporter address
       const reportLocation = report.location
         ? report.location.toLowerCase()
@@ -183,24 +183,33 @@ const PoliceAlert = () => {
       return matchesLocation || matchesReporterAddress || containsInLocation;
     });
 
+    // Then filter by expiration time - only show reports that haven't expired yet
+    const nonExpiredReports = addressFilteredReports.filter((report) => {
+      const createdTime = new Date(report.created_at || report.timestamp);
+      const expiryTime = new Date(
+        createdTime.getTime() + ALERT_VISIBILITY_HOURS * 60 * 60 * 1000
+      );
+      return expiryTime > new Date(); // Only include reports that haven't expired
+    });
+
     console.log(
-      `Filtered reports: ${filteredReports.length} out of ${reports.length} total reports`
+      `Filtered reports: ${addressFilteredReports.length} match address, ${nonExpiredReports.length} are not expired`
     );
 
-    if (filteredReports.length > 0) {
+    if (nonExpiredReports.length > 0) {
       console.log(
-        "Matched reports:",
-        filteredReports.map((a) => a.id).join(", ")
+        "Active non-expired reports:",
+        nonExpiredReports.map((a) => a.id).join(", ")
       );
     } else {
       console.log(
-        `No reports match police station address: "${stationAddress}"`
+        `No active non-expired reports match police station address: "${stationAddress}"`
       );
     }
 
     // Fetch validation counts for each alert
     const initialCounts = {};
-    for (const alert of filteredReports) {
+    for (const alert of nonExpiredReports) {
       try {
         console.log(`Fetching validations for alert ${alert.id}`);
 
@@ -244,11 +253,11 @@ const PoliceAlert = () => {
 
     console.log("All validation counts:", initialCounts);
     setValidationCounts(initialCounts);
-    setAlerts(filteredReports);
+    setAlerts(nonExpiredReports);
 
     // Initialize validation status for each alert
     const initialValidationStatus = {};
-    filteredReports.forEach((alert) => {
+    nonExpiredReports.forEach((alert) => {
       initialValidationStatus[alert.id] = {
         userValidated: false,
         userMarkedFalse: false,
@@ -320,10 +329,10 @@ const PoliceAlert = () => {
         });
         window.dispatchEvent(event);
 
-        // If all alerts have expired, refetch to get new ones
-        // if (alerts.length > 0 && allExpired) {
-        //   fetchAllReports();
-        // }
+        // If all alerts have expired, refetch to get new reports
+        if (alerts.length > 0 && allExpired) {
+          fetchAllReports();
+        }
 
         return updatedCountdowns;
       });
@@ -369,7 +378,19 @@ const PoliceAlert = () => {
   };
 
   const openDetails = (alert) => {
-    setActiveAlert(alert);
+    // Check if the alert is expired before opening modal
+    const createdTime = new Date(alert.created_at || alert.timestamp);
+    const expiryTime = new Date(
+      createdTime.getTime() + ALERT_VISIBILITY_HOURS * 60 * 60 * 1000
+    );
+
+    // Only open details if alert is not expired
+    if (expiryTime > new Date()) {
+      setActiveAlert(alert);
+    } else {
+      // Alert the user that the alert has expired
+      alert("This alert has expired and is no longer available for viewing.");
+    }
   };
 
   const closeDetails = () => {
@@ -541,167 +562,179 @@ const PoliceAlert = () => {
               </p>
             </div>
           ) : alerts.length > 0 ? (
-            alerts.map((alert) => (
-              <div
-                key={alert.id}
-                className={`${styles["alert-card"]} ${
-                  styles[alert.status || "active"]
-                }`}
-              >
-                <div className={styles["alert-header"]}>
-                  <span
-                    className={`${styles["alert-type"]} ${
-                      styles[
-                        (
-                          alert.type ||
-                          alert.crime_type ||
-                          "other"
-                        ).toLowerCase()
-                      ]
-                    }`}
-                  >
-                    {alert.type || alert.crime_type || "Report"}
-                  </span>
-                  <span className={styles["alert-time"]}>
-                    {formatTime(alert.timestamp || alert.created_at)}
-                  </span>
-                  <span
-                    className={`${styles["alert-status"]} ${
-                      styles[alert.status || "active"]
-                    }`}
-                  >
-                    {alert.status === "active"
-                      ? "ACTIVE"
-                      : alert.status?.toUpperCase() || "PENDING"}
-                  </span>
-                </div>
-
-                <div className={styles["alert-body"]}>
-                  <h3 className={styles["alert-location"]}>
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
+            // Only display alerts that haven't expired
+            alerts
+              .filter((alert) => {
+                const createdTime = new Date(
+                  alert.created_at || alert.timestamp
+                );
+                const expiryTime = new Date(
+                  createdTime.getTime() +
+                    ALERT_VISIBILITY_HOURS * 60 * 60 * 1000
+                );
+                return expiryTime > new Date(); // Only show non-expired alerts
+              })
+              .map((alert) => (
+                <div
+                  key={alert.id}
+                  className={`${styles["alert-card"]} ${
+                    styles[alert.status || "active"]
+                  }`}
+                >
+                  <div className={styles["alert-header"]}>
+                    <span
+                      className={`${styles["alert-type"]} ${
+                        styles[
+                          (
+                            alert.type ||
+                            alert.crime_type ||
+                            "other"
+                          ).toLowerCase()
+                        ]
+                      }`}
                     >
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                      <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    {alert.location}
-                  </h3>
-                  <p className={styles["alert-description"]}>
-                    {alert.description}
-                  </p>
-                  {countdowns[alert.id] && (
-                    <div className={styles["alert-countdown"]}>
-                      <span className={styles["countdown-label"]}>
-                        Expires in:
-                      </span>
-                      <span className={styles["countdown-timer"]}>
-                        {formatCountdown(countdowns[alert.id])}
-                      </span>
-                    </div>
-                  )}
+                      {alert.type || alert.crime_type || "Report"}
+                    </span>
+                    <span className={styles["alert-time"]}>
+                      {formatTime(alert.timestamp || alert.created_at)}
+                    </span>
+                    <span
+                      className={`${styles["alert-status"]} ${
+                        styles[alert.status || "active"]
+                      }`}
+                    >
+                      {alert.status === "active"
+                        ? "ACTIVE"
+                        : alert.status?.toUpperCase() || "PENDING"}
+                    </span>
+                  </div>
 
-                  {/* Add Validation Status Display */}
-                  {validationCounts[alert.id] && (
-                    <div className={styles["validation-stats"]}>
-                      <div className={styles["validation-stat"]}>
-                        <span className={styles["validation-label"]}>
-                          Confirmed:
-                        </span>
-                        <span className={styles["validation-value"]}>
-                          {validationCounts[alert.id]?.confirmed || 0}
-                        </span>
-                      </div>
-                      <div className={styles["validation-stat"]}>
-                        <span className={styles["validation-label"]}>
-                          Disputed:
-                        </span>
-                        <span className={styles["validation-value"]}>
-                          {validationCounts[alert.id]?.disputed || 0}
-                        </span>
-                      </div>
-                      <div className={styles["validation-stat"]}>
-                        <span className={styles["validation-label"]}>
-                          Total:
-                        </span>
-                        <span className={styles["validation-value"]}>
-                          {validationCounts[alert.id]?.total || 0}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className={styles["alert-footer"]}>
-                  <div className={styles["validation-buttons"]}>
-                    {!validationStatus[alert.id]?.userMarkedFalse && (
-                      <button
-                        className={`${styles["validate-btn"]} ${
-                          validationStatus[alert.id]?.userValidated
-                            ? styles.active
-                            : ""
-                        }`}
-                        onClick={() => handleValidation(alert.id, true)}
+                  <div className={styles["alert-body"]}>
+                    <h3 className={styles["alert-location"]}>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
                       >
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <path d="M20 6L9 17l-5-5"></path>
-                        </svg>
-                        {validationStatus[alert.id]?.userValidated
-                          ? "Validated ✓"
-                          : "Validate"}
-                      </button>
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                      {alert.location}
+                    </h3>
+                    <p className={styles["alert-description"]}>
+                      {alert.description}
+                    </p>
+                    {countdowns[alert.id] && (
+                      <div className={styles["alert-countdown"]}>
+                        <span className={styles["countdown-label"]}>
+                          Expires in:
+                        </span>
+                        <span className={styles["countdown-timer"]}>
+                          {formatCountdown(countdowns[alert.id])}
+                        </span>
+                      </div>
                     )}
-                    {!validationStatus[alert.id]?.userValidated && (
-                      <button
-                        className={`${styles["false-report-btn"]} ${
-                          validationStatus[alert.id]?.userMarkedFalse
-                            ? styles.active
-                            : ""
-                        }`}
-                        onClick={() => handleValidation(alert.id, false)}
-                      >
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <path d="M18 6L6 18M6 6l12 12"></path>
-                        </svg>
-                        {validationStatus[alert.id]?.userMarkedFalse
-                          ? "Marked False ✗"
-                          : "False Report"}
-                      </button>
+
+                    {/* Add Validation Status Display */}
+                    {validationCounts[alert.id] && (
+                      <div className={styles["validation-stats"]}>
+                        <div className={styles["validation-stat"]}>
+                          <span className={styles["validation-label"]}>
+                            Confirmed:
+                          </span>
+                          <span className={styles["validation-value"]}>
+                            {validationCounts[alert.id]?.confirmed || 0}
+                          </span>
+                        </div>
+                        <div className={styles["validation-stat"]}>
+                          <span className={styles["validation-label"]}>
+                            Disputed:
+                          </span>
+                          <span className={styles["validation-value"]}>
+                            {validationCounts[alert.id]?.disputed || 0}
+                          </span>
+                        </div>
+                        <div className={styles["validation-stat"]}>
+                          <span className={styles["validation-label"]}>
+                            Total:
+                          </span>
+                          <span className={styles["validation-value"]}>
+                            {validationCounts[alert.id]?.total || 0}
+                          </span>
+                        </div>
+                      </div>
                     )}
                   </div>
-                  <button
-                    className={styles["details-btn"]}
-                    onClick={() => openDetails(alert)}
-                  >
-                    View Full Details
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
+
+                  <div className={styles["alert-footer"]}>
+                    <div className={styles["validation-buttons"]}>
+                      {!validationStatus[alert.id]?.userMarkedFalse && (
+                        <button
+                          className={`${styles["validate-btn"]} ${
+                            validationStatus[alert.id]?.userValidated
+                              ? styles.active
+                              : ""
+                          }`}
+                          onClick={() => handleValidation(alert.id, true)}
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                          >
+                            <path d="M20 6L9 17l-5-5"></path>
+                          </svg>
+                          {validationStatus[alert.id]?.userValidated
+                            ? "Validated ✓"
+                            : "Validate"}
+                        </button>
+                      )}
+                      {!validationStatus[alert.id]?.userValidated && (
+                        <button
+                          className={`${styles["false-report-btn"]} ${
+                            validationStatus[alert.id]?.userMarkedFalse
+                              ? styles.active
+                              : ""
+                          }`}
+                          onClick={() => handleValidation(alert.id, false)}
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                          >
+                            <path d="M18 6L6 18M6 6l12 12"></path>
+                          </svg>
+                          {validationStatus[alert.id]?.userMarkedFalse
+                            ? "Marked False ✗"
+                            : "False Report"}
+                        </button>
+                      )}
+                    </div>
+                    <button
+                      className={styles["details-btn"]}
+                      onClick={() => openDetails(alert)}
                     >
-                      <path d="M5 12h14M12 5l7 7-7 7"></path>
-                    </svg>
-                  </button>
+                      View Full Details
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7"></path>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
+              ))
           ) : (
             <div className={styles["no-alerts"]}>
               <svg
