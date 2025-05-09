@@ -26,6 +26,7 @@ const MyCases = () => {
   const [profileError, setProfileError] = useState("");
   const [isPoliceUser, setIsPoliceUser] = useState(false);
   const [showAllReports, setShowAllReports] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
 
   // Fetch data on component mount
   useEffect(() => {
@@ -141,18 +142,42 @@ const MyCases = () => {
   // Filter crimes based on search term and police_id
   const filteredCrimes = crimes.filter((crime) => {
     // Apply the search filter
-    const matchesSearch = crime.id
-      .toString()
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      crime.id.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (crime.location &&
+        crime.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (crime.crime_type &&
+        crime.crime_type.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    // If we're in admin mode (showing all reports), only filter by search term
+    // If we're in admin mode (showing all reports), only filter by search term and active tab
     if (showAllReports) {
+      if (activeTab === "all") return matchesSearch;
+      if (activeTab === "pending")
+        return matchesSearch && (!crime.status || crime.status === "pending");
+      if (activeTab === "investigating")
+        return matchesSearch && crime.status === "investigating";
+      if (activeTab === "resolved")
+        return matchesSearch && crime.status === "resolved";
       return matchesSearch;
     }
 
-    // Otherwise, filter by both police_id and search term
+    // Otherwise, filter by both police_id, search term, and active tab
     const matchesPoliceId = crime.police_id === userData.policeId;
+
+    if (activeTab === "all") return matchesPoliceId && matchesSearch;
+    if (activeTab === "pending")
+      return (
+        matchesPoliceId &&
+        matchesSearch &&
+        (!crime.status || crime.status === "pending")
+      );
+    if (activeTab === "investigating")
+      return (
+        matchesPoliceId && matchesSearch && crime.status === "investigating"
+      );
+    if (activeTab === "resolved")
+      return matchesPoliceId && matchesSearch && crime.status === "resolved";
+
     return matchesPoliceId && matchesSearch;
   });
 
@@ -317,168 +342,410 @@ const MyCases = () => {
     }
   };
 
-  return (
-    <div className={styles["reported-crimes-container"]}>
-      <h2 className={styles["reported-crimes-header"]}>My Cases</h2>
+  // Helper function to determine case priority based on crime type and status
+  const getCasePriority = (crime) => {
+    if (crime.type === "homicide" || crime.crime_type === "homicide")
+      return "high";
+    if (crime.type === "assault" || crime.crime_type === "assault")
+      return "medium";
+    if (crime.status === "resolved") return "low";
+    return "normal";
+  };
 
-      {error && <div className={styles["error-message"]}>{error}</div>}
+  // Helper function to format time
+  const formatTime = (timestamp) => {
+    if (!timestamp) return "Unknown";
+    const date = new Date(timestamp);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  return (
+    <div className={styles.caseFilesContainer}>
+      <div className={styles.caseFilesHeader}>
+        <div className={styles.caseFilesTitle}>
+          <h1>Case Files</h1>
+          <div className={styles.badgeId}>
+            {userData.badge && <span>Badge #{userData.badge}</span>}
+            {userData.station && <span>{userData.station} Station</span>}
+          </div>
+        </div>
+        <div className={styles.searchBox}>
+          <input
+            type="text"
+            placeholder="Search cases by ID, location or crime type..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={styles.searchInput}
+          />
+          <div className={styles.searchIcon}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+        </div>
+      </div>
 
       {showAllReports && (
-        <div className={styles["info-message"]}>
-          Showing all reports in admin view mode. Note that all reports are
-          visible, not just those assigned to you.
+        <div className={styles.adminBadge}>
+          ADMIN VIEW - Showing all department cases
         </div>
       )}
 
+      <div className={styles.tabsContainer}>
+        <button
+          className={`${styles.tabButton} ${
+            activeTab === "all" ? styles.activeTab : ""
+          }`}
+          onClick={() => setActiveTab("all")}
+        >
+          All Cases
+        </button>
+        <button
+          className={`${styles.tabButton} ${
+            activeTab === "pending" ? styles.activeTab : ""
+          }`}
+          onClick={() => setActiveTab("pending")}
+        >
+          Pending
+        </button>
+        <button
+          className={`${styles.tabButton} ${
+            activeTab === "investigating" ? styles.activeTab : ""
+          }`}
+          onClick={() => setActiveTab("investigating")}
+        >
+          Investigating
+        </button>
+        <button
+          className={`${styles.tabButton} ${
+            activeTab === "resolved" ? styles.activeTab : ""
+          }`}
+          onClick={() => setActiveTab("resolved")}
+        >
+          Resolved
+        </button>
+      </div>
+
+      {error && <div className={styles.errorMessage}>{error}</div>}
+
       {loading ? (
-        <div className={styles["loading-message"]}>
-          Loading crime reports...
+        <div className={styles.loadingContainer}>
+          <div className={styles.spinner}></div>
+          <p>Retrieving case files...</p>
         </div>
       ) : (
-        <div className={styles["crimes-table-container"]}>
-          <div className={styles["search-container"]}>
-            <input
-              type="text"
-              placeholder="Search by Crime ID..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className={styles["search-input"]}
-            />
-          </div>
-
+        <div className={styles.filesCabinet}>
           {filteredCrimes.length === 0 ? (
-            <div className={styles["no-crimes-message"]}>
-              {searchTerm
-                ? "No matching crime reports found."
-                : showAllReports
-                ? "No crime reports available in the system."
-                : "No crime reports are currently assigned to you."}
+            <div className={styles.emptyCabinetMessage}>
+              <div className={styles.emptyFolder}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
+              <p>No case files match your criteria</p>
+              <span>Try adjusting your search or filter settings</span>
             </div>
           ) : (
-            <table className={styles["crimes-table"]}>
-              <thead>
-                <tr>
-                  <th>Crime ID</th>
-                  <th>Location</th>
-                  <th>Time</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredCrimes.map((crime) => (
-                  <tr key={crime.id}>
-                    <td>{crime.id}</td>
-                    <td>{crime.location || "Unknown"}</td>
-                    <td>
-                      {crime.time
-                        ? new Date(crime.time).toLocaleString()
-                        : "Unknown"}
-                    </td>
-                    <td>{crime.status || "Pending"}</td>
-                    <td>
-                      <button
-                        className={styles["view-btn"]}
-                        onClick={() => handleViewReport(crime)}
+            <div className={styles.filesList}>
+              {filteredCrimes.map((crime) => (
+                <div
+                  key={crime.id}
+                  className={`${styles.caseFile} ${
+                    styles[`priority-${getCasePriority(crime)}`]
+                  }`}
+                >
+                  <div className={styles.caseFileTab}>
+                    <span className={styles.caseId}>#{crime.id}</span>
+                  </div>
+                  <div className={styles.caseFileContent}>
+                    <div className={styles.caseMeta}>
+                      <div className={styles.caseTypeStamp}>
+                        {crime.status === "resolved" && (
+                          <div className={styles.resolvedStamp}>RESOLVED</div>
+                        )}
+                        {crime.police_id && (
+                          <div className={styles.assignedStamp}>ASSIGNED</div>
+                        )}
+                        <span>
+                          {crime.type || crime.crime_type || "Unclassified"}
+                        </span>
+                      </div>
+                      <div className={styles.caseDate}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <rect
+                            x="3"
+                            y="4"
+                            width="18"
+                            height="18"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <line x1="16" y1="2" x2="16" y2="6"></line>
+                          <line x1="8" y1="2" x2="8" y2="6"></line>
+                          <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span>
+                          {formatTime(crime.time || crime.created_at)}
+                        </span>
+                      </div>
+                    </div>
+                    <div className={styles.caseLocation}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
-                        View Details
-                      </button>
-                      <button
-                        className={styles["view-btn"]}
-                        style={{ marginLeft: "8px" }}
-                        onClick={() => navigate(`/police/report/${crime.id}`)}
-                      >
-                        Report Details
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                      <span>{crime.location || "Unknown location"}</span>
+                    </div>
+                    <div className={styles.caseDescription}>
+                      {crime.description ||
+                        "No description available for this case."}
+                    </div>
+                    <div className={styles.caseStatus}>
+                      <div className={styles.statusIndicator}>
+                        <span
+                          className={
+                            styles[`status-${crime.status || "pending"}`]
+                          }
+                        >
+                          {crime.status
+                            ? crime.status.toUpperCase()
+                            : "PENDING"}
+                        </span>
+                      </div>
+                      <div className={styles.caseActionButtons}>
+                        <button
+                          className={styles.caseDetailsButton}
+                          onClick={() => handleViewReport(crime)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                          View Details
+                        </button>
+                        <button
+                          className={styles.caseReportButton}
+                          onClick={() => navigate(`/police/report/${crime.id}`)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                          </svg>
+                          Full Report
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.paperClip}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                    </svg>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       )}
 
-      {/* Reporter Details Modal */}
+      {/* Reporter Details Modal - keeping the same function but with updated design */}
       {showModal && selectedReport && (
-        <div className={styles["modal-overlay"]}>
-          <div className={styles["reporter-info"]}>
-            <div className={styles["modal-header-h1"]}>
-              <h3>Reporter Details</h3>
+        <div className={styles.modalOverlay}>
+          <div className={styles.caseFileModal}>
+            <div className={styles.modalHeader}>
+              <h2>Case #{selectedReport.id} Details</h2>
+              <button className={styles.closeModalButton} onClick={closeModal}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
             </div>
-            <div className={styles["modal-body"]}>
-              <div className={styles["report-detail"]}>
-                <span className={styles["detail-label"]}>Report ID:</span>
-                <span className={styles["detail-value"]}>
-                  {selectedReport.id}
-                </span>
+
+            <div className={styles.modalContent}>
+              <div className={styles.modalSection}>
+                <h3>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  Reporter Information
+                </h3>
+                <div className={styles.detailRow}>
+                  <div className={styles.detailLabel}>Name:</div>
+                  <div className={styles.detailValue}>
+                    {selectedReport.reporter?.name ||
+                      selectedReport.reporter?.full_name ||
+                      "Anonymous"}
+                  </div>
+                </div>
+                <div className={styles.detailRow}>
+                  <div className={styles.detailLabel}>ID:</div>
+                  <div className={styles.detailValue}>
+                    {selectedReport.reporter?.id || "Not available"}
+                  </div>
+                </div>
+                <div className={styles.detailRow}>
+                  <div className={styles.detailLabel}>Email:</div>
+                  <div className={styles.detailValue}>
+                    {selectedReport.reporter?.email || "Not available"}
+                  </div>
+                </div>
+                <div className={styles.detailRow}>
+                  <div className={styles.detailLabel}>Address:</div>
+                  <div className={styles.detailValue}>
+                    {selectedReport.reporter?.address || "Not available"}
+                  </div>
+                </div>
               </div>
-              <div className={styles["report-detail"]}>
-                <span className={styles["detail-label"]}>Reporter Name:</span>
-                <span className={styles["detail-value"]}>
-                  {selectedReport.reporter?.name ||
-                    selectedReport.reporter?.full_name ||
-                    "Anonymous"}
-                </span>
-              </div>
-              <div className={styles["report-detail"]}>
-                <span className={styles["detail-label"]}>Reporter ID:</span>
-                <span className={styles["detail-value"]}>
-                  {selectedReport.reporter?.id || "Not available"}
-                </span>
-              </div>
-              <div className={styles["report-detail"]}>
-                <span className={styles["detail-label"]}>Reporter Email:</span>
-                <span className={styles["detail-value"]}>
-                  {selectedReport.reporter?.email || "Not available"}
-                </span>
-              </div>
-              <div className={styles["report-detail"]}>
-                <span className={styles["detail-label"]}>
-                  Reporter Address:
-                </span>
-                <span className={styles["detail-value"]}>
-                  {selectedReport.reporter?.address || "Not available"}
-                </span>
-              </div>
-              <div className={styles["report-detail"]}>
-                <span className={styles["detail-label"]}>Report Location:</span>
-                <span className={styles["detail-value"]}>
-                  {selectedReport.location || "Unknown"}
-                </span>
-              </div>
-              <div className={styles["report-detail"]}>
-                <span className={styles["detail-label"]}>Report Time:</span>
-                <span className={styles["detail-value"]}>
-                  {selectedReport.time
-                    ? new Date(selectedReport.time).toLocaleString()
-                    : "Unknown"}
-                </span>
-              </div>
-              <div className={styles["report-detail"]}>
-                <span className={styles["detail-label"]}>Report Status:</span>
-                <span className={styles["detail-value"]}>
-                  {selectedReport.status || "Pending"}
-                </span>
-              </div>
-              <div className={styles["report-detail"]}>
-                <span className={styles["detail-label"]}>
-                  Assigned Officer ID:
-                </span>
-                <span className={styles["detail-value"]}>
-                  {selectedReport.police_id || "Not assigned"}
-                </span>
+
+              <div className={styles.modalSection}>
+                <h3>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                  Case Details
+                </h3>
+                <div className={styles.detailRow}>
+                  <div className={styles.detailLabel}>Location:</div>
+                  <div className={styles.detailValue}>
+                    {selectedReport.location || "Unknown"}
+                  </div>
+                </div>
+                <div className={styles.detailRow}>
+                  <div className={styles.detailLabel}>Time Reported:</div>
+                  <div className={styles.detailValue}>
+                    {selectedReport.time
+                      ? new Date(selectedReport.time).toLocaleString()
+                      : "Unknown"}
+                  </div>
+                </div>
+                <div className={styles.detailRow}>
+                  <div className={styles.detailLabel}>Status:</div>
+                  <div className={styles.detailValue}>
+                    <span
+                      className={
+                        styles[
+                          `modalStatus-${selectedReport.status || "pending"}`
+                        ]
+                      }
+                    >
+                      {selectedReport.status?.toUpperCase() || "PENDING"}
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.detailRow}>
+                  <div className={styles.detailLabel}>Assigned To:</div>
+                  <div className={styles.detailValue}>
+                    {selectedReport.police_id || "Not assigned"}
+                  </div>
+                </div>
               </div>
             </div>
-            <div className={styles["modal-footer"]}>
+
+            <div className={styles.modalFooter}>
+              <button className={styles.secondaryButton} onClick={closeModal}>
+                Close
+              </button>
               <button
-                className={styles["more-details-btn"]}
+                className={styles.primaryButton}
                 onClick={() => handleViewFullDetails(selectedReport.id)}
               >
-                Report Details
-              </button>
-              <button className={styles["close-btn-b"]} onClick={closeModal}>
-                Close
+                View Full Case Report
               </button>
             </div>
           </div>
