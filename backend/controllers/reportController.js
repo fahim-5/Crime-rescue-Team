@@ -286,6 +286,57 @@ const getAllReports = async (req, res) => {
   }
 };
 
+/**
+ * @desc   Get public crime reports for the community
+ * @route  GET /api/reports/public
+ * @access Public
+ */
+const getPublicReports = async (req, res) => {
+  try {
+    // Get reports from the database with restricted fields for public view
+    const connection = await require("../config/db").pool.getConnection();
+    try {
+      // Query to get reports with limited sensitive data
+      const query = `
+        SELECT id, location, time, crime_type, status, created_at, reporter_address
+        FROM crime_reports 
+        WHERE status IN ('active', 'confirmed', 'pending')
+        ORDER BY created_at DESC 
+        LIMIT 100`;
+
+      const [reports] = await connection.query(query);
+
+      // Format response for the client
+      const formattedReports = reports.map((report) => {
+        // Basic formatting of reports for public consumption
+        return {
+          id: report.id,
+          location: report.location,
+          time: report.time,
+          type: report.crime_type,
+          status: report.status,
+          created_at: report.created_at,
+          reporter_address: report.reporter_address,
+        };
+      });
+
+      return res.status(200).json({
+        success: true,
+        data: formattedReports,
+      });
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error("Error fetching public reports:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch public reports",
+      error: error.message,
+    });
+  }
+};
+
 const getReportById = async (req, res) => {
   try {
     const reportId = req.params.id;
@@ -1390,4 +1441,5 @@ module.exports = {
   takeCase,
   getReportWithReporterDetails,
   updateReportStatus,
+  getPublicReports,
 };

@@ -22,6 +22,9 @@ router.post(
 // Get all reports - Public access
 router.get("/", reportController.getAllReports);
 
+// Add new public reports endpoint with no auth required
+router.get("/public", reportController.getPublicReports);
+
 // Get nearby reports based on location (must be before :id route)
 router.get("/nearby", reportController.getNearbyReports);
 

@@ -207,39 +207,7 @@ const ViewAllReports = () => {
     <div className="reported-crimes-container">
       <h2 className="reported-crimes-header">{pageTitle}</h2>
 
-      {/* Statistics Cards */}
-      <div className="statistics-container">
-        <div className="statistics-cards">
-          <div className="stat-card pending-cases">
-            <h3>Pending Cases</h3>
-            <div className="stat-value">
-              {statsLoading ? "..." : statistics.pendingCases}
-            </div>
-          </div>
-
-          <div className="stat-card active-investigations">
-            <h3>Active Investigations</h3>
-            <div className="stat-value">
-              {statsLoading ? "..." : statistics.activeInvestigations}
-            </div>
-          </div>
-
-          <div className="stat-card solved-cases">
-            <h3>Solved Cases</h3>
-            <div className="stat-value">
-              {statsLoading ? "..." : statistics.solvedCases}
-            </div>
-          </div>
-
-          <div className="stat-card clearance-rate">
-            <h3>Clearance Rate</h3>
-            <div className="stat-value">
-              {statsLoading ? "..." : `${statistics.clearanceRate}%`}
-            </div>
-            <div className="stat-subtitle">Cases solved vs reported</div>
-          </div>
-        </div>
-      </div>
+      
 
       {!user && (
         <div className="error-message">
