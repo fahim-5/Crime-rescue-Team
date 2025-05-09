@@ -142,7 +142,7 @@ const PoliceAlert = () => {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get(`${API_URL}/api/reports`, {
+      const response = await axios.get(`${API_URL}/api/reports?role=police`, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
           "Content-Type": "application/json",
