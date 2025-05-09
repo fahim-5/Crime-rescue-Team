@@ -1277,6 +1277,100 @@ const getReportWithReporterDetails = async (req, res) => {
   }
 };
 
+/**
+ * @desc   Update the status of a report
+ * @route  PUT /api/reports/:id/status
+ * @access Private (Police/Admin)
+ */
+const updateReportStatus = async (req, res) => {
+  try {
+    const reportId = req.params.id;
+    const { status } = req.body;
+
+    // Validate status value
+    const allowedStatuses = ["pending", "investigating", "resolved", "closed"];
+    if (!status || !allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Invalid status. Must be one of: pending, investigating, resolved, closed",
+      });
+    }
+
+    // Connect to the database
+    const connection = await require("../config/db").pool.getConnection();
+
+    try {
+      // First check if report exists
+      const [reportCheck] = await connection.query(
+        "SELECT id, status FROM crime_reports WHERE id = ?",
+        [reportId]
+      );
+
+      if (reportCheck.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Report not found",
+        });
+      }
+
+      // Update the status in crime_reports table
+      await connection.query(
+        "UPDATE crime_reports SET status = ? WHERE id = ?",
+        [status, reportId]
+      );
+
+      // Also update status in crime_alerts table if exists
+      await connection.query(
+        "UPDATE crime_alerts SET status = ? WHERE report_id = ?",
+        [status, reportId]
+      );
+
+      // Add entry to case_updates table to track the status change
+      try {
+        await connection.query(
+          "INSERT INTO case_updates (report_id, user_id, action, details, timestamp) VALUES (?, ?, ?, ?, NOW())",
+          [
+            reportId,
+            req.user.id,
+            "status_change",
+            JSON.stringify({
+              previous: reportCheck[0].status || "pending",
+              new: status,
+              updated_by:
+                req.user.username || req.user.email || `User #${req.user.id}`,
+            }),
+          ]
+        );
+      } catch (updateError) {
+        // Don't fail the whole operation if adding the update fails
+        console.log(
+          "Warning: Could not add status change to case_updates table:",
+          updateError.message
+        );
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: `Case status updated to ${status}`,
+        data: {
+          id: reportId,
+          status: status,
+        },
+      });
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error("Error updating report status:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update report status",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createReport,
   getAllReports,
@@ -1295,4 +1389,5 @@ module.exports = {
   getReportValidations,
   takeCase,
   getReportWithReporterDetails,
+  updateReportStatus,
 };

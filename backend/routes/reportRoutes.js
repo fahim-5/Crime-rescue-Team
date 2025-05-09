@@ -123,4 +123,12 @@ router.get(
   reportController.getReportWithReporterDetails
 );
 
+// Update report status
+router.put(
+  "/:id/status",
+  authMiddleware.authenticateToken,
+  authMiddleware.authorizeRoles(["admin", "police"]),
+  reportController.updateReportStatus
+);
+
 module.exports = router;

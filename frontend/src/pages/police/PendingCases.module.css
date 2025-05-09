@@ -343,9 +343,29 @@
 }
 
 .error-message {
-  background-color: #fff5f5;
-  color: #d64045;
-  border: 1px solid #f8c9c9;
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 15px;
+  margin: 15px auto;
+  border-radius: 8px;
+  max-width: 800px;
+  text-align: center;
+  font-weight: 500;
+  border-left: 4px solid #c62828;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .no-crimes-message {
@@ -1324,4 +1344,101 @@
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-right: 10px;
+}
+
+/* Status Change Dropdown */
+.statusChangeWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin: 6px 0;
+  padding: 5px 10px;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+/* Update the statusChangeDropdown to fit in the new location */
+.statusChangeDropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.statusChangeButton {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.statusChangeButton svg {
+  width: 12px;
+  height: 12px;
+}
+
+.statusChangeButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.statusChangeButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.statusOptions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 5px 0;
+  z-index: 10;
+  min-width: 150px;
+  margin-top: 5px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+
+.statusChangeDropdown:hover .statusOptions,
+.statusChangeButton:focus+.statusOptions {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.statusOption {
+  display: block;
+  width: 100%;
+  padding: 8px 15px;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.statusOption:hover {
+  background-color: #f5f5f5;
+}
+
+.statusOption:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+  background-color: white;
+}
+
+.currentStatus {
+  font-weight: 700;
+  background-color: #f0f8ff;
+  color: var(--color-primary);
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { useApi } from "../../utils/useApi";
@@ -28,6 +28,7 @@ const MyCases = () => {
   const [showAllReports, setShowAllReports] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [loadingReporterDetails, setLoadingReporterDetails] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState({});
 
   // Fetch data on component mount
   useEffect(() => {
@@ -170,47 +171,39 @@ const MyCases = () => {
     navigate(`/police/report/${reportId}`);
   };
 
-  // Filter crimes based on search term and police_id
-  const filteredCrimes = crimes.filter((crime) => {
-    // Apply the search filter
-    const matchesSearch =
-      crime.id.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (crime.location &&
-        crime.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (crime.crime_type &&
-        crime.crime_type.toLowerCase().includes(searchTerm.toLowerCase()));
-
-    // If we're in admin mode (showing all reports), only filter by search term and active tab
-    if (showAllReports) {
-      if (activeTab === "all") return matchesSearch;
-      if (activeTab === "pending")
-        return matchesSearch && (!crime.status || crime.status === "pending");
-      if (activeTab === "investigating")
-        return matchesSearch && crime.status === "investigating";
-      if (activeTab === "resolved")
-        return matchesSearch && crime.status === "resolved";
-      return matchesSearch;
-    }
-
-    // Otherwise, filter by both police_id, search term, and active tab
-    const matchesPoliceId = crime.police_id === userData.policeId;
-
-    if (activeTab === "all") return matchesPoliceId && matchesSearch;
-    if (activeTab === "pending")
-      return (
-        matchesPoliceId &&
-        matchesSearch &&
-        (!crime.status || crime.status === "pending")
-      );
-    if (activeTab === "investigating")
-      return (
-        matchesPoliceId && matchesSearch && crime.status === "investigating"
-      );
-    if (activeTab === "resolved")
-      return matchesPoliceId && matchesSearch && crime.status === "resolved";
-
-    return matchesPoliceId && matchesSearch;
-  });
+  // Add useMemo to calculate filtered crimes based on activeTab and searchTerm
+  const filteredCrimes = useMemo(() => {
+    return crimes
+      .filter((crime) => {
+        // Handle tab filtering
+        if (activeTab === "all") return true;
+        return crime.status === activeTab;
+      })
+      .filter((crime) => {
+        // Police officer should only see their assigned cases unless they're admin
+        if (!showAllReports && userData.policeId) {
+          return crime.police_id === userData.policeId;
+        }
+        return true; // Admin sees all cases
+      })
+      .filter((crime) => {
+        // Handle search filtering
+        if (!searchTerm) return true;
+        const search = searchTerm.toLowerCase();
+        return (
+          crime.id?.toString().includes(search) ||
+          (crime.title || crime.description || "")
+            ?.toLowerCase()
+            .includes(search) ||
+          (crime.crime_type || crime.type || "")
+            ?.toLowerCase()
+            .includes(search) ||
+          (crime.location || "")?.toLowerCase().includes(search) ||
+          (crime.description || "")?.toLowerCase().includes(search) ||
+          (crime.reporter_name || "")?.toLowerCase().includes(search)
+        );
+      });
+  }, [crimes, activeTab, searchTerm, showAllReports, userData.policeId]);
 
   const fetchUserProfile = async () => {
     try {
@@ -383,17 +376,116 @@ const MyCases = () => {
     return "normal";
   };
 
-  // Helper function to format time
+  // Make date formatting more robust
   const formatTime = (timestamp) => {
     if (!timestamp) return "Unknown";
-    const date = new Date(timestamp);
-    return date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    try {
+      const date = new Date(timestamp);
+      // Check if date is valid
+      if (isNaN(date.getTime())) return "Unknown";
+
+      return date.toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Unknown";
+    }
+  };
+
+  // Update the fetchCrimes function to properly handle status
+  const fetchCrimes = async () => {
+    setLoading(true);
+    try {
+      const response = await fetchWithAuth(
+        "http://localhost:5000/api/reports?role=police"
+      );
+      if (response.success) {
+        const formattedCrimes = response.data.map((crime) => ({
+          ...crime,
+          date: new Date(
+            crime.created_at || crime.timestamp || Date.now()
+          ).toLocaleString(),
+          time: new Date(
+            crime.created_at || crime.timestamp || Date.now()
+          ).toLocaleTimeString(),
+          status: crime.status || "pending",
+        }));
+
+        console.log("Formatted crimes with status:", formattedCrimes);
+        setCrimes(formattedCrimes);
+      } else {
+        console.error("Failed to fetch crimes:", response.message);
+        setErrorMessage("Failed to fetch crimes: " + response.message);
+      }
+    } catch (error) {
+      console.error("Error fetching crimes:", error);
+      setErrorMessage("Error fetching crimes: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update handleStatusChange to handle errors better
+  const handleStatusChange = async (crimeId, newStatus) => {
+    if (!crimeId || !newStatus) return;
+
+    try {
+      setUpdatingStatus((prev) => ({ ...prev, [crimeId]: true }));
+
+      const response = await fetchWithAuth(
+        `http://localhost:5000/api/reports/${crimeId}/status`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
+
+      if (response.success) {
+        console.log(
+          `Status updated successfully to ${newStatus}`,
+          response.data
+        );
+
+        // Update the crime's status in the state
+        setCrimes((prevCrimes) => {
+          const updatedCrimes = prevCrimes.map((crime) =>
+            crime.id === crimeId ? { ...crime, status: newStatus } : crime
+          );
+
+          // If filtering by tab, the item might need to be removed from the view
+          if (activeTab !== "all" && activeTab !== newStatus) {
+            // Item will be filtered out in the UI since it no longer matches the active tab
+            // No need to remove it from the state since we're filtering in the render logic
+          }
+
+          return updatedCrimes;
+        });
+
+        // Show success toast instead of alert
+        setErrorMessage(null); // Clear any existing errors
+        alert(`Case #${crimeId} status updated to ${newStatus.toUpperCase()}`);
+      } else {
+        console.error("Failed to update status:", response.message);
+        setErrorMessage(`Failed to update status: ${response.message}`);
+        setTimeout(() => setErrorMessage(null), 5000);
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+      setErrorMessage(
+        `Error updating status: ${error.message || "Unknown error"}`
+      );
+      setTimeout(() => setErrorMessage(null), 5000);
+    } finally {
+      setUpdatingStatus((prev) => ({ ...prev, [crimeId]: false }));
+    }
   };
 
   return (
@@ -551,6 +643,86 @@ const MyCases = () => {
                         </span>
                       </div>
                     </div>
+                    <div className={styles.statusChangeWrapper}>
+                      <div className={styles.statusChangeDropdown}>
+                        <button
+                          className={styles.statusChangeButton}
+                          disabled={updatingStatus[crime.id]}
+                        >
+                          {updatingStatus[crime.id] ? (
+                            <>
+                              <div className={styles.miniSpinner}></div>
+                              Updating...
+                            </>
+                          ) : (
+                            <>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                              </svg>
+                              Change Status
+                            </>
+                          )}
+                        </button>
+                        <div className={styles.statusOptions}>
+                          <button
+                            className={`${styles.statusOption} ${
+                              crime.status === "pending"
+                                ? styles.currentStatus
+                                : ""
+                            }`}
+                            onClick={() =>
+                              handleStatusChange(crime.id, "pending")
+                            }
+                            disabled={
+                              crime.status === "pending" ||
+                              updatingStatus[crime.id]
+                            }
+                          >
+                            Pending
+                          </button>
+                          <button
+                            className={`${styles.statusOption} ${
+                              crime.status === "investigating"
+                                ? styles.currentStatus
+                                : ""
+                            }`}
+                            onClick={() =>
+                              handleStatusChange(crime.id, "investigating")
+                            }
+                            disabled={
+                              crime.status === "investigating" ||
+                              updatingStatus[crime.id]
+                            }
+                          >
+                            Investigating
+                          </button>
+                          <button
+                            className={`${styles.statusOption} ${
+                              crime.status === "resolved"
+                                ? styles.currentStatus
+                                : ""
+                            }`}
+                            onClick={() =>
+                              handleStatusChange(crime.id, "resolved")
+                            }
+                            disabled={
+                              crime.status === "resolved" ||
+                              updatingStatus[crime.id]
+                            }
+                          >
+                            Resolved
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                     <div className={styles.caseLocation}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -582,6 +754,7 @@ const MyCases = () => {
                             : "PENDING"}
                         </span>
                       </div>
+
                       <div className={styles.caseActionButtons}>
                         <button
                           className={styles.caseDetailsButton}
