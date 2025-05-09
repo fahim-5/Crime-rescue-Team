@@ -115,4 +115,12 @@ router.get(
   reportController.getRecentReports
 );
 
+// Get a specific report by ID with detailed reporter information (must be after other routes)
+router.get(
+  "/:id/details",
+  authMiddleware.authenticateToken,
+  authMiddleware.authorizeRoles(["admin", "police"]),
+  reportController.getReportWithReporterDetails
+);
+
 module.exports = router;

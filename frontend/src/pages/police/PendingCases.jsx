@@ -27,6 +27,7 @@ const MyCases = () => {
   const [isPoliceUser, setIsPoliceUser] = useState(false);
   const [showAllReports, setShowAllReports] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
+  const [loadingReporterDetails, setLoadingReporterDetails] = useState(false);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -123,9 +124,39 @@ const MyCases = () => {
     }
   };
 
-  const handleViewReport = (report) => {
-    setSelectedReport(report);
-    setShowModal(true);
+  const handleViewReport = async (report) => {
+    try {
+      // Set the initial report data to show loading state
+      setSelectedReport(report);
+      setShowModal(true);
+      setLoadingReporterDetails(true);
+
+      // Make an API call to get detailed report information including reporter details
+      const response = await fetchWithAuth(
+        `http://localhost:5000/api/reports/${report.id}/details?include_reporter=true`
+      );
+
+      if (response.success) {
+        console.log("Detailed report with reporter info:", response.data);
+
+        // Update the report with reporter details
+        setSelectedReport({
+          ...report,
+          reporter: response.data.reporter || {},
+          // Update any other fields that might have been fetched
+          status: response.data.status || report.status,
+          time: response.data.time || report.time,
+          location: response.data.location || report.location,
+          police_id: response.data.police_id || report.police_id,
+        });
+      } else {
+        console.error("Failed to fetch report details:", response.message);
+      }
+    } catch (error) {
+      console.error("Error fetching report details:", error);
+    } finally {
+      setLoadingReporterDetails(false);
+    }
   };
 
   const closeModal = () => {
@@ -653,32 +684,48 @@ const MyCases = () => {
                   </svg>
                   Reporter Information
                 </h3>
-                <div className={styles.detailRow}>
-                  <div className={styles.detailLabel}>Name:</div>
-                  <div className={styles.detailValue}>
-                    {selectedReport.reporter?.name ||
-                      selectedReport.reporter?.full_name ||
-                      "Anonymous"}
+
+                {loadingReporterDetails ? (
+                  <div className={styles.sectionLoading}>
+                    <div className={styles.miniSpinner}></div>
+                    <span>Loading reporter details...</span>
                   </div>
-                </div>
-                <div className={styles.detailRow}>
-                  <div className={styles.detailLabel}>ID:</div>
-                  <div className={styles.detailValue}>
-                    {selectedReport.reporter?.id || "Not available"}
-                  </div>
-                </div>
-                <div className={styles.detailRow}>
-                  <div className={styles.detailLabel}>Email:</div>
-                  <div className={styles.detailValue}>
-                    {selectedReport.reporter?.email || "Not available"}
-                  </div>
-                </div>
-                <div className={styles.detailRow}>
-                  <div className={styles.detailLabel}>Address:</div>
-                  <div className={styles.detailValue}>
-                    {selectedReport.reporter?.address || "Not available"}
-                  </div>
-                </div>
+                ) : (
+                  <>
+                    <div className={styles.detailRow}>
+                      <div className={styles.detailLabel}>Name:</div>
+                      <div className={styles.detailValue}>
+                        {selectedReport.reporter?.full_name ||
+                          selectedReport.reporter?.name ||
+                          "Anonymous"}
+                      </div>
+                    </div>
+                    <div className={styles.detailRow}>
+                      <div className={styles.detailLabel}>ID:</div>
+                      <div className={styles.detailValue}>
+                        {selectedReport.reporter?.id || "Not available"}
+                      </div>
+                    </div>
+                    <div className={styles.detailRow}>
+                      <div className={styles.detailLabel}>Email:</div>
+                      <div className={styles.detailValue}>
+                        {selectedReport.reporter?.email || "Not available"}
+                      </div>
+                    </div>
+                    <div className={styles.detailRow}>
+                      <div className={styles.detailLabel}>Phone:</div>
+                      <div className={styles.detailValue}>
+                        {selectedReport.reporter?.phone || "Not available"}
+                      </div>
+                    </div>
+                    <div className={styles.detailRow}>
+                      <div className={styles.detailLabel}>Address:</div>
+                      <div className={styles.detailValue}>
+                        {selectedReport.reporter?.address || "Not available"}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className={styles.modalSection}>

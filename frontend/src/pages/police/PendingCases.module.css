@@ -1306,3 +1306,22 @@
     margin-bottom: 4px;
   }
 }
+
+/* Section Loading State */
+.sectionLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  color: var(--color-text-light);
+}
+
+.miniSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(26, 62, 114, 0.1);
+  border-left-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}

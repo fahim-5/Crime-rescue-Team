@@ -1178,6 +1178,105 @@ const takeCase = async (req, res) => {
   }
 };
 
+/**
+ * @desc   Get detailed report information including reporter details
+ * @route  GET /api/reports/:id/details
+ * @access Private (Police/Admin)
+ */
+const getReportWithReporterDetails = async (req, res) => {
+  try {
+    const reportId = req.params.id;
+    const includeReporter = req.query.include_reporter === "true";
+
+    // Connect to the database
+    const connection = await require("../config/db").pool.getConnection();
+
+    try {
+      // First get the report data
+      const [reportRows] = await connection.query(
+        `SELECT cr.*, 
+          ca.type as alert_type, 
+          ca.status as alert_status, 
+          ca.details as alert_details
+        FROM crime_reports cr
+        LEFT JOIN crime_alerts ca ON cr.id = ca.report_id
+        WHERE cr.id = ?`,
+        [reportId]
+      );
+
+      if (reportRows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Report not found",
+        });
+      }
+
+      const report = reportRows[0];
+
+      // Process photos and videos
+      const photos = report.photos ? JSON.parse(report.photos) : [];
+      const videos = report.videos ? JSON.parse(report.videos) : [];
+
+      // Format for response
+      const formattedReport = {
+        ...report,
+        photos: photos.map((photo) => ({ path: photo })),
+        videos: videos.map((video) => ({ path: video })),
+        description: `${report.crime_type} in ${report.location}`,
+        details: report.alert_details ? JSON.parse(report.alert_details) : null,
+      };
+
+      // If reporter info is requested and reporter_id exists, fetch reporter details
+      if (includeReporter && report.reporter_id) {
+        // Fetch reporter details from users table
+        const [reporterRows] = await connection.query(
+          `SELECT id, username, full_name, email, mobile_no, address
+          FROM users
+          WHERE id = ?`,
+          [report.reporter_id]
+        );
+
+        if (reporterRows.length > 0) {
+          formattedReport.reporter = {
+            id: reporterRows[0].id,
+            username: reporterRows[0].username,
+            full_name: reporterRows[0].full_name,
+            email: reporterRows[0].email,
+            phone: reporterRows[0].mobile_no,
+            address: reporterRows[0].address,
+          };
+        } else {
+          formattedReport.reporter = {
+            id: report.reporter_id,
+            full_name: "Anonymous",
+            note: "Reporter details not found",
+          };
+        }
+      } else if (includeReporter) {
+        // No reporter_id, set as anonymous
+        formattedReport.reporter = {
+          full_name: "Anonymous",
+          note: "Anonymous report",
+        };
+      }
+
+      return res.status(200).json({
+        success: true,
+        data: formattedReport,
+      });
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error("Error fetching detailed report:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch report details",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createReport,
   getAllReports,
@@ -1195,4 +1294,5 @@ module.exports = {
   getRecentReports,
   getReportValidations,
   takeCase,
+  getReportWithReporterDetails,
 };
