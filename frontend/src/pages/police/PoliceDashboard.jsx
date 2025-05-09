@@ -131,7 +131,7 @@ const PoliceDashboard = () => {
   }, [navigate]);
 
   const handleReportClick = (reportId) => {
-    navigate(`/police/reports/${reportId}`);
+    navigate(`/police/report/${reportId}`);
   };
 
   if (loading) {
