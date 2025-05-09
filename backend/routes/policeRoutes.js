@@ -9,13 +9,13 @@ router.use(authMiddleware.authenticateToken, authMiddleware.isPolice);
 // Get officer details by ID (accessible to any authenticated police officer)
 router.get("/officer/:id", policeController.getOfficerDetails);
 
-// Dashboard statistics for police
-router.get("/stats", policeController.getDashboardStats);
+// Dashboard statistics for police - use our working getStats implementation
+router.get("/stats", policeController.getStats);
 
 // Get recent reports for dashboard
 router.get("/recent-reports", policeController.getRecentReports);
 
-// Dashboard statistics for police (legacy endpoint)
+// Dashboard statistics (legacy endpoint) - keep this for backward compatibility
 router.get("/dashboard", policeController.getDashboardStats);
 
 // Get cases assigned to the police officer

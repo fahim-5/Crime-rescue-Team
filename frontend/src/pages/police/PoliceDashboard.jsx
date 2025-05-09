@@ -49,35 +49,121 @@ const PoliceDashboard = () => {
           },
         };
 
-        const [statsResponse, reportsResponse] = await Promise.all([
-          axios.get("http://localhost:5000/api/police/stats", config),
-          axios.get("http://localhost:5000/api/police/recent-reports", config),
-        ]);
+        // Get stats from our working endpoint
+        let statsData = {
+          pendingCases: 0,
+          activeInvestigations: 0,
+          solvedCases: 0,
+          clearanceRate: 0,
+        };
+        let reportsData = [];
 
-        console.log("Stats response:", statsResponse.data);
-        console.log("Reports response:", reportsResponse.data);
+        try {
+          const statsResponse = await axios.get(
+            "http://localhost:5000/api/police/stats",
+            config
+          );
+          console.log("Stats response:", statsResponse.data);
 
-        // Handle response based on API structure
-        const statsData = statsResponse.data.success
-          ? statsResponse.data.data
-          : statsResponse.data;
-        const reportsData = reportsResponse.data.success
-          ? reportsResponse.data.data
-          : reportsResponse.data;
+          // Handle response based on API structure
+          if (statsResponse.data.success && statsResponse.data.data) {
+            statsData = statsResponse.data.data;
+            console.log("Successfully parsed stats data:", statsData);
+          } else {
+            statsData = statsResponse.data;
+            console.log("Using raw stats data:", statsData);
+          }
+        } catch (statsError) {
+          console.error("Error fetching stats:", statsError);
+          // If stats endpoint fails, try the individual endpoints
+          try {
+            const [
+              pendingResponse,
+              activeResponse,
+              solvedResponse,
+              rateResponse,
+            ] = await Promise.allSettled([
+              axios.get(
+                "http://localhost:5000/api/police/reports/pending-count",
+                config
+              ),
+              axios.get(
+                "http://localhost:5000/api/police/reports/active-count",
+                config
+              ),
+              axios.get(
+                "http://localhost:5000/api/police/reports/solved-count",
+                config
+              ),
+              axios.get(
+                "http://localhost:5000/api/police/reports/clearance-rate",
+                config
+              ),
+            ]);
 
-        // Calculate clearance rate
-        const pending = Number(statsData?.pendingCases) || 0;
-        const solved = Number(statsData?.solvedCases) || 0;
-        const totalCases = pending + solved;
-        const clearanceRate =
-          totalCases > 0 ? Math.round((solved / totalCases) * 100) : 0;
+            console.log("Received individual stats responses:", {
+              pending: pendingResponse,
+              active: activeResponse,
+              solved: solvedResponse,
+              rate: rateResponse,
+            });
 
+            if (
+              pendingResponse.status === "fulfilled" &&
+              pendingResponse.value?.data?.success
+            ) {
+              statsData.pendingCases = pendingResponse.value.data.count || 0;
+            }
+
+            if (
+              activeResponse.status === "fulfilled" &&
+              activeResponse.value?.data?.success
+            ) {
+              statsData.activeInvestigations =
+                activeResponse.value.data.count || 0;
+            }
+
+            if (
+              solvedResponse.status === "fulfilled" &&
+              solvedResponse.value?.data?.success
+            ) {
+              statsData.solvedCases = solvedResponse.value.data.count || 0;
+            }
+
+            if (
+              rateResponse.status === "fulfilled" &&
+              rateResponse.value?.data?.success
+            ) {
+              statsData.clearanceRate =
+                rateResponse.value.data.data?.clearanceRate || 0;
+            }
+          } catch (individualError) {
+            console.error("Error fetching individual stats:", individualError);
+          }
+        }
+
+        // Fetch recent reports
+        try {
+          const reportsResponse = await axios.get(
+            "http://localhost:5000/api/police/recent-reports",
+            config
+          );
+          console.log("Reports response:", reportsResponse.data);
+          reportsData =
+            reportsResponse.data.success && reportsResponse.data.data
+              ? reportsResponse.data.data
+              : reportsResponse.data;
+        } catch (reportsError) {
+          console.error("Error fetching reports:", reportsError);
+        }
+
+        // Set dashboard data with fetched stats and reports
         setDashboardData({
           stats: {
-            pendingCases: pending,
-            solvedCases: solved,
+            pendingCases: Number(statsData?.pendingCases) || 0,
+            solvedCases: Number(statsData?.solvedCases) || 0,
             activeInvestigations: Number(statsData?.activeInvestigations) || 0,
-            clearanceRate: clearanceRate,
+            clearanceRate: Number(statsData?.clearanceRate) || 0,
           },
           recentReports: Array.isArray(reportsData)
             ? reportsData.map((report) => ({

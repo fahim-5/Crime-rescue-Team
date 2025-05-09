@@ -2,6 +2,7 @@ const PoliceModel = require("../models/policeModel");
 const ReportModel = require("../models/reportModel");
 const AnalyticsModel = require("../models/analyticsModel");
 const { pool } = require("../config/db");
+const CrimeReportModel = require("../models/crimeReportModel");
 
 /**
  * Get officer details by ID
@@ -377,6 +378,40 @@ const getCrimeStatsByArea = async (req, res) => {
   }
 };
 
+/**
+ * Get dashboard statistics for police
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Promise<void>}
+ */
+const getStats = async (req, res) => {
+  try {
+    // Get statistics using our working model
+    const statistics = await CrimeReportModel.getReportsStatistics();
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        pendingCases: statistics.pendingCases,
+        activeInvestigations: statistics.activeInvestigations,
+        solvedCases: statistics.solvedCases,
+        clearanceRate: statistics.clearanceRate,
+        trends: {
+          pendingChange: 0, // We could calculate this in a future update
+          solvedChange: 0,
+          activeChange: 0,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching police stats:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Error fetching police statistics",
+    });
+  }
+};
+
 module.exports = {
   getOfficerDetails,
   getDashboardStats,
@@ -390,4 +425,5 @@ module.exports = {
   searchCases,
   getPoliceAnalytics,
   getCrimeStatsByArea,
+  getStats,
 };
