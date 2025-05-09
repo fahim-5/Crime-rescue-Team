@@ -347,11 +347,11 @@
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .metrics-grid {
     grid-template-columns: 1fr 1fr;
   }
-  
+
   .data-grid {
     grid-template-columns: 1fr;
   }
@@ -361,12 +361,42 @@
   .analytics-container {
     padding: 1rem;
   }
-  
+
   .metrics-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .effectiveness-metrics {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Loading Spinner */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  width: 100%;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #e9ecef;
+  border-radius: 50%;
+  border-top: 5px solid #a72c40;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }
