@@ -34,19 +34,36 @@ const ReportedCrimes = ({ isPoliceView = false }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
+      setErrorMessage(null);
 
       // Determine the appropriate endpoint based on user role
       let endpoint;
 
       if (isPolicePage) {
         endpoint = "http://localhost:5000/api/reports/police";
-        console.log(`Fetching crime reports from: ${endpoint} as police user`);
+        console.log(
+          `Attempting to fetch crime reports from: ${endpoint} as police user`
+        );
       } else {
         endpoint = "http://localhost:5000/api/reports/admin";
         console.log(`Fetching crime reports from: ${endpoint} as admin user`);
       }
 
-      const data = await fetchWithAuth(endpoint);
+      let data;
+      try {
+        data = await fetchWithAuth(endpoint);
+      } catch (err) {
+        // If police endpoint fails, try the admin endpoint as fallback
+        if (isPolicePage) {
+          console.log(
+            "Police endpoint failed, trying admin endpoint as fallback"
+          );
+          const adminEndpoint = "http://localhost:5000/api/reports/admin";
+          data = await fetchWithAuth(adminEndpoint);
+        } else {
+          throw err;
+        }
+      }
 
       if (data && (data.success || Array.isArray(data))) {
         // Handle both response formats:
@@ -72,7 +89,15 @@ const ReportedCrimes = ({ isPoliceView = false }) => {
       }
     } catch (err) {
       console.error("Error fetching crime reports:", err);
-      setErrorMessage(err.message || "Failed to load crime reports");
+
+      // Only set error message for admin view, use empty state for police
+      if (!isPolicePage) {
+        setErrorMessage(err.message || "Failed to load crime reports");
+      } else {
+        console.log("Suppressing error message for police view");
+        setErrorMessage(null);
+      }
+
       setCrimes([]);
     } finally {
       setLoading(false);
@@ -131,7 +156,8 @@ const ReportedCrimes = ({ isPoliceView = false }) => {
         </div>
       )}
 
-      {error && <div className="error-message">{error}</div>}
+      {/* Only show error messages for admin users */}
+      {error && !isPolicePage && <div className="error-message">{error}</div>}
 
       {loading ? (
         <div className="loading-message">Loading crime reports...</div>

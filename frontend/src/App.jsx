@@ -38,6 +38,7 @@ import PoliceReports from "./pages/police/PoliceReports";
 import ResolvedCases from "./pages/police/ResolvedCases";
 import PendingCases from "./pages/police/PendingCases";
 import PoliceAlert from "./pages/police/PoliceAlert";
+import ViewAllReports from "./pages/police/ViewAllReports";
 // Shared
 import UserReports from "./components/UserReports";
 import PrivateRoute from "./components/PrivateRoute";
@@ -110,7 +111,7 @@ function App() {
             path="/police/reports"
             element={
               <PrivateRoute allowedRole="police">
-                <ReportedCrimes isPoliceView={true} />
+                <ViewAllReports />
               </PrivateRoute>
             }
           />
