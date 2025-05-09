@@ -1,0 +1,160 @@
+/* ViewAllReports.css - Component-scoped styles */
+
+.reported-crimes-container {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 1rem;
+}
+
+.reported-crimes-header {
+    color: #a72c40;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.crimes-table-container {
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+}
+
+.crimes-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.crimes-table th {
+    background-color: #a72c40;
+    color: white;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 500;
+}
+
+.crimes-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e9ecef;
+    color: #495057;
+}
+
+.crimes-table tr:hover td {
+    background-color: #f8f9fa;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background-color: #fff3bf;
+    color: #8d6b00;
+}
+
+.status-badge.investigating {
+    background-color: #d0ebff;
+    color: #0066a1;
+}
+
+.status-badge.closed {
+    background-color: #e9ecef;
+    color: #495057;
+    border: 1px solid #adb5bd;
+}
+
+.status-badge.resolved {
+    background-color: #d3f9d8;
+    color: #2b8a3e;
+}
+
+.view-btn {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.view-btn:hover {
+    background-color: #357acb;
+}
+
+/* Loading and Error Messages */
+.loading-message,
+.error-message,
+.no-crimes-message {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    font-size: 1.1rem;
+}
+
+.loading-message {
+    background-color: #f0f9ff;
+    color: #0066a1;
+    border: 1px solid #90caf9;
+}
+
+.error-message {
+    background-color: #fff5f5;
+    color: #d64045;
+    border: 1px solid #f8c9c9;
+}
+
+.no-crimes-message {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #e0e0e0;
+}
+
+.search-container {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+@media (max-width: 768px) {
+    .reported-crimes-container {
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+
+    .crimes-table th,
+    .crimes-table td {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+}

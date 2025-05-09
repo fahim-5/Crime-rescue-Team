@@ -36,8 +36,8 @@ const ViewAllReports = () => {
       setLoading(true);
       setErrorMessage(null);
 
-      // Try police endpoint first
-      const policeEndpoint = "http://localhost:5000/api/reports/police";
+      // Use the correct police reports endpoint
+      const policeEndpoint = "http://localhost:5000/api/police/reports";
       console.log(
         `Attempting to fetch crime reports from: ${policeEndpoint} as police user`
       );
@@ -46,6 +46,7 @@ const ViewAllReports = () => {
       try {
         data = await fetchWithAuth(policeEndpoint);
       } catch (policeErr) {
+        console.error("Error fetching from police endpoint:", policeErr);
         // If police endpoint fails, try admin endpoint as fallback
         console.log(
           "Police endpoint failed, trying admin endpoint as fallback"

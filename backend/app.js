@@ -19,6 +19,7 @@ const policeFilesRoutes = require("./routes/policeFilesRoutes"); // New route fi
 const adminRoutes = require("./routes/adminRoutes"); // Admin routes
 const databaseRoutes = require("./routes/databaseRoutes"); // Database management routes
 const userRoutes = require("./routes/userRoutes"); // User points routes
+const policeReportRoutes = require("./routes/policeReportRoutes"); // Police report routes
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const upload = require("./middlewares/upload");
 
@@ -129,12 +130,13 @@ app.use("/api/auth", authRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/verification", verificationRoutes);
 app.use("/api/police/requests", requestRoutes);
+app.use("/api/police/reports", policeReportRoutes); // Police report routes
 app.use("/api/police", policeRoutes);
 app.use("/api/police-stations", policeStationRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/crime-alerts", crimeAlertRoutes);
-app.use("/api/police-files", policeFilesRoutes); // New police files route
+app.use("/api/police-files", policeFilesRoutes); // Police files route
 app.use("/api/admin", adminRoutes); // Admin routes
 app.use("/api/admin/database", databaseRoutes); // Database management routes
 app.use("/api/users", userRoutes); // User points routes
