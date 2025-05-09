@@ -29,6 +29,8 @@ const MyCases = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [loadingReporterDetails, setLoadingReporterDetails] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState({});
+  const [notification, setNotification] = useState(null);
+  const [isNotificationExiting, setIsNotificationExiting] = useState(false);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -53,6 +55,24 @@ const MyCases = () => {
       setErrorMessage(apiError);
     }
   }, [apiError]);
+
+  // In the useEffect, add auto-dismissal with animation
+  useEffect(() => {
+    let dismissTimer;
+    if (notification) {
+      dismissTimer = setTimeout(() => {
+        setIsNotificationExiting(true);
+        setTimeout(() => {
+          setNotification(null);
+          setIsNotificationExiting(false);
+        }, 300);
+      }, 3000);
+    }
+
+    return () => {
+      clearTimeout(dismissTimer);
+    };
+  }, [notification]);
 
   const checkAuthToken = () => {
     return localStorage.getItem("token");
@@ -430,7 +450,31 @@ const MyCases = () => {
     }
   };
 
-  // Update handleStatusChange to handle errors better
+  // Function to show notification
+  const showNotification = (type, title, message) => {
+    setNotification({
+      type,
+      title,
+      message,
+      id: Date.now(), // Unique ID to help with removal
+    });
+
+    // Auto dismiss after 3 seconds
+    setTimeout(() => {
+      setNotification(null);
+    }, 3300); // slightly longer than animation duration
+  };
+
+  // Update dismiss function to handle animation
+  const dismissNotification = () => {
+    setIsNotificationExiting(true);
+    setTimeout(() => {
+      setNotification(null);
+      setIsNotificationExiting(false);
+    }, 300); // Match animation duration
+  };
+
+  // Update handleStatusChange to use the new notification system
   const handleStatusChange = async (crimeId, newStatus) => {
     if (!crimeId || !newStatus) return;
 
@@ -469,20 +513,32 @@ const MyCases = () => {
           return updatedCrimes;
         });
 
-        // Show success toast instead of alert
+        // Show success notification instead of alert
         setErrorMessage(null); // Clear any existing errors
-        alert(`Case #${crimeId} status updated to ${newStatus.toUpperCase()}`);
+        showNotification(
+          "success",
+          "Status Updated",
+          `Case #${crimeId} status changed to ${newStatus.toUpperCase()}`
+        );
       } else {
         console.error("Failed to update status:", response.message);
         setErrorMessage(`Failed to update status: ${response.message}`);
-        setTimeout(() => setErrorMessage(null), 5000);
+        showNotification(
+          "error",
+          "Update Failed",
+          response.message || "Failed to update case status"
+        );
       }
     } catch (error) {
       console.error("Error updating status:", error);
       setErrorMessage(
         `Error updating status: ${error.message || "Unknown error"}`
       );
-      setTimeout(() => setErrorMessage(null), 5000);
+      showNotification(
+        "error",
+        "Update Failed",
+        error.message || "An unexpected error occurred"
+      );
     } finally {
       setUpdatingStatus((prev) => ({ ...prev, [crimeId]: false }));
     }
@@ -968,6 +1024,94 @@ const MyCases = () => {
                 View Full Case Report
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notification overlay */}
+      {notification && (
+        <div
+          className={`${styles.notificationOverlay} ${
+            isNotificationExiting ? styles.exiting : ""
+          }`}
+        >
+          <div
+            className={`${styles.notification} ${styles[notification.type]} ${
+              isNotificationExiting ? styles.exiting : ""
+            }`}
+          >
+            <div className={styles.notificationIcon}>
+              {notification.type === "success" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              )}
+              {notification.type === "error" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+              )}
+              {notification.type === "info" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+              )}
+            </div>
+            <div className={styles.notificationContent}>
+              <div className={styles.notificationTitle}>
+                {notification.title}
+              </div>
+              <div className={styles.notificationMessage}>
+                {notification.message}
+              </div>
+            </div>
+            <button
+              className={styles.notificationDismiss}
+              onClick={dismissNotification}
+              aria-label="Close notification"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
           </div>
         </div>
       )}

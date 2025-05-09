@@ -167,7 +167,7 @@ const Navbar = () => {
             <Link to="/police/dashboard">Dashboard</Link>
           </li>
           <li>
-            <Link to="/police/pending">Pending Cases</Link>
+            <Link to="/police/pending">Cases</Link>
           </li>
           <li className="notification-link-container">
             <Link to="/notifications">Notifications</Link>
