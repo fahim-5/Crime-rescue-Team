@@ -10,7 +10,14 @@ const ViewAllReports = () => {
   const { user } = useAuth();
   const { fetchWithAuth, isLoading, error: apiError, setError } = useApi();
   const [crimes, setCrimes] = useState([]);
+  const [statistics, setStatistics] = useState({
+    pendingCases: 0,
+    activeInvestigations: 0,
+    solvedCases: 0,
+    clearanceRate: 0,
+  });
   const [loading, setLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [error, setErrorMessage] = useState(null);
   const [selectedReport, setSelectedReport] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -22,6 +29,7 @@ const ViewAllReports = () => {
   // Fetch data on component mount
   useEffect(() => {
     fetchData();
+    fetchStatistics();
   }, []);
 
   // Update component error state when API error changes
@@ -89,6 +97,88 @@ const ViewAllReports = () => {
     }
   };
 
+  const fetchStatistics = async () => {
+    try {
+      setStatsLoading(true);
+
+      const endpoint = "http://localhost:5000/api/police/reports/statistics";
+      console.log(`Fetching crime statistics from: ${endpoint}`);
+
+      const response = await fetchWithAuth(endpoint);
+
+      if (response && response.success && response.data) {
+        console.log("Received statistics:", response.data);
+        setStatistics({
+          pendingCases: response.data.pendingCases || 0,
+          activeInvestigations: response.data.activeInvestigations || 0,
+          solvedCases: response.data.solvedCases || 0,
+          clearanceRate: response.data.clearanceRate || 0,
+        });
+      } else {
+        console.warn("Statistics response format not as expected:", response);
+        // Try individual endpoints as fallback
+        await fetchIndividualStatistics();
+      }
+    } catch (err) {
+      console.error("Error fetching statistics:", err);
+      // Try individual endpoints as fallback
+      await fetchIndividualStatistics();
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  const fetchIndividualStatistics = async () => {
+    try {
+      const [pendingResponse, activeResponse, solvedResponse, rateResponse] =
+        await Promise.allSettled([
+          fetchWithAuth(
+            "http://localhost:5000/api/police/reports/pending-count"
+          ),
+          fetchWithAuth(
+            "http://localhost:5000/api/police/reports/active-count"
+          ),
+          fetchWithAuth(
+            "http://localhost:5000/api/police/reports/solved-count"
+          ),
+          fetchWithAuth(
+            "http://localhost:5000/api/police/reports/clearance-rate"
+          ),
+        ]);
+
+      const newStats = { ...statistics };
+
+      if (
+        pendingResponse.status === "fulfilled" &&
+        pendingResponse.value?.success
+      ) {
+        newStats.pendingCases = pendingResponse.value.count || 0;
+      }
+
+      if (
+        activeResponse.status === "fulfilled" &&
+        activeResponse.value?.success
+      ) {
+        newStats.activeInvestigations = activeResponse.value.count || 0;
+      }
+
+      if (
+        solvedResponse.status === "fulfilled" &&
+        solvedResponse.value?.success
+      ) {
+        newStats.solvedCases = solvedResponse.value.count || 0;
+      }
+
+      if (rateResponse.status === "fulfilled" && rateResponse.value?.success) {
+        newStats.clearanceRate = rateResponse.value.data?.clearanceRate || 0;
+      }
+
+      setStatistics(newStats);
+    } catch (err) {
+      console.error("Error fetching individual statistics:", err);
+    }
+  };
+
   const handleViewReport = (report) => {
     setSelectedReport(report);
     setShowModal(true);
@@ -116,6 +206,40 @@ const ViewAllReports = () => {
   return (
     <div className="reported-crimes-container">
       <h2 className="reported-crimes-header">{pageTitle}</h2>
+
+      {/* Statistics Cards */}
+      <div className="statistics-container">
+        <div className="statistics-cards">
+          <div className="stat-card pending-cases">
+            <h3>Pending Cases</h3>
+            <div className="stat-value">
+              {statsLoading ? "..." : statistics.pendingCases}
+            </div>
+          </div>
+
+          <div className="stat-card active-investigations">
+            <h3>Active Investigations</h3>
+            <div className="stat-value">
+              {statsLoading ? "..." : statistics.activeInvestigations}
+            </div>
+          </div>
+
+          <div className="stat-card solved-cases">
+            <h3>Solved Cases</h3>
+            <div className="stat-value">
+              {statsLoading ? "..." : statistics.solvedCases}
+            </div>
+          </div>
+
+          <div className="stat-card clearance-rate">
+            <h3>Clearance Rate</h3>
+            <div className="stat-value">
+              {statsLoading ? "..." : `${statistics.clearanceRate}%`}
+            </div>
+            <div className="stat-subtitle">Cases solved vs reported</div>
+          </div>
+        </div>
+      </div>
 
       {!user && (
         <div className="error-message">
