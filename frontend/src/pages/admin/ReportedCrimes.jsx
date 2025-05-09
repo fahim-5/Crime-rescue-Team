@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { useApi } from "../../utils/useApi";
 import "./ReportedCrimes.css";
 
-const ReportedCrimes = () => {
+const ReportedCrimes = ({ isPoliceView = false }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const { fetchWithAuth, isLoading, error: apiError, setError } = useApi();
   const [crimes, setCrimes] = useState([]);
@@ -15,10 +16,13 @@ const ReportedCrimes = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Determine if this is a police view based on prop or URL
+  const isPolicePage = isPoliceView || location.pathname.includes("/police/");
+
   // Fetch data on component mount
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [isPolicePage]);
 
   // Update component error state when API error changes
   useEffect(() => {
@@ -31,12 +35,37 @@ const ReportedCrimes = () => {
     try {
       setLoading(true);
 
-      const data = await fetchWithAuth(
-        "http://localhost:5000/api/reports/admin"
-      );
+      // Determine the appropriate endpoint based on user role
+      let endpoint;
 
-      if (data && data.success) {
-        setCrimes(data.data || []);
+      if (isPolicePage) {
+        endpoint = "http://localhost:5000/api/reports/police";
+        console.log(`Fetching crime reports from: ${endpoint} as police user`);
+      } else {
+        endpoint = "http://localhost:5000/api/reports/admin";
+        console.log(`Fetching crime reports from: ${endpoint} as admin user`);
+      }
+
+      const data = await fetchWithAuth(endpoint);
+
+      if (data && (data.success || Array.isArray(data))) {
+        // Handle both response formats:
+        // 1. {success: true, data: [...]} (admin format)
+        // 2. {cases: [...], pagination: {...}} (police format)
+        // 3. Direct array (fallback)
+
+        let crimesList = [];
+
+        if (data.success && Array.isArray(data.data)) {
+          crimesList = data.data;
+        } else if (data.cases && Array.isArray(data.cases)) {
+          crimesList = data.cases;
+        } else if (Array.isArray(data)) {
+          crimesList = data;
+        }
+
+        console.log("Processed crime reports:", crimesList.length);
+        setCrimes(crimesList);
         setErrorMessage(null);
       } else {
         throw new Error("Failed to fetch crime reports");
@@ -44,6 +73,7 @@ const ReportedCrimes = () => {
     } catch (err) {
       console.error("Error fetching crime reports:", err);
       setErrorMessage(err.message || "Failed to load crime reports");
+      setCrimes([]);
     } finally {
       setLoading(false);
     }
@@ -61,7 +91,12 @@ const ReportedCrimes = () => {
 
   const handleViewFullDetails = (reportId) => {
     closeModal();
-    navigate(`/admin/report/${reportId}`);
+    // Navigate to the appropriate details page based on user role
+    if (isPolicePage) {
+      navigate(`/police/report/${reportId}`);
+    } else {
+      navigate(`/admin/report/${reportId}`);
+    }
   };
 
   // Filter crimes based on search term
@@ -69,9 +104,32 @@ const ReportedCrimes = () => {
     crime.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Determine the title based on the user role
+  const pageTitle = isPolicePage ? "All Crime Reports" : "All Reported Crimes";
+
   return (
     <div className="reported-crimes-container">
-      <h2 className="reported-crimes-header">All Reported Crimes</h2>
+      <h2 className="reported-crimes-header">{pageTitle}</h2>
+
+      {!user && (
+        <div className="error-message">
+          <span>⚠️ Access denied. Please log in to view this page.</span>
+        </div>
+      )}
+
+      {/* Only show admin role required message if we're on admin route and user is not admin */}
+      {user && !isPolicePage && user.role !== "admin" && (
+        <div className="error-message">
+          <span>⚠️ Access denied. Admin role required.</span>
+        </div>
+      )}
+
+      {/* Only show police role required message if we're on police route and user is not police */}
+      {user && isPolicePage && user.role !== "police" && (
+        <div className="error-message">
+          <span>⚠️ Access denied. Police role required.</span>
+        </div>
+      )}
 
       {error && <div className="error-message">{error}</div>}
 
@@ -91,7 +149,9 @@ const ReportedCrimes = () => {
 
           {filteredCrimes.length === 0 ? (
             <div className="no-crimes-message">
-              {searchTerm ? "No matching crime reports found." : "No crime reports found."}
+              {searchTerm
+                ? "No matching crime reports found."
+                : "No crime reports found."}
             </div>
           ) : (
             <table className="crimes-table">
@@ -111,14 +171,30 @@ const ReportedCrimes = () => {
                     <td>{crime.location || "Unknown"}</td>
                     <td>
                       {crime.time
-                        ? new Date(crime.time).toLocaleString()
+                        ? new Date(crime.time).toLocaleString("en-US", {
+                            year: "numeric",
+                            month: "numeric",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "numeric",
+                            second: "numeric",
+                            hour12: true,
+                          })
                         : "Unknown"}
                     </td>
-                    <td>{crime.status || "Pending"}</td>
+                    <td>
+                      <span
+                        className={`status-badge ${
+                          crime.status?.toLowerCase() || "pending"
+                        }`}
+                      >
+                        {crime.status || "Pending"}
+                      </span>
+                    </td>
                     <td>
                       <button
                         className="view-btn"
-                        onClick={() => handleViewReport(crime)}
+                        onClick={() => handleViewFullDetails(crime.id)}
                       >
                         View Details
                       </button>
@@ -137,7 +213,6 @@ const ReportedCrimes = () => {
           <div className="reporter-info">
             <div className="modal-header-h1">
               <h3>Reporter Details</h3>
-        
             </div>
             <div className="modal-body">
               <div className="report-detail">
@@ -190,8 +265,6 @@ const ReportedCrimes = () => {
                   {selectedReport.status || "Pending"}
                 </span>
               </div>
-              
-           
             </div>
             <div className="modal-footer">
               <button

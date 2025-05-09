@@ -96,7 +96,8 @@
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .status-badge.pending {
@@ -104,27 +105,20 @@
   color: #8d6b00;
 }
 
-.status-badge.under-validation,
-.status-badge.validating {
-  background-color: #e9ecef;
-  color: #495057;
-}
-
-.status-badge.under-investigation,
 .status-badge.investigating {
   background-color: #d0ebff;
   color: #0066a1;
 }
 
+.status-badge.closed {
+  background-color: #e9ecef;
+  color: #495057;
+  border: 1px solid #adb5bd;
+}
+
 .status-badge.resolved {
   background-color: #d3f9d8;
   color: #2b8a3e;
-}
-
-.status-badge.closed {
-  background-color: #f8f9fa;
-  color: #495057;
-  border: 1px solid #adb5bd;
 }
 
 .action-btn {
@@ -368,7 +362,7 @@
   z-index: 1000;
 }
 
-.reporter-info{
+.reporter-info {
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -549,7 +543,9 @@
 }
 
 /* Improve section headings */
-.identification, .assignment, .contact {
+.identification,
+.assignment,
+.contact {
   color: #1a3e72;
   font-size: 1.1rem;
   font-weight: 600;

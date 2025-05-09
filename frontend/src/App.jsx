@@ -98,14 +98,70 @@ function App() {
           />
 
           {/* Police Routes */}
-          <Route path="/police/dashboard" element={<PoliceDashboard />} />
-          <Route path="/police/reports" element={<ReportedCrimes />} />
-          <Route path="/police/analytics" element={<Analytics />} />
-          <Route path="/police/settings" element={<Settings />} />
-          <Route path="/police/pending" element={<PendingCases />} />
-          <Route path="/police/resolved" element={<ResolvedCases />} />
-          <Route path="/police/messages" element={<MessagesPanel />} />
-          <Route path="/police/alert" element={<PoliceAlert />} />
+          <Route
+            path="/police/dashboard"
+            element={
+              <PrivateRoute allowedRole="police">
+                <PoliceDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/police/reports"
+            element={
+              <PrivateRoute allowedRole="police">
+                <ReportedCrimes isPoliceView={true} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/police/analytics"
+            element={
+              <PrivateRoute allowedRole="police">
+                <Analytics />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/police/settings"
+            element={
+              <PrivateRoute allowedRole="police">
+                <Settings />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/police/pending"
+            element={
+              <PrivateRoute allowedRole="police">
+                <PendingCases />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/police/resolved"
+            element={
+              <PrivateRoute allowedRole="police">
+                <ResolvedCases />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/police/messages"
+            element={
+              <PrivateRoute allowedRole="police">
+                <MessagesPanel />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/police/alert"
+            element={
+              <PrivateRoute allowedRole="police">
+                <PoliceAlert />
+              </PrivateRoute>
+            }
+          />
 
           {/* Add route for police report details */}
           <Route
