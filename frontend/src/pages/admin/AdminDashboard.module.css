@@ -88,11 +88,39 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
 .sectionTitle {
   font-size: 1.5rem;
   color: #1e293b;
-  margin-bottom: 1.5rem;
   font-weight: 600;
+  margin: 0;
+}
+
+.viewAllButton {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+  display: flex;
+  align-items: center;
+}
+
+.viewAllButton:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
 .tableContainer {
@@ -134,8 +162,8 @@
 }
 
 .status {
-   font-weight: 600;
-   font-size: 1rem;
+  font-weight: 600;
+  font-size: 1rem;
 }
 
 .pending {
@@ -215,15 +243,15 @@
   .container {
     padding: 1rem;
   }
-  
+
   .title {
     font-size: 2rem;
   }
-  
+
   .cardValue {
     font-size: 2rem;
   }
-  
+
   .section {
     padding: 1.5rem;
   }
@@ -233,15 +261,15 @@
   .title {
     font-size: 1.75rem;
   }
-  
+
   .grid {
     grid-template-columns: 1fr;
   }
-  
+
   .card {
     padding: 1.5rem;
   }
-  
+
   .tableCell {
     padding: 0.75rem;
   }

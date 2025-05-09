@@ -59,7 +59,10 @@ const AdminDashboard = () => {
     navigate(`/admin/report/${reportId}`);
   };
 
-  if (loading) return <div className={styles.loadingContainer}>Loading dashboard data...</div>;
+  if (loading)
+    return (
+      <div className={styles.loadingContainer}>Loading dashboard data...</div>
+    );
   if (error) return <div className={styles.errorContainer}>{error}</div>;
 
   return (
@@ -85,7 +88,15 @@ const AdminDashboard = () => {
       </div>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Recent Crime Reports</h2>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Recent Crime Reports</h2>
+          <button
+            className={styles.viewAllButton}
+            onClick={() => navigate("/admin/reports")}
+          >
+            View All Reports
+          </button>
+        </div>
         {recentReports.length === 0 ? (
           <div className={styles.emptyState}>No recent reports found</div>
         ) : (
@@ -104,11 +115,17 @@ const AdminDashboard = () => {
                 {recentReports.map((report) => (
                   <tr key={report.id} className={styles.tableRow}>
                     <td className={styles.tableCell}>{report.id}</td>
-                    <td className={styles.tableCell}>{report.location || "Unknown"}</td>
+                    <td className={styles.tableCell}>
+                      {report.location || "Unknown"}
+                    </td>
                     <td className={styles.tableCell}>
                       {new Date(report.created_at).toLocaleDateString()}
                     </td>
-                    <td className={`${styles.status} ${styles[report.status.toLowerCase()]}`}>
+                    <td
+                      className={`${styles.status} ${
+                        styles[report.status.toLowerCase()]
+                      }`}
+                    >
                       {report.status || "Pending"}
                     </td>
                     <td className={styles.tableCell}>

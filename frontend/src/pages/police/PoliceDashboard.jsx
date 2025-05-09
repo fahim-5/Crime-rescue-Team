@@ -171,7 +171,15 @@ const PoliceDashboard = () => {
       </div>
 
       <section className="section">
-        <h2 className="section-title">Recent Crime Reports</h2>
+        <div className="section-header">
+          <h2 className="section-title">Recent Crime Reports</h2>
+          <button
+            className="view-all-button"
+            onClick={() => navigate("/police/reports")}
+          >
+            View All Reports
+          </button>
+        </div>
         {dashboardData.recentReports.length === 0 ? (
           <div className="empty-state">No recent reports found</div>
         ) : (
