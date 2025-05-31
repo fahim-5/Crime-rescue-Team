@@ -1,12 +1,20 @@
 import React, { useState } from "react";
+import emailjs from '@emailjs/browser';
 import styles from "./FAQ.module.css";
 
 const FAQ = () => {
   const [activeIndex, setActiveIndex] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isEmailOpen, setIsEmailOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [emailForm, setEmailForm] = useState({
+    email: "",
+    subject: "",
+    message: ""
+  });
+  const [isSending, setIsSending] = useState(false);
 
   const toggleAccordion = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -25,6 +33,43 @@ const FAQ = () => {
           },
         ]);
       }, 1000);
+    }
+  };
+
+  const handleEmailChange = (e) => {
+    const { name, value } = e.target;
+    setEmailForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleEmailSubmit = async (e) => {
+    e.preventDefault();
+    setIsSending(true);
+    
+    try {
+      await emailjs.send(
+        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
+        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+        {
+          to_email: 'mfaysal223224@bscse.uiu.ac.bd',
+          from_email: emailForm.email,
+          subject: emailForm.subject,
+          message: emailForm.message,
+          reply_to: emailForm.email
+        },
+        'YOUR_PUBLIC_KEY' // Replace with your EmailJS public key
+      );
+      
+      alert('Your message has been sent to our helpline! We will respond shortly.');
+      setEmailForm({ email: "", subject: "", message: "" });
+      setIsEmailOpen(false);
+    } catch (error) {
+      alert('Failed to send email. Please try again later or contact us through another method.');
+      console.error('Email sending error:', error);
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -115,7 +160,6 @@ const FAQ = () => {
     },
   ];
 
-  // Filter questions by searchTerm
   const filteredFaqData = faqData.map((category) => ({
     ...category,
     questions: category.questions.filter((q) =>
@@ -161,6 +205,78 @@ const FAQ = () => {
                 Send
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {isEmailOpen && (
+        <div className={styles.emailModal}>
+          <div className={styles.emailContent}>
+            <div className={styles.emailHeader}>
+              <h3>Helpline Support</h3>
+              <button
+                className={styles.closeButton}
+                onClick={() => setIsEmailOpen(false)}
+                disabled={isSending}
+              >
+                &times;
+              </button>
+            </div>
+            <form onSubmit={handleEmailSubmit} className={styles.emailForm}>
+              <div className={styles.formGroup}>
+                <label htmlFor="email">Your Email Address*</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={emailForm.email}
+                  onChange={handleEmailChange}
+                  required
+                  disabled={isSending}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label htmlFor="subject">Subject*</label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  value={emailForm.subject}
+                  onChange={handleEmailChange}
+                  required
+                  disabled={isSending}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label htmlFor="message">Your Message*</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={emailForm.message}
+                  onChange={handleEmailChange}
+                  rows="5"
+                  required
+                  disabled={isSending}
+                ></textarea>
+              </div>
+              <button 
+                type="submit" 
+                className={styles.submitButton}
+                disabled={isSending}
+              >
+                {isSending ? (
+                  <>
+                    <span className={styles.loadingSpinner}></span>
+                    Sending...
+                  </>
+                ) : (
+                  'Send to Helpline'
+                )}
+              </button>
+              <p className={styles.emailNote}>
+                Your message will be sent directly to: mfaysal223224@bscse.uiu.ac.bd
+              </p>
+            </form>
           </div>
         </div>
       )}
@@ -220,7 +336,7 @@ const FAQ = () => {
             </section>
           ))
         ) : (
-            <p className={styles.noResultsText}>No questions matched your search.</p>
+          <p className={styles.noResultsText}>No questions matched your search.</p>
         )}
       </main>
 
@@ -233,9 +349,14 @@ const FAQ = () => {
           <div className={styles.contactGrid}>
             <div className={styles.contactMethod}>
               <div className={styles.methodIcon}>📧</div>
-              <h3>Email Support</h3>
-              <a href="mailto:support@stopcrime.com">support@stopcrime.com</a>
-              <p>Average response time: 2 hours</p>
+              <h3>Helpline Email</h3>
+              <button 
+                className={styles.emailButton}
+                onClick={() => setIsEmailOpen(true)}
+              >
+                Contact Helpline
+              </button>
+              <p>Direct support: mfaysal223224@bscse.uiu.ac.bd</p>
             </div>
             <div className={styles.contactMethod}>
               <div className={styles.methodIcon}>📞</div>
