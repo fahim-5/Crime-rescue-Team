@@ -238,14 +238,7 @@ const AdminSignup = () => {
         </p>
       </section>
 
-      {/* Email Verification Popup */}
-      {showVerification && (
-        <EmailVerification
-          email={formData.email}
-          onVerified={handleVerificationSuccess}
-          onCancel={handleVerificationCancel}
-        />
-      )}
+     
     </main>
   );
 };
