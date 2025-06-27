@@ -20,6 +20,19 @@ const PublicSignup = () => {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
+  const districtThanaOptions = [
+    "Dhaka-Mirpur",
+    "Dhaka-Badda",
+    "Chattogram-Panchlaish",
+    "Chattogram-Kotwali",
+    "Khulna-Sonadanga",
+    "Khulna-Khalishpur",
+    "Rajshahi-Boalia",
+    "Rajshahi-Motihar",
+    "Sylhet-Kotwali",
+    "Sylhet-Jalalabad"
+  ];
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -176,15 +189,18 @@ const PublicSignup = () => {
 
           <div className="auth-right">
             <label className="auth-label">Address (District-Thana)</label>
-            <input
-              type="text"
+            <select
               name="address"
               className="auth-input"
-              placeholder="Enter your address (e.g., Dhaka-Mirpur)"
               value={formData.address}
               onChange={handleChange}
               required
-            />
+            >
+              <option value="">Select District-Thana</option>
+              {districtThanaOptions.map((opt) => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
 
             <label className="auth-label">Passport (Optional)</label>
             <input
