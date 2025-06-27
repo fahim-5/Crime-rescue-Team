@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/useAuth";
 import PoliceStationFinder from "../../components/PoliceStationFinder";
+import CommentSection from '../../components/CommentSection';
 import styles from "./CrimeAlerts.module.css";
 
 const API_URL = "http://localhost:5000";
@@ -23,6 +24,7 @@ const CrimeAlerts = () => {
   const [validationCounts, setValidationCounts] = useState({});
   const [userValidatedReports, setUserValidatedReports] = useState({});
   const [mediaLoading, setMediaLoading] = useState(false);
+  const [showComments, setShowComments] = useState({});
   const { user, token } = useAuth();
 
   // Fetch user profile when component mounts
@@ -812,7 +814,23 @@ const CrimeAlerts = () => {
                               : "False Report"}
                           </button>
                         )}
+                        <button
+                          className={styles["comment-btn"]}
+                          onClick={() => setShowComments((prev) => ({
+                            ...prev,
+                            [alert.id]: !prev[alert.id],
+                          }))}
+                        >
+                          💬 Comments
+                        </button>
                       </div>
+                    )}
+                    {showComments[alert.id] && (
+                      <CommentSection
+                        reportId={alert.id}
+                        user={user}
+                        token={token}
+                      />
                     )}
                     <button
                       className={styles["details-btn"]}

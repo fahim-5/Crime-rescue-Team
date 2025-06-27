@@ -1211,3 +1211,26 @@
   border-radius: 8px;
   font-style: italic;
 }
+
+.comment-btn {
+  background: #f3f4f6;
+  color: #2563eb;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.875rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+  min-width: 140px;
+  margin-left: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.comment-btn:hover {
+  background: #e0e7ff;
+  color: #1d4ed8;
+  border-color: #a5b4fc;
+}

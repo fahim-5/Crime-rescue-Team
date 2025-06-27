@@ -4,6 +4,8 @@ const reportController = require("../controllers/reportController");
 const upload = require("../middlewares/upload");
 const authMiddleware = require("../middlewares/authMiddleware");
 const { protect, admin, isPolice } = require("../middlewares/authMiddleware");
+const commentController = require('../controllers/commentController');
+const { authenticateToken } = require('../middlewares/authMiddleware');
 
 // Health check endpoint - public access
 router.get("/health", reportController.healthCheck);
@@ -133,5 +135,9 @@ router.put(
   authMiddleware.authorizeRoles(["admin", "police"]),
   reportController.updateReportStatus
 );
+
+// Comments for a report
+router.get('/:reportId/comments', commentController.getComments);
+router.post('/:reportId/comments', authenticateToken, commentController.addComment);
 
 module.exports = router;
