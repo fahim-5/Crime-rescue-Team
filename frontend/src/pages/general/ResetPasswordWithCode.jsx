@@ -146,17 +146,21 @@ const ResetPasswordWithCode = () => {
     }
 
     const errors = {};
-    const { criteria, strength } = validatePassword(
+    const { criteria } = validatePassword(
       passwords.newPassword,
       passwords.confirmPassword
     );
 
+    // Check all requirements
+    const unmetRequirements = Object.entries(criteria)
+      .filter(([key, value]) => !value.met)
+      .map(([key, value]) => value.requirement);
+
     if (!passwords.newPassword) {
       errors.newPassword = "New password is required";
-    } else if (!criteria.minLength.met) {
-      errors.newPassword = "Password must be at least 8 characters long";
-    } else if (strength < 3) {
-      errors.newPassword = "Password is too weak. Please make it stronger.";
+    } else if (unmetRequirements.length > 0) {
+      errors.newPassword =
+        "Password requirements not met: " + unmetRequirements.join(", ");
     }
 
     if (!passwords.confirmPassword) {
