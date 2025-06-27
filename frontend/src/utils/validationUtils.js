@@ -68,23 +68,41 @@ export const validateName = (name) => {
  * @returns {string|null} Error message or null if valid
  */
 export const getProfileUpdateErrors = (userData) => {
-  if (!validateName(userData.fullName)) {
-    return "Full name must be at least 2 characters";
+  // Require all main fields
+  if (!userData.fullName || userData.fullName.trim().length < 2) {
+    return "Full name is required and must be at least 2 characters";
   }
-
-  if (!validateEmail(userData.email)) {
+  if (!userData.email || !validateEmail(userData.email)) {
     return "Please enter a valid email address";
   }
-
-  // Only validate phone if it's not empty
-  if (userData.phone && !validatePhone(userData.phone)) {
-    return "Please enter a valid Bangladesh mobile number (e.g., 01712345678)";
+  if (!userData.phone || !validatePhone(userData.phone)) {
+    return "Phone number is required and must be a valid Bangladesh mobile number (e.g., 01712345678)";
+  }
+  if (!userData.nid || userData.nid.trim().length < 5) {
+    return "National ID is required";
+  }
+  if (!userData.address) {
+    return "Address is required";
   }
 
-  // Only validate address if it's not empty
-  if (userData.address && !validateAddress(userData.address)) {
-    return "Address must be in format: District-Thana (e.g., Dhaka-Mirpur)";
+  // Police fields (if present, require them)
+  if (userData.hasOwnProperty('policeId') && (!userData.policeId || userData.policeId.trim() === '')) {
+    return "Police ID is required";
   }
+  if (userData.hasOwnProperty('rank') && (!userData.rank || userData.rank.trim() === '')) {
+    return "Rank is required";
+  }
+  if (userData.hasOwnProperty('badge') && (!userData.badge || userData.badge.trim() === '')) {
+    return "Badge number is required";
+  }
+  if (userData.hasOwnProperty('station') && (!userData.station || userData.station.trim() === '')) {
+    return "Station is required";
+  }
+
+  // Only validate address format if not empty (handled in Settings.jsx for strict format)
+  // if (userData.address && !validateAddress(userData.address)) {
+  //   return "Address must be in format: District-Thana (e.g., Dhaka-Mirpur)";
+  // }
 
   return null;
 };
