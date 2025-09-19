@@ -1,22 +1,22 @@
-/* Base Styles with CSS Variables */
+/* Base Styles with CSS Variables - Dark Theme */
 :root {
   --primary-color: #9e192d;
   --primary-light: #c0392b;
   --primary-dark: #8e1426;
-  --primary-transparent: rgba(158, 25, 45, 0.1);
-  --secondary-color: #2c3e50;
-  --light-gray: #f5f7fa;
-  --medium-gray: #e2e8f0;
-  --dark-gray: #4a5568;
-  --success-color: #38a169;
-  --error-color: #e53e3e;
-  --warning-color: #dd6b20;
+  --primary-transparent: rgba(158, 25, 45, 0.15);
+  --secondary-color: #cbd5e1;
+  --light-gray: #1e293b;
+  --medium-gray: #334155;
+  --dark-gray: #94a3b8;
+  --success-color: #4ade80;
+  --error-color: #ef4444;
+  --warning-color: #f59e0b;
   --border-radius-sm: 6px;
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 6px 30px rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 6px 30px rgba(0, 0, 0, 0.5);
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   --font-size-sm: 0.85rem;
@@ -41,8 +41,9 @@
 body {
   font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
   line-height: 1.6;
-  color: #333;
-  background-color: var(--light-gray);
+  color: #e2e8f0;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  min-height: 100vh;
 }
 
 /* Main Container */
@@ -78,6 +79,10 @@ body {
   justify-content: center;
   gap: var(--space-sm);
   font-weight: 700;
+  background: linear-gradient(135deg, #ff6b6b 0%, #9e192d 50%, #c0392b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .crimeReportHeader p {
@@ -87,6 +92,7 @@ body {
 
 .headerIcon {
   font-size: var(--font-size-xxl);
+  color: #ff6b6b;
 }
 
 /* Content Layout */
@@ -97,15 +103,18 @@ body {
 }
 
 .reportFormContainer {
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-md);
   padding: var(--space-xl);
-  transition: box-shadow var(--transition-normal);
+  transition: all var(--transition-normal);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .reportFormContainer:hover {
   box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 /* Form Sections */
@@ -118,7 +127,7 @@ body {
 .formSection {
   padding: var(--space-lg);
   border-radius: var(--border-radius-md);
-  background: var(--light-gray);
+  background: rgba(255, 255, 255, 0.03);
   border-left: 4px solid var(--primary-color);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
@@ -130,7 +139,7 @@ body {
 
 .sectionTitle {
   font-size: var(--font-size-xl);
-  color: var(--secondary-color);
+  color: #ffffff;
   margin-bottom: var(--space-lg);
   display: flex;
   align-items: center;
@@ -172,7 +181,7 @@ body {
   align-items: center;
   gap: var(--space-xs);
   font-weight: 600;
-  color: var(--secondary-color);
+  color: #ffffff;
   margin-bottom: var(--space-sm);
   font-size: var(--font-size-md);
 }
@@ -190,23 +199,25 @@ body {
   border-radius: var(--border-radius-sm);
   font-size: 1rem;
   transition: all var(--transition-fast);
-  background: white;
+  background: rgba(255, 255, 255, 0.08);
   height: 46px;
+  color: #e2e8f0;
 }
 
 .formInput::placeholder {
-  color: #aaa;
+  color: #94a3b8;
   opacity: 0.8;
 }
 
 .formInput:hover {
-  border-color: #bbb;
+  border-color: #64748b;
 }
 
 .formInput:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px var(--primary-transparent);
   outline: none;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 /* Location Input */
@@ -232,10 +243,11 @@ body {
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--border-radius-sm);
   transition: background-color var(--transition-fast);
+  color: #e2e8f0;
 }
 
 .radioLabel:hover {
-  background-color: var(--light-gray);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .radioLabel input {
@@ -281,7 +293,7 @@ body {
   align-items: center;
   gap: var(--space-xs);
   padding: var(--space-md);
-  background: white;
+  background: rgba(255, 255, 255, 0.08);
   border: 2px dashed var(--medium-gray);
   border-radius: var(--border-radius-sm);
   text-align: center;
@@ -379,7 +391,7 @@ body {
 
 .removeBtn:focus {
   outline: none;
-  box-shadow: 0 0 0 3px white;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
 }
 
 /* Form Actions - Improved button design */
@@ -406,7 +418,7 @@ body {
 }
 
 .resetBtn {
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
   color: var(--primary-color);
   border: 2px solid var(--primary-color);
 }
@@ -422,21 +434,21 @@ body {
 }
 
 .submitBtn {
-  background: var(--primary-color);
+  background: linear-gradient(135deg, #9e192d 0%, #c0392b 100%);
   color: white;
   border: none;
-  box-shadow: 0 2px 8px rgba(158, 25, 45, 0.3);
+  box-shadow: 0 2px 8px rgba(158, 25, 45, 0.4);
 }
 
 .submitBtn:hover {
-  background: var(--primary-light);
+  background: linear-gradient(135deg, #c0392b 0%, #9e192d 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(158, 25, 45, 0.4);
+  box-shadow: 0 4px 12px rgba(158, 25, 45, 0.5);
 }
 
 .submitBtn:focus {
   outline: none;
-  box-shadow: 0 0 0 3px var(--primary-transparent), 0 4px 12px rgba(158, 25, 45, 0.4);
+  box-shadow: 0 0 0 3px var(--primary-transparent), 0 4px 12px rgba(158, 25, 45, 0.5);
 }
 
 .submitBtn:active {
@@ -445,7 +457,8 @@ body {
 
 /* Guidelines Section - Improved layout and readability */
 .reportGuidelines {
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-md);
   padding: var(--space-xl);
@@ -453,6 +466,7 @@ body {
   position: sticky;
   top: 2rem;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .reportGuidelines:hover {
@@ -462,7 +476,7 @@ body {
 
 .reportGuidelines h3 {
   font-size: var(--font-size-lg);
-  color: var(--primary-color);
+  color: #ffffff;
   margin-bottom: var(--space-lg);
   display: flex;
   align-items: center;
@@ -484,7 +498,7 @@ body {
 
 .guidelineSection h4 {
   font-size: var(--font-size-lg);
-  color: var(--secondary-color);
+  color: #ffffff;
   margin-bottom: var(--space-sm);
   padding-bottom: 0.25rem;
   border-bottom: 1px solid var(--medium-gray);
@@ -499,6 +513,7 @@ body {
   padding-left: 1.5rem;
   position: relative;
   font-size: var(--font-size-md);
+  color: #cbd5e1;
 }
 
 .guidelineSection li::before {
@@ -533,7 +548,7 @@ body {
 
 .confidentialityNotice h4 {
   font-size: var(--font-size-lg);
-  color: var(--secondary-color);
+  color: #ffffff;
   margin-bottom: var(--space-sm);
   display: flex;
   align-items: center;
@@ -547,6 +562,7 @@ body {
 .confidentialityNotice p {
   font-size: var(--font-size-sm);
   margin-bottom: var(--space-sm);
+  color: #cbd5e1;
 }
 
 .emergencyNote {
@@ -570,8 +586,9 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
   padding: 0 var(--space-md);
+  backdrop-filter: blur(8px);
 }
 
 .alertBox {
@@ -582,6 +599,8 @@ body {
   max-width: 500px;
   animation: fadeInScale 0.3s ease-out;
   margin: 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(30, 41, 59, 0.95);
 }
 
 @keyframes fadeInScale {
@@ -589,7 +608,6 @@ body {
     opacity: 0;
     transform: scale(0.9);
   }
-
   to {
     opacity: 1;
     transform: scale(1);
@@ -597,13 +615,13 @@ body {
 }
 
 .alertSuccess {
-  background: var(--success-color);
-  color: white;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.1));
+  border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .alertError {
-  background: var(--error-color);
-  color: white;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .alertContent {
@@ -634,12 +652,14 @@ body {
 .alertIcon {
   font-size: 1.5rem;
   flex-shrink: 0;
+  color: #ffffff;
 }
 
 .alertMessage {
   flex: 1;
   font-weight: 500;
   font-size: var(--font-size-lg);
+  color: #ffffff;
 }
 
 .alertButtons {
@@ -661,22 +681,25 @@ body {
 }
 
 .alertBtnCancel {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.2);
   color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .alertBtnCancel:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .alertBtnView {
-  background-color: white;
-  color: var(--success-color);
+  background: linear-gradient(135deg, #9e192d 0%, #c0392b 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(158, 25, 45, 0.4);
 }
 
 .alertBtnView:hover {
-  background-color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, #c0392b 0%, #9e192d 100%);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(158, 25, 45, 0.5);
 }
 
 .alertClose {
@@ -845,7 +868,7 @@ body {
 /* Form Validation Styles */
 .formInputError {
   border-color: var(--error-color) !important;
-  background-color: rgba(229, 62, 62, 0.05) !important;
+  background-color: rgba(239, 68, 68, 0.1) !important;
 }
 
 .errorMessage {
@@ -881,7 +904,6 @@ body {
   0% {
     transform: rotate(0deg);
   }
-
   100% {
     transform: rotate(360deg);
   }
@@ -899,4 +921,4 @@ body {
   background-color: var(--medium-gray);
   border-color: var(--medium-gray);
   transform: none;
-} 
+}

@@ -1,37 +1,39 @@
 :root {
-    --primary-color: #4a6cf7;
-    --primary-dark: #3255e6;
-    --primary-light: #6b89ff;
+    --primary-color: #ff6b6b;
+    --primary-dark: #9e192d;
+    --primary-light: #c0392b;
     --secondary-color: #ff6b6b;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
+    --success-color: #4ade80;
+    --warning-color: #fbbf24;
     --danger-color: #ef4444;
-    --neutral-50: #f9fafb;
-    --neutral-100: #f3f4f6;
-    --neutral-200: #a7aebd;
-    --neutral-300: #d1d5db;
-    --neutral-400: #9ca3af;
-    --neutral-500: #6b7280;
-    --neutral-600: #4b5563;
-    --neutral-700: #374151;
-    --neutral-800: #1f2937;
-    --neutral-900: #111827;
+    --neutral-50: #0f172a;
+    --neutral-100: #1e293b;
+    --neutral-200: #334155;
+    --neutral-300: #475569;
+    --neutral-400: #64748b;
+    --neutral-500: #94a3b8;
+    --neutral-600: #cbd5e1;
+    --neutral-700: #e2e8f0;
+    --neutral-800: #f1f5f9;
+    --neutral-900: #f8fafc;
     --border-radius-sm: 4px;
     --border-radius: 8px;
     --border-radius-lg: 12px;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
     --transition: all 0.2s ease-in-out;
   }
   
   /* Main container */
   .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
+    max-width: 100%;
+    margin: 0;
+    padding: 2rem;
+    min-height: calc(100vh - 4rem);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
-    color: var(--neutral-800);
+    color: var(--neutral-600);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     margin-top: 35px;
   }
   
@@ -54,20 +56,25 @@
   .header h1 {
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--neutral-900);
+    color: #ffffff;
     margin: 0;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    background: linear-gradient(135deg, #ff6b6b 0%, #9e192d 50%, #c0392b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
   .idTag {
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--neutral-500);
-    background-color: var(--neutral-100);
+    background-color: rgba(255, 255, 255, 0.1);
     padding: 0.25rem 0.5rem;
     border-radius: var(--border-radius-sm);
+    backdrop-filter: blur(10px);
   }
   
   /* Content wrapper */
@@ -85,15 +92,19 @@
   
   /* Cards */
   .card {
-    background-color: white;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow);
     overflow: hidden;
     transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .card:hover {
     box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
   }
   
   .cardHeader {
@@ -101,8 +112,8 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--neutral-200);
-    background-color: var(--neutral-50);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.03);
   }
   
   .cardHeaderIcon {
@@ -114,7 +125,7 @@
     font-size: 1.25rem;
     font-weight: 600;
     margin: 0;
-    color: var(--neutral-800);
+    color: #ffffff;
   }
   
   .card h3 {
@@ -122,7 +133,7 @@
     font-weight: 600;
     margin: 1.5rem 0 0.75rem;
     padding: 0 1.5rem;
-    color: var(--neutral-700);
+    color: #ffffff;
   }
   
   /* Detail items */
@@ -137,6 +148,16 @@
     display: flex;
     align-items: flex-start;
     gap: 1rem;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition);
+  }
+  
+  .detailItem:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
   }
   
   .detailIcon {
@@ -159,7 +180,7 @@
   
   .detailValue {
     font-size: 1rem;
-    color: var(--neutral-800);
+    color: #ffffff;
     font-weight: 500;
   }
   
@@ -178,34 +199,36 @@
     border-radius: 9999px;
     font-size: 0.875rem;
     font-weight: 600;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .statusBadgeConfirmed {
-    background-color: rgba(16, 185, 129, 0.1);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.1));
     color: var(--success-color);
   }
   
   .statusBadgePending {
-    background-color: rgba(245, 158, 11, 0.1);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(234, 88, 12, 0.1));
     color: var(--warning-color);
   }
   
   .statusBadgeNew {
-    background-color: rgba(79, 70, 229, 0.1);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.1));
     color: var(--primary-color);
   }
   
   /* Gender icons */
   .genderIconMale {
-    color: #3b82f6;
+    color: #60a5fa;
   }
   
   .genderIconFemale {
-    color: #ec4899;
+    color: #f472b6;
   }
   
   .genderIconOther {
-    color: #8b5cf6;
+    color: #a78bfa;
   }
   
   /* Loading states */
@@ -216,6 +239,9 @@
     justify-content: center;
     min-height: 200px;
     gap: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .spinner {
@@ -242,7 +268,8 @@
   }
   
   .errorCard {
-    background-color: white;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow);
     padding: 2rem;
@@ -253,6 +280,7 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .errorIcon {
@@ -281,25 +309,29 @@
     cursor: pointer;
     transition: var(--transition);
     border: none;
+    backdrop-filter: blur(10px);
   }
   
   .backButton {
-    background-color: var(--neutral-100);
-    color: var(--neutral-700);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--neutral-600);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
   .backButton:hover {
-    background-color: var(--neutral-200);
-    color: var(--neutral-800);
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
   }
   
   .retryButton {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, #9e192d 0%, #c0392b 100%);
     color: white;
+    box-shadow: 0 2px 8px rgba(158, 25, 45, 0.3);
   }
   
   .retryButton:hover {
-    background-color: var(--primary-dark);
+    background: linear-gradient(135deg, #c0392b 0%, #9e192d 100%);
+    box-shadow: 0 4px 12px rgba(158, 25, 45, 0.4);
   }
   
   /* Evidence section */
@@ -320,7 +352,14 @@
     height: 0;
     padding-top: 75%; /* 4:3 Aspect Ratio */
     position: relative;
-    background-color: var(--neutral-100);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+  }
+  
+  .galleryItem:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
   }
   
   .galleryItem img, .galleryItem video {
@@ -346,14 +385,16 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1.5rem;
-    background-color: var(--neutral-50);
+    background: rgba(255, 255, 255, 0.03);
     border-radius: var(--border-radius);
     transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
   
   .statCard:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow);
+    background: rgba(255, 255, 255, 0.05);
   }
   
   .validIcon, .invalidIcon, .totalIcon {
@@ -379,13 +420,13 @@
   .statValue {
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--neutral-900);
+    color: #ffffff;
     display: block;
   }
   
   .statLabel {
     font-size: 0.875rem;
-    color: var(--neutral-600);
+    color: var(--neutral-500);
     margin-top: 0.25rem;
   }
   
@@ -398,9 +439,16 @@
     display: flex;
     gap: 1rem;
     padding: 1rem;
-    background-color: var(--neutral-50);
+    background: rgba(255, 255, 255, 0.03);
     border-radius: var(--border-radius);
     margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition);
+  }
+  
+  .validationItem:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-1px);
   }
   
   .validationStatus {
@@ -411,15 +459,17 @@
     height: 2.5rem;
     border-radius: 50%;
     flex-shrink: 0;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .valid {
-    background-color: rgba(16, 185, 129, 0.1);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.1));
     color: var(--success-color);
   }
   
   .invalid {
-    background-color: rgba(239, 68, 68, 0.1);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
     color: var(--danger-color);
   }
   
@@ -432,6 +482,7 @@
     align-items: center;
     gap: 0.5rem;
     font-weight: 500;
+    color: #ffffff;
   }
   
   .userIcon {
@@ -447,17 +498,18 @@
   .validationComment {
     margin-top: 0.5rem;
     padding: 0.75rem;
-    background-color: white;
+    background: rgba(255, 255, 255, 0.05);
     border-radius: var(--border-radius-sm);
     font-size: 0.875rem;
-    color: var(--neutral-700);
+    color: var(--neutral-600);
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .commentIcon {
-    color: var(--neutral-400);
+    color: var(--neutral-500);
     font-size: 0.75rem;
     margin-top: 0.25rem;
   }
@@ -467,6 +519,9 @@
     color: var(--neutral-500);
     text-align: center;
     font-style: italic;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
   
   /* Police alerts */
@@ -482,7 +537,14 @@
     gap: 1rem;
     padding: 1.25rem;
     border-radius: var(--border-radius);
-    background-color: var(--neutral-50);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition);
+  }
+  
+  .alertItem:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-1px);
   }
   
   .alertItem.dispatched {
@@ -504,10 +566,12 @@
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    background-color: white;
+    background: rgba(255, 255, 255, 0.1);
     box-shadow: var(--shadow-sm);
     color: var(--primary-color);
     flex-shrink: 0;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .alertDetails {
@@ -523,7 +587,7 @@
   
   .alertStatus {
     font-weight: 600;
-    color: var(--neutral-800);
+    color: #ffffff;
   }
   
   .alertTime {
@@ -545,49 +609,20 @@
   
   .badgeNumber, .stationName {
     font-size: 0.75rem;
-    color: var(--neutral-600);
+    color: var(--neutral-500);
     padding: 0.125rem 0.5rem;
-    background-color: var(--neutral-100);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 9999px;
     margin-left: 0.25rem;
+    backdrop-filter: blur(10px);
   }
   
   .responseDetails {
     font-size: 0.875rem;
-    color: var(--neutral-700);
-    background-color: white;
+    color: var(--neutral-600);
+    background: rgba(255, 255, 255, 0.05);
     padding: 0.75rem;
     border-radius: var(--border-radius-sm);
     margin-top: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
-  /* Responsive styles */
-  @media (max-width: 768px) {
-    .container {
-      padding: 1rem;
-    }
-    
-    .header h1 {
-      font-size: 1.5rem;
-    }
-    
-    .detailGrid {
-      grid-template-columns: 1fr;
-    }
-    
-    .verificationStats {
-      grid-template-columns: 1fr;
-    }
-    
-    .photoGallery, .videoGallery {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-    
-    .alertItem {
-      flex-direction: column;
-    }
-    
-    .alertIcon {
-      margin-bottom: 1rem;
-    }
-  } 

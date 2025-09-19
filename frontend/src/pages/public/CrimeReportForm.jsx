@@ -256,12 +256,12 @@ const CrimeReportForm = () => {
       )}
 
       <div className={styles.crimeReportWrapper}>
-        <div className={styles.crimeReportHeader}>
+        {/* <div className={styles.crimeReportHeader}>
           <h1>
             <FaUserShield className={styles.headerIcon} /> Crime Report Portal
           </h1>
           <p>Help make your community safer by reporting crimes</p>
-        </div>
+        </div> */}
 
         <div className={styles.crimeReportContent}>
           <div className={styles.reportFormContainer}>
