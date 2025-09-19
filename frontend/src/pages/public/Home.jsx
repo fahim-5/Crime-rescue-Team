@@ -28,12 +28,12 @@ const Home = () => {
       description:
         "View and validate reports from other users to help authorities prioritize responses.",
     },
-    {
-      icon: <FiShield className={styles.featureIcon} />,
-      title: "Safety Analytics",
-      description:
-        "Access crime statistics and safety tips tailored to your neighborhood.",
-    },
+    // {
+    //   icon: <FiShield className={styles.featureIcon} />,
+    //   title: "Safety Analytics",
+    //   description:
+    //     "Access crime statistics and safety tips tailored to your neighborhood.",
+    // },
   ];
 
   return (
@@ -62,21 +62,29 @@ const Home = () => {
 
           <div className={styles.ctaSection}>
             <div className={styles.actionButtons}>
-              {user && (
+              {user ? (
+                <>
+                  <button
+                    className={styles.primaryButton}
+                    onClick={() => navigate("/report")}
+                  >
+                    <FiAlertTriangle /> Report a Crime
+                  </button>
+                  <button
+                    className={styles.viewReportsButton}
+                    onClick={() => navigate("/reports")}
+                  >
+                    <FiEye /> View Reports
+                  </button>
+                </>
+              ) : (
                 <button
                   className={styles.primaryButton}
-                  onClick={() => navigate("/report")}
+                  onClick={() => navigate("/login")}
                 >
-                  <FiAlertTriangle /> Report a Crime
+                  Sign In to Get Started
                 </button>
               )}
-
-              <button
-                className={styles.viewReportsButton}
-                onClick={() => navigate("/reports")}
-              >
-                <FiEye /> View My Reports
-              </button>
             </div>
           </div>
 
