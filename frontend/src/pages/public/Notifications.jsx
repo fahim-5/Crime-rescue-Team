@@ -26,7 +26,6 @@ const Notifications = () => {
   const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Fetch notifications when component mounts
   useEffect(() => {
     if (!user || !token) {
       navigate("/login");
@@ -36,7 +35,6 @@ const Notifications = () => {
     fetchNotifications();
   }, [user, token, navigate]);
 
-  // Fetch notifications from API
   const fetchNotifications = async () => {
     try {
       setLoading(true);
@@ -49,7 +47,6 @@ const Notifications = () => {
       });
 
       if (response.data && response.data.success) {
-        // Format the timestamp to a more readable format
         const formattedNotifications = response.data.data.notifications.map(
           (notification) => ({
             ...notification,
@@ -73,7 +70,6 @@ const Notifications = () => {
     }
   };
 
-  // Format timestamp to relative time (e.g., "2 hours ago")
   const formatTimestamp = (timestamp) => {
     try {
       const date = new Date(timestamp);
@@ -85,11 +81,11 @@ const Notifications = () => {
       const diffDay = Math.round(diffHour / 24);
 
       if (diffSec < 60) {
-        return `${diffSec} seconds ago`;
+        return "Just now";
       } else if (diffMin < 60) {
-        return `${diffMin} minute${diffMin > 1 ? "s" : ""} ago`;
+        return `${diffMin} min ago`;
       } else if (diffHour < 24) {
-        return `${diffHour} hour${diffHour > 1 ? "s" : ""} ago`;
+        return `${diffHour} hr ago`;
       } else if (diffDay < 7) {
         return `${diffDay} day${diffDay > 1 ? "s" : ""} ago`;
       } else {
@@ -101,7 +97,6 @@ const Notifications = () => {
     }
   };
 
-  // Mark notification as read
   const markAsRead = async (notificationId) => {
     try {
       const response = await axios.put(
@@ -115,7 +110,6 @@ const Notifications = () => {
       );
 
       if (response.data && response.data.success) {
-        // Update the local state
         setNotifications((prevNotifications) =>
           prevNotifications.map((notification) =>
             notification.id === notificationId
@@ -132,27 +126,18 @@ const Notifications = () => {
     }
   };
 
-  // Mark all notifications as read
   const markAllAsRead = async () => {
     try {
-      // Check if there are any unread notifications
       const hasUnreadNotifications = notifications.some(
         (notification) => !notification.read
       );
 
       if (!hasUnreadNotifications) {
-        // Show alert message if there are no unread notifications
         setError("No unread notifications to mark as read");
-
-        // Clear the error message after 3 seconds
-        setTimeout(() => {
-          setError(null);
-        }, 3000);
-
+        setTimeout(() => setError(null), 3000);
         return;
       }
 
-      // Correct endpoint for marking all notifications as read
       const response = await axios.put(
         `${API_URL}/api/notifications/all/read`,
         {},
@@ -164,7 +149,6 @@ const Notifications = () => {
       );
 
       if (response.data && response.data.success) {
-        // Update the local state
         setNotifications((prevNotifications) =>
           prevNotifications.map((notification) => ({
             ...notification,
@@ -178,15 +162,10 @@ const Notifications = () => {
         err.response?.data?.message ||
           "Failed to mark all notifications as read"
       );
-
-      // Clear the error message after 3 seconds
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
+      setTimeout(() => setError(null), 3000);
     }
   };
 
-  // Delete notification
   const deleteNotification = async (notificationId) => {
     try {
       const response = await axios.delete(
@@ -199,7 +178,6 @@ const Notifications = () => {
       );
 
       if (response.data && response.data.success) {
-        // Remove from local state
         setNotifications((prevNotifications) =>
           prevNotifications.filter(
             (notification) => notification.id !== notificationId
@@ -212,46 +190,35 @@ const Notifications = () => {
     }
   };
 
-  // View notification details (for example, navigate to related content)
   const viewDetails = (notification) => {
-    // If not read, mark as read
     if (!notification.read) {
       markAsRead(notification.id);
     }
 
-    // Navigate based on notification type and related_id
     if (notification.related_id) {
-      // Determine the correct route based on notification type/title
       let route = `/report/${notification.related_id}`;
 
-      // For report-related notifications
       if (
         notification.title.includes("Report") ||
         notification.message.includes("report") ||
         notification.message.includes("case")
       ) {
-        // Base route is /report/:id for regular users
         if (user?.role === "police") {
-          // For police users, they should see the police version of the report
           navigate(`/police/reports/detail/${notification.related_id}`);
           return;
         } else if (user?.role === "admin") {
-          // For admin users, they should see the admin version of the report
           navigate(`/admin/reports/detail/${notification.related_id}`);
           return;
         }
       }
 
-      // Default navigation to report detail
       navigate(route);
     } else {
-      // If no related_id, just navigate to the appropriate section
       if (notification.title.includes("Report")) {
         navigate("/reports");
       } else if (notification.title.includes("Alert")) {
         navigate("/alert");
       } else {
-        // Generic fallback
         navigate("/notifications");
       }
     }
@@ -272,13 +239,12 @@ const Notifications = () => {
     }
   };
 
-  // Render loading state
   if (loading) {
     return (
       <main className={styles.container}>
         <div className={styles.loadingState}>
           <FiLoader className={styles.spinnerIcon} />
-          <p>Loading notifications...</p>
+          <p>Loading your notifications...</p>
         </div>
       </main>
     );
@@ -287,19 +253,20 @@ const Notifications = () => {
   return (
     <main className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Notifications Center</h1>
-        <p className={styles.subtitle}>
-          Important alerts and community updates
-        </p>
+        <div className={styles.titleSection}>
+          <h1 className={styles.title}>Notifications</h1>
+          <p className={styles.subtitle}>
+            Stay updated with important alerts and community updates
+          </p>
+        </div>
+        
         {notifications.length > 0 && (
-          <div className={styles.markAllReadButton}>
-            <button
-              className={`${styles.actionButton} ${styles.secondary}`}
-              onClick={markAllAsRead}
-            >
-              <FiCheck /> Mark All as Read
-            </button>
-          </div>
+          <button
+            className={styles.markAllReadButton}
+            onClick={markAllAsRead}
+          >
+            <FiCheck /> Mark All as Read
+          </button>
         )}
       </header>
 
@@ -319,44 +286,56 @@ const Notifications = () => {
               onClick={() => viewDetails(notification)}
             >
               {!notification.read && <div className={styles.unreadIndicator} />}
-
+              
+              <div className={styles.iconContainer}>
+                {getNotificationIcon(notification.type)}
+              </div>
+              
               <div className={styles.content}>
                 <h3 className={styles.notificationTitle}>
-                  {getNotificationIcon(notification.type)}
                   {notification.title}
                 </h3>
                 <p className={styles.message}>{notification.message}</p>
-
+                
                 {notification.related_id && (
                   <div className={styles.crimeId}>
-                    Crime ID: {notification.related_id}
+                    Case ID: {notification.related_id}
                   </div>
                 )}
-              </div>
-
-              <div className={styles.meta}>
-                <span className={styles.timestamp}>
-                  <FiClock />
-                  {notification.timestamp}
-                </span>
-                {!notification.read && (
-                  <span className={styles.unreadBadge}>New</span>
-                )}
-              </div>
-
-              <div className={styles.actions}>
-                <button
-                  className={`${styles.actionButton} ${styles.secondary} ${styles.tooltip}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteNotification(notification.id);
-                  }}
-                >
-                  <FiArchive /> Archive
-                  <span className={styles.tooltipText}>
-                    Remove this notification
+                
+                <div className={styles.meta}>
+                  <span className={styles.timestamp}>
+                    <FiClock />
+                    {notification.timestamp}
                   </span>
-                </button>
+                  {!notification.read && (
+                    <span className={styles.unreadBadge}>New</span>
+                  )}
+                </div>
+                
+                <div className={styles.actions}>
+                  <button
+                    className={`${styles.actionButton} ${styles.primary}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      viewDetails(notification);
+                    }}
+                  >
+                    <FiEye /> View Details
+                  </button>
+                  <button
+                    className={`${styles.actionButton} ${styles.secondary} ${styles.tooltip}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteNotification(notification.id);
+                    }}
+                  >
+                    <FiArchive /> Archive
+                    <span className={styles.tooltipText}>
+                      Remove this notification
+                    </span>
+                  </button>
+                </div>
               </div>
             </article>
           ))}
@@ -364,14 +343,13 @@ const Notifications = () => {
       ) : (
         <div className={styles.emptyState}>
           <FiBell className={styles.emptyIcon} />
-          <h3 className={styles.emptyTitle}>No notifications</h3>
+          <h3 className={styles.emptyTitle}>No notifications yet</h3>
           <p className={styles.emptyMessage}>
-            You're all caught up! When new alerts or updates arrive, they'll
-            appear here.
+            You're all caught up! When new alerts or updates arrive, they'll appear here.
           </p>
           <button
-            className={`${styles.actionButton} ${styles.primary} ${styles.refreshButton}`}
-            onClick={() => window.location.reload()}
+            className={styles.refreshButton}
+            onClick={fetchNotifications}
           >
             <FiLoader /> Refresh
           </button>
