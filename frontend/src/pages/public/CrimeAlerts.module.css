@@ -65,6 +65,7 @@
 /* Base Styles */
 .crime-alerts-container {
   margin: 2rem auto;
+  margin-top: 10px;
   padding: 2rem;
   background: #ffffff;
   border-radius: 12px;

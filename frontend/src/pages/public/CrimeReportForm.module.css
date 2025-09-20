@@ -52,11 +52,12 @@ body {
 
 /* Main Container */
 .crimeReportContainer {
+
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
-  margin-top: 30px;
+  margin-top: 50px;
 }
 
 .crimeReportWrapper {
