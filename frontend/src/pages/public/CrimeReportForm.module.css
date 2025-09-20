@@ -8,6 +8,10 @@
   --light-gray: #1e293b;
   --medium-gray: #334155;
   --dark-gray: #94a3b8;
+  --input-bg: rgba(255, 255, 255, 0.08);
+  --input-border: #475569;
+  --input-hover: #64748b;
+  --input-focus: var(--primary-color);
   --success-color: #4ade80;
   --error-color: #ef4444;
   --warning-color: #f59e0b;
@@ -191,17 +195,20 @@ body {
   font-size: 1rem;
 }
 
-/* Input Fields - Enhanced for better UX */
+/* Input Fields - Enhanced for Dark Theme */
 .formInput {
   width: 100%;
   padding: var(--space-sm) var(--space-md);
-  border: 2px solid var(--medium-gray);
+  border: 2px solid var(--input-border);
   border-radius: var(--border-radius-sm);
   font-size: 1rem;
   transition: all var(--transition-fast);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--input-bg);
   height: 46px;
   color: #e2e8f0;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .formInput::placeholder {
@@ -210,14 +217,41 @@ body {
 }
 
 .formInput:hover {
-  border-color: #64748b;
+  border-color: var(--input-hover);
 }
 
 .formInput:focus {
-  border-color: var(--primary-color);
+  border-color: var(--input-focus);
   box-shadow: 0 0 0 3px var(--primary-transparent);
   outline: none;
   background: rgba(255, 255, 255, 0.12);
+}
+
+/* Select Dropdown Styling - Fixed White Background */
+select.formInput {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239e192d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-sm) center;
+  background-size: 16px;
+  padding-right: var(--space-xl);
+  cursor: pointer;
+}
+
+select.formInput option {
+  background-color: #1e293b;
+  color: #e2e8f0;
+  padding: var(--space-sm);
+  border: none;
+}
+
+
+
+/* Textarea Styling */
+textarea.formInput {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+  padding: var(--space-md);
 }
 
 /* Location Input */
@@ -226,7 +260,7 @@ body {
   display: flex;
 }
 
-/* Radio Buttons - Improved for better accessibility */
+/* Radio Buttons - Improved for Dark Theme */
 .radioGroup {
   display: flex;
   flex-wrap: wrap;
@@ -242,12 +276,14 @@ body {
   font-size: var(--font-size-md);
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--border-radius-sm);
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-fast);
   color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .radioLabel:hover {
   background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
 }
 
 .radioLabel input {
@@ -286,7 +322,7 @@ body {
   box-shadow: 0 0 0 3px var(--primary-transparent);
 }
 
-/* File Uploads - Improved for better visual feedback */
+/* File Uploads - Improved for Dark Theme */
 .fileUploadLabel {
   display: flex;
   flex-direction: column;
@@ -294,7 +330,7 @@ body {
   gap: var(--space-xs);
   padding: var(--space-md);
   background: rgba(255, 255, 255, 0.08);
-  border: 2px dashed var(--medium-gray);
+  border: 2px dashed var(--input-border);
   border-radius: var(--border-radius-sm);
   text-align: center;
   cursor: pointer;
@@ -305,6 +341,7 @@ body {
 .fileUploadLabel:hover {
   border-color: var(--primary-color);
   background-color: var(--primary-transparent);
+  transform: translateY(-2px);
 }
 
 .fileUploadLabel:focus-within {
@@ -775,6 +812,79 @@ body {
   cursor: pointer;
 }
 
+.react-datepicker {
+  background-color: #1e293b;
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  font-family: inherit;
+}
+
+.react-datepicker__header {
+  background-color: #0f172a;
+  border-bottom: 1px solid var(--input-border);
+  padding-top: var(--space-sm);
+  border-top-left-radius: var(--border-radius-md);
+  border-top-right-radius: var(--border-radius-md);
+}
+
+.react-datepicker__current-month,
+.react-datepicker-time__header,
+.react-datepicker-year-header {
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day,
+.react-datepicker__time-name {
+  color: #e2e8f0;
+  width: 2.5rem;
+  line-height: 2.5rem;
+}
+
+.react-datepicker__day:hover {
+  background-color: var(--primary-transparent);
+  color: var(--primary-color);
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.react-datepicker__day--disabled {
+  color: #64748b;
+}
+
+.react-datepicker__navigation {
+  top: var(--space-sm);
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: var(--primary-color);
+}
+
+.react-datepicker__time-container {
+  border-left: 1px solid var(--input-border);
+}
+
+.react-datepicker__time-list-item {
+  color: #e2e8f0;
+  padding: var(--space-sm);
+}
+
+.react-datepicker__time-list-item:hover {
+  background-color: var(--primary-transparent) !important;
+  color: var(--primary-color);
+}
+
+.react-datepicker__time-list-item--selected {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
 /* Responsive Design - Optimized for all devices */
 @media (max-width: 1200px) {
   .crimeReportContent {
@@ -904,7 +1014,7 @@ body {
   0% {
     transform: rotate(0deg);
   }
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }
@@ -921,4 +1031,36 @@ body {
   background-color: var(--medium-gray);
   border-color: var(--medium-gray);
   transform: none;
+}
+
+/* Focus styles for accessibility */
+.formInput:focus,
+.radioLabel:focus-within,
+.fileUploadLabel:focus-within {
+  outline: 2px solid transparent; /* For Windows High Contrast Mode */
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .formInput {
+    border-width: 2px;
+  }
+  
+  .radioCustom {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .formInput,
+  .radioLabel,
+  .fileUploadLabel,
+  .mapButton {
+    transition: none;
+  }
+  
+  .spinnerIcon {
+    animation: none;
+  }
 }
