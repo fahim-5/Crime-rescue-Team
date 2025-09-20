@@ -2457,6 +2457,7 @@
   align-items: center;
   gap: 0.5rem;
 }
+
 .comment-btn:hover {
   background: rgba(96, 165, 250, 0.2);
   color: #93c5fd;
