@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import styles from "./Home.module.css";
@@ -14,6 +14,14 @@ import {
 const Home = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Preload background image for better performance
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/images/Home_bg.jpg";
+    img.onload = () => setImageLoaded(true);
+  }, []);
 
   const features = [
     {
@@ -38,6 +46,11 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
+      {/* Background image loaded via JSX */}
+      <div className={`${styles.backgroundImage} ${imageLoaded ? styles.loaded : styles.loading}`}>
+        {!imageLoaded && <div className={styles.loadingSpinner}>Loading...</div>}
+      </div>
+      
       <div className={styles.hero}>
         <div className={styles.contentWrapper}>
           <h1 className={styles.title}>
@@ -76,14 +89,28 @@ const Home = () => {
                   >
                     <FiEye /> View Reports
                   </button>
+                  <button
+                    className={styles.statsButton}
+                    onClick={() => navigate("/statistics")}
+                  >
+                    <FiBarChart2 /> View Statistics
+                  </button>
                 </>
               ) : (
-                <button
-                  className={styles.primaryButton}
-                  onClick={() => navigate("/login")}
-                >
-                  Sign In to Get Started
-                </button>
+                <>
+                  <button
+                    className={styles.primaryButton}
+                    onClick={() => navigate("/login")}
+                  >
+                    Sign In to Get Started
+                  </button>
+                  <button
+                    className={styles.secondaryButton}
+                    onClick={() => navigate("/register")}
+                  >
+                    Create Account
+                  </button>
+                </>
               )}
             </div>
           </div>
