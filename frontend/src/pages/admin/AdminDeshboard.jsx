@@ -16,6 +16,8 @@ const AdminDashboard = () => {
   const { user, token } = useAuth();
   const navigate = useNavigate();
 
+  const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -39,6 +41,7 @@ const AdminDashboard = () => {
         if (statsResponse.data.success && recentResponse.data.success) {
           setStats(statsResponse.data.data);
           setRecentReports(recentResponse.data.data);
+          setIsLoaded(true); // Trigger fade-in animation
         } else {
           throw new Error("Failed to fetch dashboard data");
         }
@@ -66,28 +69,28 @@ const AdminDashboard = () => {
   if (error) return <div className={styles.errorContainer}>{error}</div>;
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.adminDashboard} ${isLoaded ? styles.loaded : ''}`}>
       <header className={styles.header}>
         <h1 className={styles.title}>Admin Dashboard</h1>
       </header>
 
-      <div className={styles.grid}>
-        <div className={styles.card}>
+      <div className={styles.statsGrid}>
+        <div className={`${styles.statCard} ${styles.statCardTotal}`}>
           <h3 className={styles.cardTitle}>Total Reports</h3>
           <p className={styles.cardValue}>{stats.totalReports}</p>
         </div>
-        <div className={`${styles.card} ${styles.cardPending}`}>
+        <div className={`${styles.statCard} ${styles.statCardPending}`}>
           <h3 className={styles.cardTitle}>Pending Reports</h3>
           <p className={styles.cardValue}>{stats.pendingReports}</p>
         </div>
-        <div className={`${styles.card} ${styles.cardAlert}`}>
+        <div className={`${styles.statCard} ${styles.statCardActive}`}>
           <h3 className={styles.cardTitle}>Active Alerts</h3>
           <p className={styles.cardValue}>{stats.activeAlerts}</p>
           <small className={styles.alertNote}>Last 12 hours</small>
         </div>
       </div>
 
-      <section className={styles.section}>
+      <section className={styles.reportsSection}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>Recent Crime Reports</h2>
           <button
@@ -101,7 +104,7 @@ const AdminDashboard = () => {
           <div className={styles.emptyState}>No recent reports found</div>
         ) : (
           <div className={styles.tableContainer}>
-            <table className={styles.table}>
+            <table className={styles.reportsTable}>
               <thead className={styles.tableHeader}>
                 <tr>
                   <th>ID</th>
@@ -130,7 +133,7 @@ const AdminDashboard = () => {
                     </td>
                     <td className={styles.tableCell}>
                       <button
-                        className={styles.button}
+                        className={styles.viewDetailsButton}
                         onClick={() => handleViewReport(report.id)}
                       >
                         View Details

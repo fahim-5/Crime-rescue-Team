@@ -16,6 +16,14 @@ const ReportedCrimes = ({ isPoliceView = false }) => {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Statistics data
+  const [stats, setStats] = useState({
+    totalReports: 0,
+    pendingCases: 0,
+    activeInvestigations: 0,
+    resolvedCases: 0
+  });
+
   // Determine if this is a police view based on prop or URL
   const isPolicePage = isPoliceView || location.pathname.includes("/police/");
 
@@ -84,6 +92,9 @@ const ReportedCrimes = ({ isPoliceView = false }) => {
         console.log("Processed crime reports:", crimesList.length);
         setCrimes(crimesList);
         setErrorMessage(null);
+        
+        // Calculate statistics
+        calculateStatistics(crimesList);
       } else {
         throw new Error("Failed to fetch crime reports");
       }
@@ -102,6 +113,26 @@ const ReportedCrimes = ({ isPoliceView = false }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const calculateStatistics = (crimesList) => {
+    const totalReports = crimesList.length;
+    const pendingCases = crimesList.filter(crime => 
+      crime.status?.toLowerCase() === 'pending' || !crime.status
+    ).length;
+    const activeInvestigations = crimesList.filter(crime => 
+      crime.status?.toLowerCase() === 'investigating'
+    ).length;
+    const resolvedCases = crimesList.filter(crime => 
+      crime.status?.toLowerCase() === 'resolved' || crime.status?.toLowerCase() === 'closed'
+    ).length;
+    
+    setStats({
+      totalReports,
+      pendingCases,
+      activeInvestigations,
+      resolvedCases
+    });
   };
 
   const handleViewReport = (report) => {
@@ -130,7 +161,7 @@ const ReportedCrimes = ({ isPoliceView = false }) => {
   );
 
   // Determine the title based on the user role
-  const pageTitle = isPolicePage ? "All Crime Reports" : "All Reported Crimes";
+  const pageTitle = isPolicePage ? "All Crime Reports" : "Admin Crime Dashboard";
 
   return (
     <div className="reported-crimes-container">
@@ -159,6 +190,30 @@ const ReportedCrimes = ({ isPoliceView = false }) => {
       {/* Only show error messages for admin users */}
       {error && !isPolicePage && <div className="error-message">{error}</div>}
 
+      {/* Statistics Cards */}
+      {!isPolicePage && (
+        <div className="statistics-container">
+          <div className="statistics-cards">
+            <div className="stat-card total-reports">
+              <h3>Total Reports</h3>
+              <div className="stat-value">{stats.totalReports}</div>
+            </div>
+            <div className="stat-card pending-cases">
+              <h3>Pending Cases</h3>
+              <div className="stat-value">{stats.pendingCases}</div>
+            </div>
+            <div className="stat-card active-investigations">
+              <h3>Active Investigations</h3>
+              <div className="stat-value">{stats.activeInvestigations}</div>
+            </div>
+            <div className="stat-card resolved-cases">
+              <h3>Resolved Cases</h3>
+              <div className="stat-value">{stats.resolvedCases}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <div className="loading-message">Loading crime reports...</div>
       ) : (
@@ -166,7 +221,7 @@ const ReportedCrimes = ({ isPoliceView = false }) => {
           <div className="search-container">
             <input
               type="text"
-              placeholder="Search by Crime ID..."
+              placeholder="Search System 6..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
@@ -183,11 +238,11 @@ const ReportedCrimes = ({ isPoliceView = false }) => {
             <table className="crimes-table">
               <thead>
                 <tr>
-                  <th>Crime ID</th>
-                  <th>Location</th>
+                  <th>CORE ID</th>
+                  <th>LOCATION</th>
                   <th>Time</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                  <th>SERIES</th>
+                  <th>ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
@@ -220,9 +275,9 @@ const ReportedCrimes = ({ isPoliceView = false }) => {
                     <td>
                       <button
                         className="view-btn"
-                        onClick={() => handleViewFullDetails(crime.id)}
+                        onClick={() => handleViewReport(crime)}
                       >
-                        View Details
+                        New Notes
                       </button>
                     </td>
                   </tr>
