@@ -7,7 +7,7 @@ import styles from "./AdminDashboard.module.css";
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
     totalReports: 0,
-    pendingReports: 0,
+    pendingReports: 0, //siyam
     activeAlerts: 0,
   });
   const [recentReports, setRecentReports] = useState([]);
