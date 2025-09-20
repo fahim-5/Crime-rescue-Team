@@ -8,6 +8,7 @@
     "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
   },
   "dependencies": {
+    "all": "^0.0.0",
     "cors": "^2.8.5",
     "cross": "^1.0.0",
     "express-validator": "^7.2.1"
