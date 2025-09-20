@@ -19,7 +19,8 @@
 .fullScreenContainer {
   width: 100vw;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+
   padding: 0;
   margin: 0;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -91,7 +92,7 @@
 }
 
 .header {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-light);
   display: flex;
@@ -121,6 +122,7 @@
   max-width: 600px;
   line-height: 1.5;
   text-align: center;
+  margin-left: 30px;
 }
 
 .mainGrid {
