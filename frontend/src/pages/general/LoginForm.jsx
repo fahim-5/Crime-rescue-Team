@@ -155,24 +155,23 @@ const LoginForm = () => {
   };
 
   return (
-    <main className="auth-container">
-      <section className="auth-box">
-        <h2 className="auth-title">Sign in to Your Account</h2>
+    <main className="pro-auth-container">
+      <div className="pro-auth-box">
+        <div className="pro-auth-header">
+          <h2 className="pro-auth-title">Secure Login</h2>
+          <p className="pro-auth-subtitle">Access your account dashboard</p>
+        </div>
+        
+        {error && <p className="pro-auth-error-message">{error}</p>}
+        {success && <p className="pro-auth-success-message">{success}</p>}
 
-        {error && <p className="auth-error-message">{error}</p>}
-        {success && <p className="auth-success-message">{success}</p>}
-
-        <form onSubmit={handleLoginSubmit} className="auth-form">
-          <div className="input-group">
-            <label htmlFor="auth-email" className="auth-label">
-              Email
-            </label>
+        <form onSubmit={handleLoginSubmit} className="pro-auth-form">
+          <div className="pro-input-group">
             <input
               type="email"
-              id="auth-email"
               name="email"
-              className="auth-input"
-              placeholder="Enter your email"
+              className="pro-auth-input"
+              placeholder="Email address"
               value={credentials.email}
               onChange={handleInputChange}
               required
@@ -180,27 +179,23 @@ const LoginForm = () => {
             />
           </div>
 
-          <div className="input-group">
-            <label htmlFor="auth-password" className="auth-label">
-              Password
-            </label>
+          <div className="pro-input-group">
             <input
               type="password"
-              id="auth-password"
               name="password"
-              className="auth-input"
-              placeholder="Enter your password"
+              className="pro-auth-input"
+              placeholder="Password"
               value={credentials.password}
               onChange={handleInputChange}
               required
             />
           </div>
 
-          <div className="input-group auth-role-section">
-            <label className="auth-label">Select Account Type</label>
-            <div className="auth-role-options">
+          <div className="pro-input-group pro-auth-role-section">
+            <label className="pro-auth-label">Account Type</label>
+            <div className="pro-auth-role-options">
               <label
-                className={credentials.role === "public" ? "selected-role" : ""}
+                className={credentials.role === "public" ? "pro-selected-role" : ""}
               >
                 <input
                   type="radio"
@@ -212,7 +207,7 @@ const LoginForm = () => {
                 <span>👤 Civilian</span>
               </label>
               <label
-                className={credentials.role === "police" ? "selected-role" : ""}
+                className={credentials.role === "police" ? "pro-selected-role" : ""}
               >
                 <input
                   type="radio"
@@ -224,7 +219,7 @@ const LoginForm = () => {
                 <span>👮 Police</span>
               </label>
               <label
-                className={credentials.role === "admin" ? "selected-role" : ""}
+                className={credentials.role === "admin" ? "pro-selected-role" : ""}
               >
                 <input
                   type="radio"
@@ -238,37 +233,33 @@ const LoginForm = () => {
             </div>
           </div>
 
-          <div className="auth-options-container">
-            <div className="remember-me-container">
-              <label className="remember-me-label">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={handleCheckboxChange}
-                  className="remember-me-checkbox"
-                />
-                <span className="remember-me-text">Remember me</span>
-              </label>
-            </div>
-            <div className="forgot-password-container">
-              <a href="/forgot-password" className="forgot-password-link">
-                Forgot password?
-              </a>
-            </div>
+          <div className="pro-auth-options-container">
+            <label className="pro-remember-me-label">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={handleCheckboxChange}
+                className="pro-remember-me-checkbox"
+              />
+              <span className="pro-remember-me-text">Remember me</span>
+            </label>
+            <a href="/forgot-password" className="pro-forgot-password-link">
+              Forgot password?
+            </a>
           </div>
 
-          <button type="submit" className="auth-button">
-            Login
+          <button type="submit" className="pro-auth-button">
+            Sign In
           </button>
         </form>
 
-        <p className="auth-footer">
+        <p className="pro-auth-footer">
           Don't have an account?{" "}
-          <a href="/start" className="auth-link">
-            Sign Up
+          <a href="/start" className="pro-auth-link">
+            Create Account
           </a>
         </p>
-      </section>
+      </div>
     </main>
   );
 };

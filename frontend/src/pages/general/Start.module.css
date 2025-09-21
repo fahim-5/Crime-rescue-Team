@@ -4,20 +4,28 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+  background: linear-gradient(135deg, #0c0c14 0%, #151521 100%);
   position: relative;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  padding: 20px;
 }
 
 /* The Box that Holds Content */
 .startBox {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(166, 47, 47, 0.537);
+  background: #151521;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
   text-align: center;
   max-width: 500px;
-  margin: auto;
-  transition: all 0.3s ease-in-out;
+  width: 100%;
+  transition: all 0.3s ease;
+  border: 1px solid #2a2a3e;
+}
+
+.startBox:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
 
 /* Alert Box (Centered Message) */
@@ -26,17 +34,18 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(255, 0, 0, 0.9);
+  background-color: rgba(255, 77, 79, 0.9);
   color: white;
   padding: 15px 25px;
-  font-size: 1.2em;
-  font-weight: bold;
+  font-size: 1rem;
+  font-weight: 500;
   border-radius: 8px;
-  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.3s ease-in-out;
   z-index: 999;
   text-align: center;
   cursor: pointer;
+  border-left: 4px solid #ff4d4f;
 }
 
 /* Fade In Animation */
@@ -45,7 +54,6 @@
     opacity: 0;
     transform: translate(-50%, -60%);
   }
-
   to {
     opacity: 1;
     transform: translate(-50%, -50%);
@@ -54,144 +62,126 @@
 
 /* Heading */
 .startHeading {
-  font-size: 2.5em;
-  color: #9e192d;
-  font-weight: bold;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #ffffff;
   margin-bottom: 10px;
-  letter-spacing: 1px;
-  font-family: "Times New Roman", Times, serif;
+  letter-spacing: 0.5px;
+  background: linear-gradient(145deg, #1c1c2a, #151521);
+  padding: 15px 20px;
+  border-radius: 8px;
+  border: 1px solid #2a2a3e;
 }
 
 /* Description */
 .startText {
-  font-size: 1.2em;
-  color: #2d0c0c;
+  font-size: 1.1rem;
+  color: #a0a0b0;
   margin-bottom: 30px;
-  font-weight: 700;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 /* Subheading */
 .startSubheading {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1.7em;
-  color: #b40b0b;
-  font-weight: normal;
-  margin-top: 10px;
-  margin-left: 100px;
-  letter-spacing: 1px;
-  font-family: "Times New Roman", Times, serif;
-  font-style: italic;
+  font-size: 1.5rem;
+  color: #7e3af2;
+  font-weight: 500;
+  margin: 15px 0 25px;
+  letter-spacing: 0.5px;
 }
 
-/* Role Options */
 /* Role Options Container */
 .roleOptions {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  background: linear-gradient(135deg, #ffffff, #c1bebe);
-  padding: 20px 25px;
-  border-radius: 15px;
-  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.041);
+  background: #1c1c2a;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   margin: 0 auto 30px;
-  width: 280px;
-  transition: all 0.3s ease-in-out;
-  cursor: pointer;
+  width: 100%;
+  max-width: 320px;
+  transition: all 0.3s ease;
+  border: 1px solid #2a2a3e;
 }
 
-/* Hover effect */
 .roleOptions:hover {
-  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
-  transform: translateY(-5px);
-}
-
-/* Adding subtle transition for the individual labels */
-.roleLabel {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
-  transition: color 0.3s ease-in-out;
-}
-
-.roleLabel input[type="radio"]:checked+span {
-  color: #790606;
-}
-
-/* On hover, change the label text color */
-.roleLabel:hover {
-  color: #880808;
-}
-
-.roleLabel input[type="radio"] {
-  margin-right: 10px;
-  transform: scale(1.1);
-  transition: transform 0.2s ease;
-}
-
-.roleLabel input[type="radio"]:checked {
-  background-color: #790b0b;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
 }
 
 /* Each Role Label */
 .roleLabel {
-  font-size: 1.2em;
-  margin: 10px 0;
-  cursor: pointer;
-  color: #333;
   display: flex;
   align-items: center;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #d0d0e0;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  width: 100%;
+  padding: 8px 0;
 }
 
-/* Custom Radio Button Styling */
-.roleLabel input {
+.roleLabel:hover {
+  color: #7e3af2;
+}
+
+.roleLabel input[type="radio"] {
   appearance: none;
   width: 20px;
   height: 20px;
-  border: 2px solid #c0392b;
+  border: 2px solid #7e3af2;
   border-radius: 50%;
-  display: inline-block;
-  position: relative;
-  margin-right: 10px;
+  margin-right: 12px;
   cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
-/* Custom Checked State */
-.roleLabel input:checked {
-  background-color: #c0392b;
-  border: 5px solid white;
-  box-shadow: 0px 0px 5px rgba(192, 57, 43, 0.6);
+.roleLabel input[type="radio"]:checked {
+  background-color: #7e3af2;
+  border: 5px solid #1c1c2a;
+  box-shadow: 0 0 0 2px #7e3af2;
+}
+
+.roleLabel input[type="radio"]:checked + .roleText {
+  color: #7e3af2;
+  font-weight: 600;
+}
+
+.roleText {
+  transition: all 0.3s ease;
 }
 
 /* Next Button */
 .nextButton {
-  background: linear-gradient(145deg, #6f2d2d, #c0392b);
+  background: linear-gradient(145deg, #7e3af2, #6c2bd9);
   color: white;
-  padding: 15px 30px;
-  font-size: 1.2em;
+  padding: 16px 40px;
+  font-size: 1.1rem;
+  font-weight: 600;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 15px rgba(126, 58, 242, 0.3);
+  transition: all 0.3s ease;
   margin-top: 10px;
-  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
 .nextButton:hover {
-  background: linear-gradient(145deg, #c0392b, #e74c3c);
-  transform: scale(1.05);
-  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(145deg, #8c4afc, #7e3af2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(126, 58, 242, 0.4);
 }
 
 .nextButton:active {
-  transform: scale(1.03);
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(126, 58, 242, 0.3);
 }
 
 /* Popup Overlay */
@@ -201,34 +191,38 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
 }
 
 /* Popup Box */
 .popupBox {
-  background: linear-gradient(145deg, #ffffff, #f8e6e6);
+  background: #151521;
   padding: 35px;
-  border-radius: 14px;
+  border-radius: 16px;
   text-align: center;
-  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.35);
-  width: 400px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 450px;
   position: relative;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease;
+  border: 1px solid #2a2a3e;
 }
 
 /* Close Button (Top Right) */
 .closeButton {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  background: linear-gradient(145deg, #c0392b, #e74c3c);
-  color: white;
+  top: 15px;
+  right: 15px;
+  background: #2a2a3e;
+  color: #a0a0b0;
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   font-size: 18px;
   font-weight: bold;
@@ -237,134 +231,158 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
 .closeButton:hover {
-  background: linear-gradient(145deg, #e74c3c, #c0392b);
-  transform: scale(1.12);
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+  background: #7e3af2;
+  color: white;
+  transform: rotate(90deg);
 }
 
 /* Popup Title */
 .popupTitle {
-  font-size: 24px;
-  font-weight: 700;
-  color: #b22222;
-  /* text-transform: uppercase; */
-  letter-spacing: 1.2px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 20px;
   text-align: center;
-  border-bottom: 3px solid #b22222;
-  padding-bottom: 8px;
-  margin-bottom: 16px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #2a2a3e;
+}
+
+/* Input Group */
+.inputGroup {
+  margin-bottom: 20px;
+  text-align: left;
 }
 
 /* Label Style */
-.popupleavel {
-  font-size: 1rem;
-  color: #2e2626;
+.popupleavel, .verfications {
+  font-size: 0.95rem;
+  color: #d0d0e0;
   font-weight: 500;
   display: block;
-  text-align: left;
-  margin-bottom: 6px;
-  margin-left: 7px;
+  margin-bottom: 8px;
 }
 
 /* Popup Input */
 .popupInput {
-  width: 92%;
-  margin-left: 7px;
-  padding: 12px;
-  border: 2px solid #ddd;
-  border-radius: 6px;
+  width: 100%;
+  padding: 14px;
+  border: 1.5px solid #2a2a3e;
+  border-radius: 8px;
   font-size: 1rem;
-  margin-top: 5px;
-  color: #333;
-  background: #f8f9fa;
-  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  color: #ffffff;
+  background: #1c1c2a;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .popupInput:focus {
-  border-color: #b22222;
-  box-shadow: 0px 3px 10px rgba(178, 34, 34, 0.3);
+  border-color: #7e3af2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(126, 58, 242, 0.2);
+  background: #1e1e2e;
 }
 
-/* General Button Style */
-.popupButton {
-  padding: 14px 22px;
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  margin-top: 10px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+.popupInput::placeholder {
+  color: #6a6a8d;
 }
 
-.verfications {
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-  color: #7d2626;
+/* Verification Text */
+.verificationText {
+  color: #a0a0b0;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.verificationText strong {
+  color: #7e3af2;
+  font-weight: 600;
 }
 
 /* Confirm Button */
 .popupConfirm {
-  background: linear-gradient(145deg, #5a1e1e, #b22222);
-  padding: 14px 22px;
-  font-size: 16px;
-  font-weight: bold;
+  background: linear-gradient(145deg, #7e3af2, #6c2bd9);
+  padding: 14px 30px;
+  font-size: 1rem;
+  font-weight: 600;
   color: white;
-  margin-top: 10px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(126, 58, 242, 0.3);
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-.popupConfirm:hover {
-  background: linear-gradient(145deg, #9e192d, #e74c3c);
-  transform: scale(1.08);
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+.popupConfirm:hover:not(:disabled) {
+  background: linear-gradient(145deg, #8c4afc, #7e3af2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(126, 58, 242, 0.4);
+}
+
+.popupConfirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Cancel Button */
 .popupCancel {
-  background: linear-gradient(145deg, #b22222, #ff4d4d);
-  padding: 14px 22px;
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  border: none;
-  border-radius: 10px;
+  background: transparent;
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #a0a0b0;
+  border: 1.5px solid #2a2a3e;
+  border-radius: 8px;
   cursor: pointer;
-  margin-top: 10px;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  width: 100%;
 }
 
-.popupCancel:hover {
-  background: linear-gradient(145deg, #d62828, #ff6b6b);
-  transform: scale(1.08);
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+.popupCancel:hover:not(:disabled) {
+  background: #2a2a3e;
+  color: #ffffff;
+  border-color: #7e3af2;
+}
+
+.popupCancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Button Alignment */
 .popupButtons {
   display: flex;
-  justify-content: center;
-  gap: 18px;
+  flex-direction: column;
+  gap: 10px;
   margin-top: 20px;
-  padding: 14px 22px;
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 480px) {
+  .startBox {
+    padding: 25px;
+  }
+  
+  .startHeading {
+    font-size: 1.8rem;
+  }
+  
+  .startSubheading {
+    font-size: 1.3rem;
+  }
+  
+  .roleOptions {
+    padding: 20px;
+    max-width: 280px;
+  }
+  
+  .popupBox {
+    padding: 25px;
+    margin: 0 15px;
+  }
 }
