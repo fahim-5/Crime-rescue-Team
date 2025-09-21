@@ -1,445 +1,467 @@
-/* FAQ.module.css */
+/* FAQ.module.css - Dark Theme */
 .faqContainer {
-    max-width: 100%;
-   
-    margin: 0 auto;
-    padding: 0 20px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  background: #0a0a0f;
+  min-height: 100vh;
+  color: #e0e0e0;
+}
 
-  }
+/* Chat Modal Styles */
+.chatModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
+.chatContent {
+  background: #1a1a25;
+  width: 90%;
+  max-width: 500px;
+  height: 70vh;
+  border-radius: 15px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(100, 100, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(100, 100, 255, 0.2);
+}
 
+.chatHeader {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #2c3e50 0%, #1a2431 100%);
+  color: #e0e0e0;
+  border-radius: 15px 15px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(100, 100, 255, 0.2);
+}
 
-  /* Chat Modal Styles */
-  .chatModal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .chatContent {
-    background: white;
-    width: 90%;
-    max-width: 500px;
-    height: 70vh;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .chatHeader {
-    padding: 1.5rem;
-    background: #2c3e50;
-    color: white;
-    border-radius: 15px 15px 0 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .closeButton {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0 0.5rem;
-  }
-  
-  .messagesContainer {
-    flex: 1;
-    padding: 1.5rem;
-    overflow-y: auto;
-    background: #f8f9fa;
-  }
-  
-  .messageBubble {
-    background: white;
-    padding: 1rem;
-    border-radius: 15px;
-    margin-bottom: 1rem;
-    max-width: 80%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .userMessage {
-    background: #4a90e2;
-    color: white;
-    margin-left: auto;
-  }
-  
-  .inputContainer {
-    display: flex;
-    padding: 1rem;
-    border-top: 1px solid #eee;
-  }
-  
-  .inputContainer input {
-    flex: 1;
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 25px;
-    margin-right: 1rem;
-    font-size: 1rem;
-  }
-  
-  .sendButton {
-    background: #4a90e2;
-    color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .sendButton:hover {
-    background: #357abd;
-  }
-  
-  /* Scrollbar Styling */
-  .messagesContainer::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .messagesContainer::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-  }
-  
-  .messagesContainer::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-  }
-  
-  .messagesContainer::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
+.closeButton {
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  transition: color 0.3s ease;
+}
 
+.closeButton:hover {
+  color: #ff6b6b;
+}
 
+.messagesContainer {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background: #151520;
+}
 
-  .noResultsText {
-    text-align: center;
-    color: #888;
-    font-size: 1rem;
-    font-style: italic;
-    margin: 1.5rem 0;
-    padding: 1rem;
-    background-color: #f9f9f9;
-    border: 1px dashed #ccc;
-    border-radius: 8px;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  
-  .heroSection {
-    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-    padding: 4rem 0;
-    border-radius: 40px;
-    margin-bottom: 3rem;
-    margin-top: 50px;
-  }
-  
-  .heroContent {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
-    color: white;
-  }
-  
-  .heroTitle {
-    font-size: 2.8rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-  }
-  
-  .heroSubtitle {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-    opacity: 0.9;
-  }
-  
-  .searchBar {
-    display: flex;
-    gap: 1rem;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  
-  .searchBar input {
-    flex: 1;
-    padding: 1rem;
-    border: none;
-    border-radius: 50px;
-    font-size: 1rem;
-  }
-  
-  .searchButton {
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 50px;
-    background: #e74c3c;
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .searchButton:hover {
-    background: #c0392b;
-  }
-  
-  .categorySection {
-    margin-bottom: 3rem;
-    background: #f8f9fa;
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  }
-  
-  .categoryHeader {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  
-  .categoryIcon {
-    font-size: 2rem;
-    background: white;
-    padding: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .categoryTitle {
-    font-size: 1.8rem;
-    color: #2c3e50;
-  }
-  
-  .accordion {
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  
-  .accordionItem {
-    margin-bottom: 1rem;
-    background: white;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-  }
-  
-  .accordionItem.active {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  }
-  
-  .accordionButton {
-    width: 100%;
-    padding: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    border: none;
-    background: none;
-    cursor: pointer;
-    text-align: left;
-  }
-  
-  .questionMark {
-    background: #e74c3c;
-    color: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  
-  .questionText {
-    font-size: 1.1rem;
-    color: #2c3e50;
-    margin: 0;
-    flex: 1;
-  }
-  
-  .accordionArrow {
-    width: 12px;
-    height: 12px;
-    border: solid #2c3e50;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-    transition: transform 0.3s ease;
-  }
-  
-  .accordionItem.active .accordionArrow {
-    transform: rotate(-135deg);
-  }
-  
-  .accordionContent {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-    padding: 0 1.5rem;
-  }
-  
-  .accordionItem.active .accordionContent {
-    max-height: 500px;
-    padding: 0 1.5rem 1.5rem;
-  }
-  
-  .answerText {
-    color: #4a5568; /* More readable dark gray */
-    font-size: 1.05rem; /* Slightly larger base size */
-    line-height: 1.65; /* Optimal for readability */
-    margin: 0 0 1rem 0;
-    padding: 0.5rem 0;
-    max-width: 72ch; /* Optimal line length for reading */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
-  }
-  
-  /* Add paragraph spacing within answers */
-  .answerText p {
-    margin-bottom: 1.25em;
-    word-spacing: 0.05em;
-    letter-spacing: 0.01em;
-  }
-  
-  /* Add subtle animation when answer appears */
-  .accordionItem.active .answerText {
-    animation: fadeIn 0.3s ease-in;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  /* Add responsive adjustments */
-  @media (max-width: 768px) {
-    .answerText {
-      font-size: 1rem;
-      line-height: 1.6;
-      max-width: 100%;
-    }
-  }
-  
-  /* Optional: Add subtle hover effect on answer text */
-  .accordionContent:hover .answerText {
-    color: #2d3748;
-    transition: color 0.2s ease;
-  }
+.messageBubble {
+  background: #2a2a40;
+  padding: 1rem;
+  border-radius: 15px;
+  margin-bottom: 1rem;
+  max-width: 80%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(100, 100, 255, 0.1);
+  color: #e0e0e0;
+}
 
-  .contactSection {
-    margin: 4rem 0;
-  }
-  
-  .contactCard {
-    background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
-    border-radius: 30px;
-    padding: 3rem;
-    color: white;
-    text-align: center;
-  }
-  
-  .contactTitle {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .contactSubtitle {
-    margin-bottom: 2rem;
-    opacity: 0.9;
-  }
-  
-  .contactGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
-  }
-  
-  .contactMethod {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2rem;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-  
-  .methodIcon {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .contactMethod h3 {
-    margin: 1rem 0;
-  }
-  
-  .contactMethod a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    display: block;
-    margin: 0.5rem 0;
-  }
-  
-  .chatButton {
-    background: white;
-    color: #2c3e50;
-    border: none;
-    padding: 0.8rem 2rem;
-    border-radius: 50px;
-    margin: 1rem 0;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-  }
-  
-  .chatButton:hover {
-    transform: translateY(-2px);
-  }
-  
-  @media (max-width: 768px) {
-    .heroTitle {
-      font-size: 2rem;
-    }
-  
-    .searchBar {
-      flex-direction: column;
-    }
-  
-    .searchButton {
-      width: 100%;
-    }
-  
-    .categorySection {
-      padding: 1.5rem;
-    }
-  
-    .contactCard {
-      padding: 2rem 1rem;
-    }
-  }
+.userMessage {
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  color: white;
+  margin-left: auto;
+  border: 1px solid rgba(100, 150, 255, 0.3);
+}
 
+.inputContainer {
+  display: flex;
+  padding: 1rem;
+  border-top: 1px solid rgba(100, 100, 255, 0.2);
+  background: #1a1a25;
+}
 
+.inputContainer input {
+  flex: 1;
+  padding: 0.8rem;
+  border: 1px solid rgba(100, 100, 255, 0.3);
+  border-radius: 25px;
+  margin-right: 1rem;
+  font-size: 1rem;
+  background: #2a2a40;
+  color: #e0e0e0;
+}
 
-  /* Email Modal Styles */
+.inputContainer input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.sendButton {
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.sendButton:hover {
+  background: linear-gradient(135deg, #357abd 0%, #2c5d99 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+}
+
+/* Scrollbar Styling */
+.messagesContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messagesContainer::-webkit-scrollbar-track {
+  background: #1a1a25;
+  border-radius: 4px;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb {
+  background: #4a90e2;
+  border-radius: 4px;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb:hover {
+  background: #357abd;
+}
+
+.noResultsText {
+  text-align: center;
+  color: #888;
+  font-size: 1rem;
+  font-style: italic;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: #1a1a25;
+  border: 1px dashed #444;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.heroSection {
+  background: linear-gradient(135deg, #1a2431 0%, #2c3e50 100%);
+  padding: 4rem 0;
+  border-radius: 20px;
+  margin-bottom: 3rem;
+  margin-top: 50px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(100, 100, 255, 0.1);
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  color: #e0e0e0;
+}
+
+.heroTitle {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.heroSubtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  color: #a0a0c0;
+}
+
+.searchBar {
+  display: flex;
+  gap: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.searchBar input {
+  flex: 1;
+  padding: 1rem;
+  border: 1px solid rgba(100, 100, 255, 0.3);
+  border-radius: 50px;
+  font-size: 1rem;
+  background: #2a2a40;
+  color: #e0e0e0;
+}
+
+.searchBar input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.searchButton {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.searchButton:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #a33226 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
+}
+
+.categorySection {
+  margin-bottom: 3rem;
+  background: #1a1a25;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(100, 100, 255, 0.1);
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.categoryIcon {
+  font-size: 2rem;
+  background: #2a2a40;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  color: #4a90e2;
+  border: 1px solid rgba(100, 100, 255, 0.2);
+}
+
+.categoryTitle {
+  font-size: 1.8rem;
+  color: #e0e0e0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.accordion {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.accordionItem {
+  margin-bottom: 1rem;
+  background: #2a2a40;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(100, 100, 255, 0.1);
+}
+
+.accordionItem.active {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border-color: rgba(100, 100, 255, 0.3);
+}
+
+.accordionButton {
+  width: 100%;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  color: #e0e0e0;
+}
+
+.questionMark {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
+}
+
+.questionText {
+  font-size: 1.1rem;
+  color: #e0e0e0;
+  margin: 0;
+  flex: 1;
+  font-weight: 500;
+}
+
+.accordionArrow {
+  width: 12px;
+  height: 12px;
+  border: solid #e0e0e0;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  transition: transform 0.3s ease;
+}
+
+.accordionItem.active .accordionArrow {
+  transform: rotate(-135deg);
+}
+
+.accordionContent {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  padding: 0 1.5rem;
+  background: #2a2a40;
+}
+
+.accordionItem.active .accordionContent {
+  max-height: 500px;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.answerText {
+  color: #c0c0e0;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  margin: 0 0 1rem 0;
+  padding: 0.5rem 0;
+  max-width: 72ch;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
+}
+
+.answerText p {
+  margin-bottom: 1.25em;
+  word-spacing: 0.05em;
+  letter-spacing: 0.01em;
+}
+
+.accordionItem.active .answerText {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.contactSection {
+  margin: 4rem 0;
+}
+
+.contactCard {
+  background: linear-gradient(135deg, #2c3e50 0%, #1a2431 100%);
+  border-radius: 20px;
+  padding: 3rem;
+  color: #e0e0e0;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(100, 100, 255, 0.1);
+}
+
+.contactTitle {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.contactSubtitle {
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  color: #a0a0c0;
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.contactMethod {
+  background: rgba(42, 42, 64, 0.6);
+  padding: 2rem;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(100, 100, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.methodIcon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #4a90e2;
+}
+
+.contactMethod h3 {
+  margin: 1rem 0;
+  color: #e0e0e0;
+}
+
+.contactMethod a {
+  color: #a0c0ff;
+  text-decoration: none;
+  font-weight: 500;
+  display: block;
+  margin: 0.5rem 0;
+  transition: color 0.3s ease;
+}
+
+.contactMethod a:hover {
+  color: #4a90e2;
+  text-decoration: underline;
+}
+
+.chatButton {
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  margin: 1rem 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.chatButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(74, 144, 226, 0.4);
+}
+
+/* Email Modal Styles */
 .emailModal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -447,14 +469,18 @@
 }
 
 .emailContent {
-  background-color: white;
+  background-color: #1a1a25;
   padding: 2rem;
-  border-radius: 8px;
+  border-radius: 15px;
   width: 90%;
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(100, 100, 255, 0.1);
+  border: 1px solid rgba(100, 100, 255, 0.2);
+  color: #e0e0e0;
 }
 
 .emailHeader {
@@ -462,11 +488,14 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(100, 100, 255, 0.2);
 }
 
 .emailHeader h3 {
   margin: 0;
-  color: #2c3e50;
+  color: #e0e0e0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .emailForm {
@@ -482,16 +511,26 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #34495e;
+  color: #e0e0e0;
 }
 
 .formGroup input,
 .formGroup textarea {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid rgba(100, 100, 255, 0.3);
+  border-radius: 8px;
   font-size: 1rem;
+  background: #2a2a40;
+  color: #e0e0e0;
+  transition: border-color 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
 
 .formGroup textarea {
@@ -500,33 +539,37 @@
 }
 
 .submitButton {
-  background-color: #3498db;
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 }
 
 .submitButton:hover {
-  background-color: #2980b9;
+  background: linear-gradient(135deg, #357abd 0%, #2c5d99 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(74, 144, 226, 0.4);
 }
 
 .emailButton {
   background: none;
   border: none;
-  color: #3498db;
+  color: #4a90e2;
   text-decoration: underline;
   cursor: pointer;
   font-size: inherit;
   padding: 0;
+  transition: color 0.3s ease;
 }
 
 .emailButton:hover {
-  color: #2980b9;
+  color: #a0c0ff;
 }
 
 /* Contact Method Buttons */
@@ -536,6 +579,13 @@
   cursor: pointer;
   padding: 0;
   font: inherit;
+  color: #a0c0ff;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.contactMethod button:hover {
+  color: #4a90e2;
 }
 
 /* Responsive adjustments */
@@ -548,4 +598,70 @@
   .formGroup {
     margin-bottom: 1rem;
   }
+  
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .searchBar {
+    flex-direction: column;
+  }
+
+  .searchButton {
+    width: 100%;
+  }
+
+  .categorySection {
+    padding: 1.5rem;
+  }
+
+  .contactCard {
+    padding: 2rem 1rem;
+  }
+  
+  .contactGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Additional dark theme enhancements */
+.faqContainer ::selection {
+  background: rgba(74, 144, 226, 0.3);
+  color: #ffffff;
+}
+
+.faqContainer ::-moz-selection {
+  background: rgba(74, 144, 226, 0.3);
+  color: #ffffff;
+}
+
+/* Focus states for accessibility */
+.accordionButton:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+.chatButton:focus,
+.sendButton:focus,
+.searchButton:focus,
+.submitButton:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+/* Animation for modal appearance */
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.chatContent,
+.emailContent {
+  animation: modalAppear 0.3s ease-out;
 }
